@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Urban convenience",
+    "icon": "U",
+    "desc": "Walkable, dense, everything close.",
+    "color": "#4f8ef7",
+    "avg_scores": {
+      "grocery": 13.6,
+      "transit": 11.5,
+      "health": 18.0,
+      "parks": 7.1
+    },
+    "example_cities": ["Vancouver"]
+  },
+  {
+    "name": "Balanced access",
+    "icon": "B",
+    "desc": "Good services, room to breathe.",
+    "color": "#34d399",
+    "avg_scores": {
+      "grocery": 8.0,
+      "transit": 7.6,
+      "health": 9.4,
+      "parks": 11.1
+    },
+    "example_cities": ["Victoria", "Mission 1", "North Vancouver"]
+  },
+  {
+    "name": "Car-dependent suburb",
+    "icon": "C",
+    "desc": "Affordable, driving required.",
+    "color": "#f59e0b",
+    "avg_scores": {
+      "grocery": 3.9,
+      "transit": 1.2,
+      "health": 1.1,
+      "parks": 4.2
+    },
+    "example_cities": ["Capilano 5", "New Westminster", "Burnaby"]
+  },
+  {
+    "name": "Remote & independent",
+    "icon": "R",
+    "desc": "Self-sufficient, minimal services.",
+    "color": "#7c8491",
+    "avg_scores": {
+      "grocery": 0.5,
+      "transit": 0.0,
+      "health": 0.1,
+      "parks": 0.9
+    },
+    "example_cities": ["Courtenay", "Lytton", "Elkford"]
+  },
+  {
+    "name": "Island lifestyle",
+    "icon": "I",
+    "desc": "Scenic, moderate services.",
+    "color": "#38bdf8",
+    "avg_scores": {
+      "grocery": 3.6,
+      "transit": 3.2,
+      "health": 2.5,
+      "parks": 10.3
+    },
+    "example_cities": ["Metro Vancouver A", "White Rock", "Penticton"]
+  }
+]

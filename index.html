@@ -1,10 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Accessibility to Services in Canada</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
     <style>
       body {
         margin: 0;
@@ -245,6 +246,50 @@
         <div id="scatter-selection"></div>
       </section>
     </div>
+
+    <!-- Section 1: Time-to-Life Index -->
+    <section class="section-time-index">
+      <h1>Time-to-Life Index</h1>
+      <p class="subtitle">
+        British Columbia Regions — Weekly minutes spent accessing essential
+        services
+      </p>
+
+      <svg id="chart"></svg>
+
+      <div class="legend" id="legend"></div>
+
+      <div class="methodology">
+        <h3>Index Score → Travel Time Mapping</h3>
+        <p>
+          <strong>0.8–1.0:</strong> 5 min/trip &nbsp;&nbsp;
+          <strong>0.5–0.8:</strong> 15 min/trip &nbsp;&nbsp;
+          <strong>0.2–0.5:</strong> 30 min/trip &nbsp;&nbsp;
+          <strong>0.0–0.2:</strong> 55 min/trip
+        </p>
+        <p style="margin-top: 10px">
+          Data source: Statistics Canada Proximity Measures Database
+          (PMD-en.csv). Services shown: Grocery, Transit, Healthcare, Parks.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 2: Lifestyle Archetypes -->
+    <section class="section-archetypes">
+      <h1>Lifestyle Archetypes</h1>
+      <p class="subtitle">I care most about:</p>
+
+      <div class="filter-section">
+        <label class="filter-label">Show all archetypes</label>
+        <select id="archetypeFilter">
+          <option value="">All Archetypes</option>
+        </select>
+      </div>
+
+      <div class="archetypes-grid" id="archetypesGrid">
+        <div class="loading">Loading data...</div>
+      </div>
+    </section>
 
     <script src="index.js"></script>
   </body>

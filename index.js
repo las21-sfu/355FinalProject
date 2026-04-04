@@ -167,7 +167,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in script.js.",
+        "Could not load the dataset. Check the file path and column names in script.js."
       );
     });
 });
@@ -212,7 +212,7 @@ function render(data) {
 
   if (!rows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`,
+      `No valid rows found for ${selectedAmenity} in British Columbia.`
     );
     return;
   }
@@ -262,7 +262,7 @@ function render(data) {
       .attr("font-size", 20)
       .attr("fill", "#555")
       .text(
-        "This amenity is based on a driving threshold, so walking-time bars are not shown.",
+        "This amenity is based on a driving threshold, so walking-time bars are not shown."
       );
 
     const sortedByIndex = rows
@@ -305,7 +305,7 @@ function render(data) {
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`,
+      `No estimated walking times could be calculated for ${selectedAmenity}.`
     );
     return;
   }
@@ -318,7 +318,7 @@ function render(data) {
   const longestWalk = sortedByMinutes[sortedByMinutes.length - 1];
   const maxMinutes = Math.max(
     12,
-    d3.max(sortedByMinutes, (d) => d.estimatedMinutes) || 12,
+    d3.max(sortedByMinutes, (d) => d.estimatedMinutes) || 12
   );
 
   const xScale = d3.scaleLinear().domain([0, maxMinutes]).range([0, 620]);
@@ -412,7 +412,7 @@ function drawLegend(svg, { x, y, width, maxMinutes }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(`${val} min`);
@@ -424,7 +424,7 @@ function drawLegend(svg, { x, y, width, maxMinutes }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(tickLabels[i]);
@@ -655,7 +655,7 @@ function computeOverallAccessibilityExtremes(data) {
         SERVICE_TYPE_INFO.forEach((service) => {
           serviceCounts[service.field] = countServicePresenceAcrossBlocks(
             rows,
-            service.field,
+            service.field
           );
         });
 
@@ -664,7 +664,7 @@ function computeOverallAccessibilityExtremes(data) {
         });
 
         const population = d3.sum(rows, (row) =>
-          Number.isFinite(row.population) ? row.population : 0,
+          Number.isFinite(row.population) ? row.population : 0
         );
 
         return {
@@ -676,7 +676,7 @@ function computeOverallAccessibilityExtremes(data) {
           ...serviceCounts,
         };
       },
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.totalServices));
@@ -692,10 +692,10 @@ function computeOverallAccessibilityExtremes(data) {
   // Use Kelowna for the second scrolly state
   const kelowna =
     grouped.find(
-      (d) => (d.division || "").trim().toLowerCase() === "kelowna",
+      (d) => (d.division || "").trim().toLowerCase() === "kelowna"
     ) ||
     grouped.find((d) =>
-      (d.division || "").trim().toLowerCase().includes("kelowna"),
+      (d.division || "").trim().toLowerCase().includes("kelowna")
     ) ||
     sorted[sorted.length - 1];
 
@@ -711,7 +711,7 @@ function initOverallAccessibilityScrolly(data) {
 
   if (!extremes) {
     d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>",
+      "<div class='error'>Could not compute overall accessibility.</div>"
     );
     return;
   }
@@ -741,7 +741,7 @@ function initOverallAccessibilityScrolly(data) {
     d3.max(SERVICE_TYPE_INFO, (service) => {
       const value = division[service.field];
       return Number.isFinite(value) ? value : 0;
-    }),
+    })
   );
 
   const xScale = d3
@@ -791,7 +791,7 @@ function initOverallAccessibilityScrolly(data) {
     .call(d3.axisLeft(yScale).tickSize(0))
     .call((g) => g.select(".domain").remove())
     .call((g) =>
-      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700),
+      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700)
     );
 
   chart
@@ -870,7 +870,7 @@ function initOverallAccessibilityScrolly(data) {
 
     const currentProvince = cleanProvinceName(current.province);
     overallTitle.text(
-      `Overall service access in ${current.division}, ${currentProvince}`,
+      `Overall service access in ${current.division}, ${currentProvince}`
     );
 
     rows.each(function (service) {
@@ -894,7 +894,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2,
+        yScale.bandwidth() / 2
       );
 
       row
@@ -923,9 +923,15 @@ function initOverallAccessibilityScrolly(data) {
     });
 
     note.html(`
-      <strong>${current.division}</strong>, ${cleanProvinceName(current.province)} is the
-      <strong>${stateName === "least" ? "reference division" : "most accessible"}</strong>
-      shown here with <strong>${current.totalServices}</strong> total block-level service counts across categories.
+      <strong>${current.division}</strong>, ${cleanProvinceName(
+      current.province
+    )} is the
+      <strong>${
+        stateName === "least" ? "reference division" : "most accessible"
+      }</strong>
+      shown here with <strong>${
+        current.totalServices
+      }</strong> total block-level service counts across categories.
       <br /><br />
       <strong>Blocks included:</strong> ${current.blockCount}
       <br />
@@ -947,7 +953,7 @@ function initOverallAccessibilityScrolly(data) {
     {
       threshold: 0.15,
       rootMargin: "0px 0px -25% 0px",
-    },
+    }
   );
 
   steps.forEach((step) => observer.observe(step));
@@ -968,7 +974,7 @@ function renderScatter(data) {
   const scatterData = d3
     .rollups(
       data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field]),
+        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
       ),
       (rows) => ({
         division: rows[0]?.division || "Unknown Division",
@@ -977,11 +983,11 @@ function renderScatter(data) {
         proximity: d3.mean(rows, (d) => d[field]),
         blockCount: rows.length,
       }),
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
     );
 
   if (!scatterData.length) return;
@@ -1076,7 +1082,7 @@ function renderScatter(data) {
     .attr("cy", (d) => y(d.proximity))
     .attr("r", 5)
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
     )
     .attr("opacity", 0.9)
     .attr("stroke", "transparent")
@@ -1102,7 +1108,7 @@ function renderScatter(data) {
       d3.select(this)
         .attr(
           "stroke",
-          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
+          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
         )
         .attr("stroke-width", selectedScatterDivisions.has(d.division) ? 2 : 0);
 
@@ -1137,13 +1143,13 @@ function renderScatter(data) {
 function updateScatterSelection(scatterData, points, color) {
   points
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
     )
     .attr("stroke", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
+      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
     )
     .attr("stroke-width", (d) =>
-      selectedScatterDivisions.has(d.division) ? 2 : 0,
+      selectedScatterDivisions.has(d.division) ? 2 : 0
     );
 
   const selectedData = scatterData
@@ -1227,3 +1233,315 @@ function updateScatterSelection(scatterData, points, color) {
       updateScatterSelection(scatterData, points, color);
     });
 }
+
+// ── BC TIME-TO-LIFE INDEX VISUALIZATION ──────────────────────────────
+
+// ── LIFESTYLE ARCHETYPES ─────────────────────────────────────────────
+
+const serviceColors = {
+  grocery: "#7fd3a0",
+  transit: "#5b9fd4",
+  health: "#f4a5a5",
+  parks: "#f4d79f",
+};
+
+let archetypesData = [];
+
+async function loadData() {
+  try {
+    const response = await fetch("archetypes_data_real.json");
+    archetypesData = await response.json();
+
+    // Populate filter dropdown
+    const filterSelect = document.getElementById("archetypeFilter");
+    archetypesData.forEach((arch) => {
+      const option = document.createElement("option");
+      option.value = arch.name.toLowerCase().replace(/\s+/g, "_");
+      option.textContent = arch.name;
+      filterSelect.appendChild(option);
+    });
+
+    renderArchetypes();
+  } catch (error) {
+    console.error("Error loading data:", error);
+    document.getElementById("archetypesGrid").innerHTML =
+      '<div class="loading">Error loading data</div>';
+  }
+}
+
+function renderArchetypes(filter = "") {
+  const grid = document.getElementById("archetypesGrid");
+  grid.innerHTML = "";
+
+  const filtered = filter
+    ? archetypesData.filter(
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
+      )
+    : archetypesData;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="loading">No archetypes found</div>';
+    return;
+  }
+
+  filtered.forEach((arch) => {
+    const card = document.createElement("div");
+    card.className = "archetype-card";
+    card.style.borderLeftColor = arch.color;
+
+    const barsHtml = Object.entries(arch.avg_scores)
+      .map(
+        ([service, value]) => `
+        <div class="service-bar">
+          <div class="service-label">${service}</div>
+          <div class="service-bar-bg">
+            <div class="service-bar-fill" style="width: ${Math.min(
+              value,
+              100
+            )}%; background: ${serviceColors[service]};"></div>
+          </div>
+          <div class="service-value">${Math.round(value)}</div>
+        </div>
+      `
+      )
+      .join("");
+
+    const citiesHtml = arch.example_cities
+      .map((city) => `<div class="city-tag">${city}</div>`)
+      .join("");
+
+    card.innerHTML = `
+        <div class="archetype-header">
+          <div class="archetype-icon" style="background: rgba(${hexToRgb(
+            arch.color
+          )}, 0.2); color: ${arch.color};">${arch.icon}</div>
+          <div>
+            <div class="archetype-title">${arch.name}</div>
+            <div class="archetype-desc">${arch.desc}</div>
+          </div>
+        </div>
+        ${barsHtml}
+        <div class="example-cities">
+          <strong>Example regions:</strong>
+          <div class="city-list">${citiesHtml}</div>
+        </div>
+      `;
+    grid.appendChild(card);
+  });
+}
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
+        result[3],
+        16
+      )}`
+    : "255, 255, 255";
+}
+
+// Initialize archetypes
+document.getElementById("archetypeFilter").addEventListener("change", (e) => {
+  renderArchetypes(e.target.value);
+});
+
+loadData();
+
+// ── BC TIME-TO-LIFE INDEX CHART ───────────────────────────────────────
+
+// Data
+const data = [
+  {
+    city: "Vancouver",
+    grocery: 37.5,
+    transit: 150.0,
+    healthcare: 7.5,
+    parks: 60.0,
+    total: 255.0,
+  },
+  {
+    city: "Victoria",
+    grocery: 75.0,
+    transit: 150.0,
+    healthcare: 15.0,
+    parks: 60.0,
+    total: 300.0,
+  },
+  {
+    city: "Burnaby",
+    grocery: 75.0,
+    transit: 150.0,
+    healthcare: 27.5,
+    parks: 60.0,
+    total: 312.5,
+  },
+  {
+    city: "Chilliwack",
+    grocery: 137.5,
+    transit: 275.0,
+    healthcare: 27.5,
+    parks: 60.0,
+    total: 500.0,
+  },
+  {
+    city: "Prince George",
+    grocery: 137.5,
+    transit: 275.0,
+    healthcare: 27.5,
+    parks: 60.0,
+    total: 500.0,
+  },
+  {
+    city: "Fort St. John",
+    grocery: 137.5,
+    transit: 275.0,
+    healthcare: 27.5,
+    parks: 110.0,
+    total: 550.0,
+  },
+];
+
+// Service colors (matching the screenshot style)
+const colors = {
+  grocery: "#7fd3a0", // green
+  transit: "#5b9fd4", // blue
+  healthcare: "#f4a5a5", // pink/red
+  parks: "#f4d79f", // yellow/beige
+};
+
+const services = ["grocery", "transit", "healthcare", "parks"];
+
+// Render legend
+function renderLegend() {
+  const legend = document.getElementById("legend");
+  legend.innerHTML = services
+    .map(
+      (svc) => `
+      <div class="legend-item">
+        <div class="legend-swatch" style="background: ${colors[svc]}"></div>
+        <span>${svc}</span>
+      </div>
+    `
+    )
+    .join("");
+}
+
+// Draw chart
+function drawChart() {
+  const svg = d3.select("#chart");
+  const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+  const width =
+    Math.min(900, window.innerWidth - 80) - margin.left - margin.right;
+  const height = 400 - margin.top - margin.bottom;
+
+  svg.attr(
+    "viewBox",
+    `0 0 ${width + margin.left + margin.right} ${
+      height + margin.top + margin.bottom
+    }`
+  );
+
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Scales
+  const x = d3
+    .scaleBand()
+    .domain(data.map((d) => d.city))
+    .range([0, width])
+    .padding(0.2);
+
+  const y = d3.scaleLinear().domain([0, 800]).range([height, 0]);
+
+  // Stack the data
+  const stack = d3.stack().keys(services);
+
+  const stackedData = stack(data);
+
+  // Draw bars
+  const groups = g
+    .selectAll("g.service")
+    .data(stackedData)
+    .enter()
+    .append("g")
+    .attr("class", "service")
+    .attr("fill", (d) => colors[d.key]);
+
+  groups
+    .selectAll("rect")
+    .data((d) => d)
+    .enter()
+    .append("rect")
+    .attr("x", (d) => x(d.data.city))
+    .attr("y", (d) => y(d[1]))
+    .attr("height", (d) => y(d[0]) - y(d[1]))
+    .attr("width", x.bandwidth())
+    .attr("stroke", "white")
+    .attr("stroke-width", 1);
+
+  // Add total labels on top
+  g.selectAll(".total-label")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "total-label")
+    .attr("x", (d) => x(d.city) + x.bandwidth() / 2)
+    .attr("y", (d) => y(d.total) - 5)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("font-weight", "bold")
+    .attr("fill", "#333")
+    .text((d) => Math.round(d.total));
+
+  // Y axis
+  const yAxis = d3
+    .axisLeft(y)
+    .ticks(5)
+    .tickFormat((d) => d);
+
+  g.append("g")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - height / 2)
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .style("font-size", "13px")
+    .style("fill", "#666")
+    .text("minutes per week");
+
+  // X axis
+  const xAxis = d3.axisBottom(x);
+
+  g.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(xAxis)
+    .selectAll("text")
+    .style("font-size", "12px")
+    .style("fill", "#666");
+
+  // Grid lines
+  g.selectAll(".grid-line")
+    .data(y.ticks(5))
+    .enter()
+    .append("line")
+    .attr("class", "grid-line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", (d) => y(d))
+    .attr("y2", (d) => y(d))
+    .attr("stroke", "#eee")
+    .attr("stroke-dasharray", "4 4")
+    .attr("stroke-width", 1);
+
+  // Move grid lines to back
+  g.selectAll(".grid-line").lower();
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+  renderLegend();
+  drawChart();
+});
