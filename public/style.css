@@ -1,15 +1,13 @@
-
-
 /* ── Variables ────────────────────────────────── */
 :root {
-  --bg:         #f8f8f5;
-  --surface:    #ffffff;
-  --border:     #e6e6e2;
-  --text:       #1c1c1a;
+  --bg: #f8f8f5;
+  --surface: #ffffff;
+  --border: #e6e6e2;
+  --text: #1c1c1a;
   --text-muted: #6b7080;
-  --accent:     #2563eb;
-  --danger:     #ef4444;
-  --success:    #22c55e;
+  --accent: #2563eb;
+  --danger: #ef4444;
+  --success: #22c55e;
 
   /* Service colour palette */
   --c0: #4f8ef7;
@@ -23,11 +21,10 @@
   --c8: #86efac;
   --c9: #fbbf24;
 
-  --radius:    10px;
+  --radius: 10px;
   --radius-sm: 6px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-
 
 /* ── Reset ────────────────────────────────────── */
 *,
@@ -59,12 +56,11 @@ a:hover {
   text-decoration: underline;
 }
 
-
 /* ── Typography ───────────────────────────────── */
 h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  line-height: 1.2; 
+  line-height: 1.2;
   color: var(--text);
   margin-bottom: 3rem;
 }
@@ -112,7 +108,6 @@ button {
   font-family: var(--font);
 }
 
-
 /* ── Page layout ──────────────────────────────── */
 .page {
   display: grid;
@@ -123,7 +118,6 @@ button {
   margin: 0 auto;
   padding: 48px 32px;
 }
-
 
 /* ── Side nav ─────────────────────────────────── */
 .side-nav {
@@ -155,7 +149,6 @@ button {
   color: var(--accent);
 }
 
-
 /* ── Main content ─────────────────────────────── */
 .main-content {
   min-width: 0;
@@ -165,7 +158,6 @@ button {
   margin-top: 56px;
   padding-top: 56px;
 }
-
 
 /* ── Intro section ────────────────────────────── */
 .intro-section h1 {
@@ -179,7 +171,6 @@ button {
   font-size: 1rem;
   margin: 0;
 }
-
 
 /* ── Hero vis (Vis 1) ─────────────────────────── */
 .hero-description p {
@@ -199,7 +190,6 @@ button {
 .hero-actions h3 {
   margin-bottom: 0;
 }
-
 
 /* ── Overall section (Vis 2) ──────────────────── */
 #overall-scrolly {
@@ -256,7 +246,6 @@ button {
   font-weight: 700;
 }
 
-
 /* ── Scatter section (Vis 3) ──────────────────── */
 .scatter-section p {
   color: var(--text-muted);
@@ -274,7 +263,6 @@ button {
   color: var(--text);
   margin-bottom: 4px;
 }
-
 
 /* ── Time-to-Life Index ───────────────────────── */
 .section-time-index .subtitle {
@@ -299,7 +287,6 @@ button {
 .methodology p.source-note {
   margin-top: 0.5rem;
 }
-
 
 /* ── Lifestyle Archetypes ─────────────────────── */
 .section-archetypes .subtitle {
@@ -373,12 +360,30 @@ select:focus {
 }
 
 /* Archetype icon tints (fallback; JS sets inline background) */
-.archetype-card.urban    .archetype-icon { background: rgba(79,  142, 247, 0.12); color: #4f8ef7; }
-.archetype-card.balanced .archetype-icon { background: rgba(52,  211, 153, 0.12); color: #34d399; }
-.archetype-card.car      .archetype-icon { background: rgba(245, 158,  11, 0.12); color: #f59e0b; }
-.archetype-card.nature   .archetype-icon { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
-.archetype-card.remote   .archetype-icon { background: rgba(124, 132, 145, 0.12); color: #7c8491; }
-.archetype-card.island   .archetype-icon { background: rgba(56,  189, 248, 0.12); color: #38bdf8; }
+.archetype-card.urban .archetype-icon {
+  background: rgba(79, 142, 247, 0.12);
+  color: #4f8ef7;
+}
+.archetype-card.balanced .archetype-icon {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+}
+.archetype-card.car .archetype-icon {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+.archetype-card.nature .archetype-icon {
+  background: rgba(167, 139, 250, 0.12);
+  color: #a78bfa;
+}
+.archetype-card.remote .archetype-icon {
+  background: rgba(124, 132, 145, 0.12);
+  color: #7c8491;
+}
+.archetype-card.island .archetype-icon {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+}
 
 .archetype-title {
   font-size: 0.9375rem;
@@ -463,7 +468,6 @@ select:focus {
   font-size: 0.875rem;
 }
 
-
 /* ── Legend ───────────────────────────────────── */
 .legend {
   display: flex;
@@ -504,7 +508,6 @@ select:focus {
   transform: scale(1.25);
 }
 
-
 /* ── Chart / SVG elements ─────────────────────── */
 #chart {
   display: block;
@@ -514,12 +517,22 @@ select:focus {
 
 .bar-segment {
   cursor: pointer;
-  transition: opacity 0.2s, filter 0.2s;
+  transition:
+    opacity 0.2s,
+    filter 0.2s;
 }
-.bar-segment:hover               { filter: brightness(1.2); }
-.bar-group:hover .bar-segment    { opacity: 0.85; }
-.bar-segment.dimmed              { opacity: 0.2; }
-.bar-segment.highlighted         { filter: brightness(1.3); }
+.bar-segment:hover {
+  filter: brightness(1.2);
+}
+.bar-group:hover .bar-segment {
+  opacity: 0.85;
+}
+.bar-segment.dimmed {
+  opacity: 0.2;
+}
+.bar-segment.highlighted {
+  filter: brightness(1.3);
+}
 
 .city-label {
   font-family: var(--font);
@@ -527,7 +540,9 @@ select:focus {
   fill: var(--text-muted);
   transition: fill 0.15s;
 }
-.bar-group:hover .city-label { fill: var(--text); }
+.bar-group:hover .city-label {
+  fill: var(--text);
+}
 
 .total-label {
   font-family: var(--font);
@@ -566,10 +581,15 @@ select:focus {
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 
 /* ── Tooltip ──────────────────────────────────── */
 .tooltip {
@@ -585,7 +605,9 @@ select:focus {
   max-width: 280px;
   font-size: 0.8125rem;
 }
-.tooltip.visible { opacity: 1; }
+.tooltip.visible {
+  opacity: 1;
+}
 
 .tt-city {
   font-size: 0.9375rem;
@@ -638,14 +660,15 @@ select:focus {
   font-size: 0.875rem;
 }
 
-.tt-total-val { color: var(--accent); }
+.tt-total-val {
+  color: var(--accent);
+}
 
 .tt-hint {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 6px;
 }
-
 
 /* ── Controls / form helpers ──────────────────── */
 .controls {
@@ -671,7 +694,6 @@ select:focus {
   font-size: 0.875rem;
 }
 
-
 /* ── Map explore section ──────────────────────── */
 .map-explore-section {
   padding: 56px 32px 64px;
@@ -681,7 +703,6 @@ select:focus {
   max-width: 1060px;
   margin: 0 auto 24px;
 }
-
 
 /* ── Responsive ───────────────────────────────── */
 @media (max-width: 1100px) {
@@ -716,7 +737,6 @@ select:focus {
   }
 }
 
-
 /* ═══════════════════════════════════════════════
    Map App Component (Metro Vancouver Map)
    ═══════════════════════════════════════════════ */
@@ -734,15 +754,15 @@ select:focus {
   all: initial;
   box-sizing: border-box;
 
-  --bg:         #f4f4f2;
-  --surface:    #ffffff;
-  --border:     #e5e5e3;
-  --text:       #1a1a18;
+  --bg: #f4f4f2;
+  --surface: #ffffff;
+  --border: #e5e5e3;
+  --text: #1a1a18;
   --text-muted: #888884;
-  --accent:     #2563eb;
-  --accent-bg:  #eff6ff;
-  --panel-w:    272px;
-  --sans:       -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --accent: #2563eb;
+  --accent-bg: #eff6ff;
+  --panel-w: 272px;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   font-family: var(--sans);
   font-size: 14px;
@@ -897,7 +917,9 @@ select:focus {
   font-size: 0.85rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1093,5 +1115,15 @@ select:focus {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.overall-step {
+  min-height: 100vh;
+}
+
+.overall-step-long {
+  min-height: 160vh;
 }
