@@ -155,7 +155,7 @@ window.addEventListener("DOMContentLoaded", () => {
       initDropdown();
       render(bcData);
       initOverallAccessibilityScrolly(bcData);
-
+      renderScatter(bcData);
       d3.select("#amenity-select").on("change", () => {
         render(bcData);
       });
