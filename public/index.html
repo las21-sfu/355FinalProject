@@ -9,8 +9,28 @@
   </head>
   <body>
     <div class="page">
+      <nav class="side-nav">
+        <h2>Page navigation</h2>
+        <ul>
+          <li><a href="#hero-vis">Accessibility overview</a></li>
+          <li><a href="#overall-section">Access to Services</a></li>
+          <li><a href="#scatter-section">City comparison</a></li>
+          <li><a href="#section-time-index">Time-to-Life Index</a></li>
+          <li><a href="#section-archetypes">Lifestyle Archetypes</a></li>
+          <li><a href="#map">Exploration Map</a></li>
+        </ul>
+      </nav>
+
+      <main class="main-content">
+
+      <!-- Introduction -->
+      <section id="intro-section" class="intro-section">
+        <h1>How accessible are essential services throughout BC?</h1>
+        <h3>Compare transit, housing, healthcare, education, and more across British Columbia's regions and Metro Vancouver. Find the perfect place that fits your accessibility needs.</h3>
+      </section>
+
       <!-- Vis 1 -->
-      <section class="hero-vis">
+      <section id="hero-vis" class="hero-vis">
         <div class="hero-description">
           <h2>Understanding Accessibility</h2>
           <p>
@@ -44,7 +64,7 @@
       </section>
 
       <!-- Vis 2 -->
-      <section class="overall-section">
+      <section id="overall-section" class="overall-section">
         <h2>Access to Services</h2>
         <p class="overall-subtext">
           The proximity index determines how much access to certain services you
@@ -63,7 +83,7 @@
       </section>
 
       <!-- Vis 3 -->
-      <section class="scatter-section">
+      <section id="scatter-section" class="scatter-section">
         <h2>Not everyone prefers to live in busy cities.</h2>
         <h3>Which city fits your lifestyle?</h3>
         <p>
@@ -80,10 +100,9 @@
         <div id="scatter-vis"></div>
         <div id="scatter-selection"></div>
       </section>
-    </div>
 
-    <!-- Section 1: Time-to-Life Index -->
-    <section class="section-time-index">
+      <!-- Section 1: Time-to-Life Index -->
+    <section id="section-time-index" class="section-time-index">
       <h1>Time-to-Life Index</h1>
       <p class="subtitle">
         British Columbia Regions — Weekly minutes spent accessing essential
@@ -110,7 +129,7 @@
     </section>
 
     <!-- Section 2: Lifestyle Archetypes -->
-    <section class="section-archetypes">
+    <section id="section-archetypes" class="section-archetypes">
       <h1>Lifestyle Archetypes</h1>
       <p class="subtitle">I care most about:</p>
 
@@ -125,13 +144,16 @@
         <div class="loading">Loading data...</div>
       </div>
     </section>
-    <section class="map">
+    <section id="map" class="map">
       <h1>
         Exploration Map
       </h1>
       <p>placeholder!</p>
       <img src="map.png" alt="Placeholder" style="width: 100%; height: auto;" />
     </section>
+
+      </main>
+    </div>
 
     <script src="index.js"></script>
   </body>
