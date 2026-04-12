@@ -336,7 +336,7 @@ function render(data) {
     d3.max(walkRows, (d) => d.estimatedMinutes) || 12,
   );
 
-  const xScale = d3.scaleLinear().domain([0, maxMinutes]).range([0, 620]);
+  const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
 
   const timeColor = d3
     .scaleLinear()
@@ -539,11 +539,9 @@ function drawWalkingRow(svg, config) {
     icon,
   });
 
-  const axisScale = d3
-    .scaleLinear()
-    .domain([0, maxMinutes])
-    .range([0, trackWidth]);
-  const tickValues = d3.range(0, maxMinutes + 0.001, 2);
+  const axisScale = d3.scaleLinear().domain([0, 20]).range([0, trackWidth]);
+
+  const tickValues = d3.range(0, 21, 2); // ticks from 0 to 20, every 2 min
 
   tickValues.forEach((tick) => {
     const xPos = barX + axisScale(tick);
