@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -22,136 +22,141 @@
       </nav>
 
       <main class="main-content">
+        <!-- Introduction -->
+        <section id="intro-section" class="intro-section">
+          <h1>How accessible are essential services throughout BC?</h1>
+          <h3>
+            Compare transit, housing, healthcare, education, and more across
+            British Columbia's regions and Metro Vancouver. Find the perfect
+            place that fits your accessibility needs.
+          </h3>
+        </section>
 
-      <!-- Introduction -->
-      <section id="intro-section" class="intro-section">
-        <h1>How accessible are essential services throughout BC?</h1>
-        <h3>Compare transit, housing, healthcare, education, and more across British Columbia's regions and Metro Vancouver. Find the perfect place that fits your accessibility needs.</h3>
-      </section>
-
-      <!-- Vis 1 -->
-      <section id="hero-vis" class="hero-vis">
-        <div class="hero-description">
-          <h2>Understanding Accessibility</h2>
-          <p>
-            Not all communities have the same level of access to everyday
-            services. The proximity index measures how close people are to
-            essential amenities, helping us compare accessibility across places.
-            We converted this into estimated walking times to make accessibility
-            easier to understand.
-          </p>
-          <p>
-            People in areas with a high proximity index can access more
-            services, more quickly, while those in areas with a lower index may
-            face longer travel times and fewer nearby options.
-          </p>
-          <p>
-            If you were a student, how important would it be to have a grocery
-            store within walking distance while balancing school, transit, and
-            everyday activities?
-          </p>
-        </div>
-        <div class="hero-actions">
-          <h3>Compare accessibility to the nearest</h3>
-
-          <div>
-            <select id="amenity-select" aria-label="Amenity"></select>
+        <!-- Vis 1 -->
+        <section id="hero-vis" class="hero-vis">
+          <div class="hero-description">
+            <h2>Understanding Accessibility</h2>
+            <p>
+              Not all communities have the same level of access to everyday
+              services. The proximity index measures how close people are to
+              essential amenities, helping us compare accessibility across
+              places. We converted this into estimated walking times to make
+              accessibility easier to understand.
+            </p>
+            <p>
+              People in areas with a high proximity index can access more
+              services, more quickly, while those in areas with a lower index
+              may face longer travel times and fewer nearby options.
+            </p>
+            <p>
+              If you were a student, how important would it be to have a grocery
+              store within walking distance while balancing school, transit, and
+              everyday activities?
+            </p>
           </div>
-        </div>
+          <div class="hero-actions">
+            <h3>Compare accessibility to the nearest</h3>
 
-        <div id="chart"></div>
-        <div id="message"></div>
-      </section>
-
-      <!-- Vis 2 -->
-      <section id="overall-section" class="overall-section">
-        <h2>Access to Services</h2>
-        <p class="overall-subtext">
-          The proximity index determines how much access to certain services you
-          get. Scroll to transition from the most accessible division overall to
-          the least accessible division overall in British Columbia.
-        </p>
-
-        <div id="overall-scrolly">
-          <div id="overall-sticky">
-            <div id="overall-vis"></div>
+            <div>
+              <select id="amenity-select" aria-label="Amenity"></select>
+            </div>
           </div>
 
-          <div class="overall-step" data-state="most"></div>
-          <div class="overall-step" data-state="least"></div>
-        </div>
-      </section>
+          <div id="chart"></div>
+          <div id="message"></div>
+        </section>
 
-      <!-- Vis 3 -->
-      <section id="scatter-section" class="scatter-section">
-        <h2>Not everyone prefers to live in busy cities.</h2>
-        <h3>Which city fits your lifestyle?</h3>
-        <p>
-          Even though Vancouver stands out for its diverse community and high
-          accessibility ranking across the amenities, some smaller communities
-          may provide just as much access.
-        </p>
+        <!-- Vis 2 -->
+        <section id="overall-section" class="overall-section">
+          <h2>Access to Services</h2>
+          <p class="overall-subtext">
+            The proximity index determines how much access to certain services
+            you get. Scroll to transition from the most accessible division
+            overall to the least accessible division overall in British
+            Columbia.
+          </p>
 
-        <h3>Click on cities you want to explore</h3>
-        <p class="subtext">
-          The top 10 accessibility outliers are labeled in the chart.
-        </p>
+          <div id="overall-scrolly">
+            <div id="overall-sticky">
+              <div id="overall-vis"></div>
+            </div>
 
-        <div id="scatter-vis"></div>
-        <div id="scatter-selection"></div>
-      </section>
+            <div class="overall-step" data-state="most"></div>
+            <div class="overall-step" data-state="least"></div>
+          </div>
+        </section>
 
-      <!-- Section 1: Time-to-Life Index -->
-    <section id="section-time-index" class="section-time-index">
-      <h1>Time-to-Life Index</h1>
-      <p class="subtitle">
-        British Columbia Regions — Weekly minutes spent accessing essential
-        services
-      </p>
+        <!-- Vis 3 -->
+        <section id="scatter-section" class="scatter-section">
+          <h2>Not everyone prefers to live in busy cities.</h2>
+          <h3>Which city fits your lifestyle?</h3>
+          <p>
+            Even though Vancouver stands out for its diverse community and high
+            accessibility ranking across the amenities, some smaller communities
+            may provide just as much access.
+          </p>
 
-      <svg id="chart"></svg>
+          <h3>Click on cities you want to explore</h3>
+          <p class="subtext">
+            The top 10 accessibility outliers are labeled in the chart.
+          </p>
 
-      <div class="legend" id="legend"></div>
+          <div id="scatter-vis"></div>
+          <div id="scatter-selection"></div>
+        </section>
 
-      <div class="methodology">
-        <h3>Index Score → Travel Time Mapping</h3>
-        <p>
-          <strong>0.8–1.0:</strong> 5 min/trip &nbsp;&nbsp;
-          <strong>0.5–0.8:</strong> 15 min/trip &nbsp;&nbsp;
-          <strong>0.2–0.5:</strong> 30 min/trip &nbsp;&nbsp;
-          <strong>0.0–0.2:</strong> 55 min/trip
-        </p>
-        <p class="source-note">
-          Data source: Statistics Canada Proximity Measures Database
-          (PMD-en.csv). Services shown: Grocery, Transit, Healthcare, Parks.
-        </p>
-      </div>
-    </section>
+        <!-- Section 1: Time-to-Life Index -->
+        <section id="section-time-index" class="section-time-index">
+          <h1>Time-to-Life Index</h1>
+          <p class="subtitle">
+            British Columbia Regions — Weekly minutes spent accessing essential
+            services
+          </p>
 
-    <!-- Section 2: Lifestyle Archetypes -->
-    <section id="section-archetypes" class="section-archetypes">
-      <h1>Lifestyle Archetypes</h1>
-      <p class="subtitle">I care most about:</p>
+          <svg id="chart"></svg>
 
-      <div class="filter-section">
-        <label class="filter-label">Show all archetypes</label>
-        <select id="archetypeFilter">
-          <option value="">All Archetypes</option>
-        </select>
-      </div>
+          <div class="legend" id="legend"></div>
 
-      <div class="archetypes-grid" id="archetypesGrid">
-        <div class="loading">Loading data...</div>
-      </div>
-    </section>
-    <section id="map" class="map">
-      <h1>
-        Exploration Map
-      </h1>
-      <p>placeholder!</p>
-      <img src="map.png" alt="Placeholder" style="width: 100%; height: auto;" />
-    </section>
+          <div class="methodology">
+            <h3>Index Score → Travel Time Mapping</h3>
+            <p>
+              <strong>0.8–1.0:</strong> 5 min/trip &nbsp;&nbsp;
+              <strong>0.5–0.8:</strong> 15 min/trip &nbsp;&nbsp;
+              <strong>0.2–0.5:</strong> 30 min/trip &nbsp;&nbsp;
+              <strong>0.0–0.2:</strong> 55 min/trip
+            </p>
+            <p class="source-note">
+              Data source: Statistics Canada Proximity Measures Database
+              (PMD-en.csv). Services shown: Grocery, Transit, Healthcare, Parks.
+            </p>
+          </div>
+        </section>
 
+        <!-- Section 2: Lifestyle Archetypes -->
+        <section id="section-archetypes" class="section-archetypes">
+          <h1>Lifestyle Archetypes</h1>
+          <p class="subtitle">I care most about:</p>
+
+          <div class="filter-section">
+            <label class="filter-label">Show all archetypes</label>
+            <select id="archetypeFilter">
+              <option value="">All Archetypes</option>
+            </select>
+          </div>
+
+          <div class="archetypes-grid" id="archetypesGrid">
+            <div class="loading">Loading data...</div>
+          </div>
+        </section>
+        <section id="map" class="map">
+          <h1>Exploration Map</h1>
+          <p>placeholder!</p>
+          <img
+            src="map.png"
+            alt="Placeholder"
+            style="width: 100%; height: auto"
+          />
+        </section>
       </main>
     </div>
 
