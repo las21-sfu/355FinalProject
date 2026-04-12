@@ -1,0 +1,18 @@
+# Ignore large data files
+public/PMD-en.csv
+
+# Ignore all CSVs
+ *.csv
+
+# Node modules
+node_modules/
+
+# Firebase cache
+.firebase/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

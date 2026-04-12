@@ -1,4 +1,4 @@
-const DATA_PATH = "./data/PMD-en.csv";
+const DATA_PATH = "./PMD-en.csv";
 
 const SERVICE_TYPE_INFO = [
   { label: "Employment", field: "in_db_emp", color: "#4363ee" },
@@ -167,7 +167,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in script.js."
+        "Could not load the dataset. Check the file path and column names in script.js.",
       );
     });
 });
@@ -212,7 +212,7 @@ function render(data) {
 
   if (!rows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`
+      `No valid rows found for ${selectedAmenity} in British Columbia.`,
     );
     return;
   }
@@ -262,7 +262,7 @@ function render(data) {
       .attr("font-size", 20)
       .attr("fill", "#555")
       .text(
-        "This amenity is based on a driving threshold, so walking-time bars are not shown."
+        "This amenity is based on a driving threshold, so walking-time bars are not shown.",
       );
 
     const sortedByIndex = rows
@@ -305,7 +305,7 @@ function render(data) {
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`
+      `No estimated walking times could be calculated for ${selectedAmenity}.`,
     );
     return;
   }
@@ -318,7 +318,7 @@ function render(data) {
   const longestWalk = sortedByMinutes[sortedByMinutes.length - 1];
   const maxMinutes = Math.max(
     12,
-    d3.max(sortedByMinutes, (d) => d.estimatedMinutes) || 12
+    d3.max(sortedByMinutes, (d) => d.estimatedMinutes) || 12,
   );
 
   const xScale = d3.scaleLinear().domain([0, maxMinutes]).range([0, 620]);
@@ -412,7 +412,7 @@ function drawLegend(svg, { x, y, width, maxMinutes }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", "#555")
       .text(`${val} min`);
@@ -424,7 +424,7 @@ function drawLegend(svg, { x, y, width, maxMinutes }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", "#555")
       .text(tickLabels[i]);
@@ -655,7 +655,7 @@ function computeOverallAccessibilityExtremes(data) {
         SERVICE_TYPE_INFO.forEach((service) => {
           serviceCounts[service.field] = countServicePresenceAcrossBlocks(
             rows,
-            service.field
+            service.field,
           );
         });
 
@@ -664,7 +664,7 @@ function computeOverallAccessibilityExtremes(data) {
         });
 
         const population = d3.sum(rows, (row) =>
-          Number.isFinite(row.population) ? row.population : 0
+          Number.isFinite(row.population) ? row.population : 0,
         );
 
         return {
@@ -676,7 +676,7 @@ function computeOverallAccessibilityExtremes(data) {
           ...serviceCounts,
         };
       },
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.totalServices));
@@ -692,10 +692,10 @@ function computeOverallAccessibilityExtremes(data) {
   // Use Kelowna for the second scrolly state
   const kelowna =
     grouped.find(
-      (d) => (d.division || "").trim().toLowerCase() === "kelowna"
+      (d) => (d.division || "").trim().toLowerCase() === "kelowna",
     ) ||
     grouped.find((d) =>
-      (d.division || "").trim().toLowerCase().includes("kelowna")
+      (d.division || "").trim().toLowerCase().includes("kelowna"),
     ) ||
     sorted[sorted.length - 1];
 
@@ -711,7 +711,7 @@ function initOverallAccessibilityScrolly(data) {
 
   if (!extremes) {
     d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>"
+      "<div class='error'>Could not compute overall accessibility.</div>",
     );
     return;
   }
@@ -741,7 +741,7 @@ function initOverallAccessibilityScrolly(data) {
     d3.max(SERVICE_TYPE_INFO, (service) => {
       const value = division[service.field];
       return Number.isFinite(value) ? value : 0;
-    })
+    }),
   );
 
   const xScale = d3
@@ -791,7 +791,7 @@ function initOverallAccessibilityScrolly(data) {
     .call(d3.axisLeft(yScale).tickSize(0))
     .call((g) => g.select(".domain").remove())
     .call((g) =>
-      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700)
+      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700),
     );
 
   chart
@@ -870,7 +870,7 @@ function initOverallAccessibilityScrolly(data) {
 
     const currentProvince = cleanProvinceName(current.province);
     overallTitle.text(
-      `Overall service access in ${current.division}, ${currentProvince}`
+      `Overall service access in ${current.division}, ${currentProvince}`,
     );
 
     rows.each(function (service) {
@@ -894,7 +894,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2
+        yScale.bandwidth() / 2,
       );
 
       row
@@ -924,8 +924,8 @@ function initOverallAccessibilityScrolly(data) {
 
     note.html(`
       <strong>${current.division}</strong>, ${cleanProvinceName(
-      current.province
-    )} is the
+        current.province,
+      )} is the
       <strong>${
         stateName === "least" ? "reference division" : "most accessible"
       }</strong>
@@ -953,7 +953,7 @@ function initOverallAccessibilityScrolly(data) {
     {
       threshold: 0.15,
       rootMargin: "0px 0px -25% 0px",
-    }
+    },
   );
 
   steps.forEach((step) => observer.observe(step));
@@ -974,7 +974,7 @@ function renderScatter(data) {
   const scatterData = d3
     .rollups(
       data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
+        (d) => Number.isFinite(d.population) && Number.isFinite(d[field]),
       ),
       (rows) => ({
         division: rows[0]?.division || "Unknown Division",
@@ -983,11 +983,11 @@ function renderScatter(data) {
         proximity: d3.mean(rows, (d) => d[field]),
         blockCount: rows.length,
       }),
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
     );
 
   if (!scatterData.length) return;
@@ -1082,7 +1082,7 @@ function renderScatter(data) {
     .attr("cy", (d) => y(d.proximity))
     .attr("r", 5)
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
     )
     .attr("opacity", 0.9)
     .attr("stroke", "transparent")
@@ -1108,7 +1108,7 @@ function renderScatter(data) {
       d3.select(this)
         .attr(
           "stroke",
-          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
+          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
         )
         .attr("stroke-width", selectedScatterDivisions.has(d.division) ? 2 : 0);
 
@@ -1143,13 +1143,13 @@ function renderScatter(data) {
 function updateScatterSelection(scatterData, points, color) {
   points
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
     )
     .attr("stroke", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
+      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
     )
     .attr("stroke-width", (d) =>
-      selectedScatterDivisions.has(d.division) ? 2 : 0
+      selectedScatterDivisions.has(d.division) ? 2 : 0,
     );
 
   const selectedData = scatterData
@@ -1275,7 +1275,7 @@ function renderArchetypes(filter = "") {
 
   const filtered = filter
     ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
       )
     : archetypesData;
 
@@ -1297,12 +1297,12 @@ function renderArchetypes(filter = "") {
           <div class="service-bar-bg">
             <div class="service-bar-fill" style="width: ${Math.min(
               value,
-              100
+              100,
             )}%; background: ${serviceColors[service]};"></div>
           </div>
           <div class="service-value">${Math.round(value)}</div>
         </div>
-      `
+      `,
       )
       .join("");
 
@@ -1313,7 +1313,7 @@ function renderArchetypes(filter = "") {
     card.innerHTML = `
         <div class="archetype-header">
           <div class="archetype-icon" style="background: rgba(${hexToRgb(
-            arch.color
+            arch.color,
           )}, 0.2); color: ${arch.color};">${arch.icon}</div>
           <div>
             <div class="archetype-title">${arch.name}</div>
@@ -1335,7 +1335,7 @@ function hexToRgb(hex) {
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
         result[3],
-        16
+        16,
       )}`
     : "255, 255, 255";
 }
@@ -1421,7 +1421,7 @@ function renderLegend() {
         <div class="legend-swatch" style="background: ${colors[svc]}"></div>
         <span>${svc}</span>
       </div>
-    `
+    `,
     )
     .join("");
 }
@@ -1438,7 +1438,7 @@ function drawChart() {
     "viewBox",
     `0 0 ${width + margin.left + margin.right} ${
       height + margin.top + margin.bottom
-    }`
+    }`,
   );
 
   const g = svg
