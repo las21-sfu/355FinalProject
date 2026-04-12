@@ -268,48 +268,9 @@ function render(data) {
     .attr("offset", "100%")
     .attr("stop-color", "#ff1028");
 
+  // If amenity is not based on walking proximity, don't display vis
   if (amenityInfo.mode !== "walking") {
-    svg
-      .append("text")
-      .attr("x", 54)
-      .attr("y", 56)
-      .attr("font-size", 20)
-      .attr("fill", "#555")
-      .text(
-        "This amenity is based on a driving threshold, so walking-time bars are not shown.",
-      );
-
-    const sortedByIndex = divisionRows
-      .slice()
-      .sort((a, b) => d3.ascending(a.indexValue, b.indexValue));
-
-    const leastAccessible = sortedByIndex[0];
-    const mostAccessible = sortedByIndex[sortedByIndex.length - 1];
-
-    const xScale = d3.scaleLinear().domain([0, 1]).range([0, 620]);
-
-    drawDrivingRow(svg, {
-      y: 150,
-      datum: mostAccessible,
-      value: mostAccessible.indexValue,
-      amenity: selectedAmenity,
-      xScale,
-      fill: "#0aa11a",
-      label: amenityInfo.label,
-      icon: amenityInfo.icon,
-    });
-
-    drawDrivingRow(svg, {
-      y: 430,
-      datum: leastAccessible,
-      value: leastAccessible.indexValue,
-      amenity: selectedAmenity,
-      xScale,
-      fill: "#ff1028",
-      label: amenityInfo.label,
-      icon: amenityInfo.icon,
-    });
-
+    showError("This visualization only supports walking-based services.");
     return;
   }
 
@@ -461,8 +422,7 @@ function drawBarWithTrack(
     .attr("ry", dynamicRadius)
     .attr("fill", fill);
 
-  const iconX = Math.min(barX + visibleBarWidth + 24, barX + trackWidth + 28);
-
+  const iconX = barX + trackWidth + 24;
   svg
     .append("text")
     .attr("x", iconX)
@@ -477,7 +437,7 @@ function drawWalkingRow(svg, config) {
 
   const leftX = 54;
   const barX = 940;
-  const barY = y + 2;
+  const barY = y + 36;
   const barHeight = 46;
   const trackWidth = 620;
   const rawBarWidth = xScale(datum.estimatedMinutes);
