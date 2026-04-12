@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Accessibility to Services in Canada</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -17,7 +20,7 @@
           <li><a href="#scatter-section">City comparison</a></li>
           <li><a href="#section-time-index">Time-to-Life Index</a></li>
           <li><a href="#section-archetypes">Lifestyle Archetypes</a></li>
-          <li><a href="#map">Exploration Map</a></li>
+          <li><a href="#map-explore">Exploration Map</a></li>
         </ul>
       </nav>
 
@@ -43,16 +46,6 @@
               places. We converted this into estimated walking times to make
               accessibility easier to understand.
             </p>
-            <p>
-              People in areas with a high proximity index can access more
-              services, more quickly, while those in areas with a lower index
-              may face longer travel times and fewer nearby options.
-            </p>
-            <p>
-              If you were a student, how important would it be to have a grocery
-              store within walking distance while balancing school, transit, and
-              everyday activities?
-            </p>
           </div>
           <div class="hero-actions">
             <h3>Compare accessibility to the nearest</h3>
@@ -68,13 +61,7 @@
 
         <!-- Vis 2 -->
         <section id="overall-section" class="overall-section">
-          <h2>Access to Services</h2>
-          <p class="overall-subtext">
-            The proximity index determines how much access to certain services
-            you get. Scroll to transition from the most accessible division
-            overall to the least accessible division overall in British
-            Columbia.
-          </p>
+          <h2>Different areas may prioritize easier access to different services.</h2>
 
           <div id="overall-scrolly">
             <div id="overall-sticky">
@@ -107,7 +94,8 @@
 
         <!-- Section 1: Time-to-Life Index -->
         <section id="section-time-index" class="section-time-index">
-          <h1>Time-to-Life Index</h1>
+          <h2>Consider the added time of accessing all your essential services - how much time would your choice of city take from you?</h2>
+          <p>First, we translate the average proximity to services in each city to the estimated walking minutes. If we assume that you’ll want to access transit, a grocery store, employment, and a park 5 times a week (walking there and back) we can estimate how many hours you’ll spend in transit if your chosen mode is your own two feet. </p>
           <p class="subtitle">
             British Columbia Regions — Weekly minutes spent accessing essential
             services
@@ -134,32 +122,77 @@
 
         <!-- Section 2: Lifestyle Archetypes -->
         <section id="section-archetypes" class="section-archetypes">
-          <h1>Lifestyle Archetypes</h1>
-          <p class="subtitle">I care most about:</p>
-
-          <div class="filter-section">
-            <label class="filter-label">Show all archetypes</label>
-            <select id="archetypeFilter">
-              <option value="">All Archetypes</option>
-            </select>
-          </div>
+          <h2>You can also choose a suitable location based on the four proximity archetypes; what matters to you most?</h2>
 
           <div class="archetypes-grid" id="archetypesGrid">
             <div class="loading">Loading data...</div>
           </div>
         </section>
-        <section id="map" class="map">
-          <h1>Exploration Map</h1>
-          <p>placeholder!</p>
-          <img
-            src="map.png"
-            alt="Placeholder"
-            style="width: 100%; height: auto"
-          />
-        </section>
       </main>
     </div>
+
+    <section id="map-explore" class="map-explore-section">
+      <h2>Explore the Metro Vancouver Interactive Proximity Map</h2>
+      <div class="app">
+        <aside class="left-panel">
+          <div class="panel-header">
+            <h1>Neighbourhood Access</h1>
+            <p>Metro Vancouver · Dissemination Blocks</p>
+          </div>
+          <div class="panel-body">
+
+            <div>
+                <div class="section-label">Census Subdivision</div>
+                <select class="csd-select" id="csd-select">
+                <option value="">All Metro Vancouver</option>
+                </select>
+            </div>
+
+            <div>
+                <div class="section-label">Services</div>
+                <div class="service-list" id="service-list">
+                </div>
+
+                <div class="add-svc-wrap" style="margin-top: 0.6rem; position: relative;" id="add-svc-wrap">
+                <button class="add-svc-btn" onclick="togglePicker()">
+                    <span>+</span> Add a service
+                </button>
+                <div class="svc-picker" id="svc-picker">
+                </div>
+                </div>  
+            </div>
+
+            <div>
+                <div class="color-legend">
+                <span>Bare minimum</span>
+                <div class="legend-grad"></div>
+                <span>Best access</span>
+                </div>
+                <p style="font-size:0.68rem; color:var(--text-muted); margin-top:0.5rem; font-style:italic;">
+                Walking time is approximate. 
+                </p>
+            </div>
+
+          </div>
+        </aside>
+
+        <div class="map-panel">
+            <div id="map"></div>
+            <div class="map-loading" id="map-loading">
+            <div class="spinner"></div>
+              <p>Loading dataset…</p>
+            </div>
+            <div class="block-count" id="block-count" style="display:none">
+              Showing <strong id="visible-count">0</strong> blocks
+            </div>
+            <div class="map-hint">Hover a block for details</div>
+        </div>
+
+
+      </div>
+    </section>
 
     <script src="index.js"></script>
   </body>
 </html>
+

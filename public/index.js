@@ -431,206 +431,64 @@ function drawLegend(svg, { x, y, width, maxMinutes }) {
   });
 }
 
-function drawWalkingRow(svg, config) {
-  const { y, datum, xScale, colorScale, maxMinutes, icon, thresholdLabel } =
-    config;
+function drawBarWithTrack(svg, { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }) {
+  svg.append("rect")
+    .attr("x", barX).attr("y", barY)
+    .attr("width", trackWidth).attr("height", barHeight)
+    .attr("rx", 23).attr("ry", 23).attr("fill", "#e6e6e6");
 
-  const leftX = 54;
-  const barX = 940;
-  const barY = y + 2;
-  const barHeight = 46;
-  const trackWidth = 620;
-  const rawBarWidth = xScale(datum.estimatedMinutes);
-  const visibleBarWidth = Math.max(barHeight, rawBarWidth);
-  const barColor = colorScale(datum.estimatedMinutes);
-
-  const division = datum.division || "Unknown Division";
-  const province = cleanProvinceName(datum.province) || "Unknown Province";
-  const minutesText = Number.isFinite(datum.estimatedMinutes)
-    ? `~${datum.estimatedMinutes} min walk`
-    : "N/A";
-  const proximityText = Number.isFinite(datum.indexValue)
-    ? d3.format(".3f")(datum.indexValue)
-    : "N/A";
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 8)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`If you lived in ${division}, ${province}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 66)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`Estimated walking time: ${minutesText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 150)
-    .attr("font-size", 22)
-    .attr("fill", "#555")
-    .text(`Proximity index: ${proximityText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 186)
-    .attr("font-size", 17)
-    .attr("fill", "#555")
-    .text(`Approximation based on the ${thresholdLabel}.`);
-
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", trackWidth)
-    .attr("height", barHeight)
-    .attr("rx", 23)
-    .attr("ry", 23)
-    .attr("fill", "#e6e6e6");
-
-  const dynamicRadius = Math.min(23, visibleBarWidth / 2, barHeight / 2);
-
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", visibleBarWidth)
-    .attr("height", barHeight)
-    .attr("rx", dynamicRadius)
-    .attr("ry", dynamicRadius)
-    .attr("fill", barColor);
-
-  const axisScale = d3
-    .scaleLinear()
-    .domain([0, maxMinutes])
-    .range([0, trackWidth]);
-  const tickValues = d3.range(0, maxMinutes + 0.001, 2);
-
-  tickValues.forEach((tick) => {
-    const xPos = barX + axisScale(tick);
-
-    svg
-      .append("line")
-      .attr("x1", xPos)
-      .attr("x2", xPos)
-      .attr("y1", barY + barHeight + 10)
-      .attr("y2", barY + barHeight + 24)
-      .attr("stroke", "#555")
-      .attr("stroke-width", 1.5);
-
-    svg
-      .append("text")
-      .attr("x", xPos)
-      .attr("y", barY + barHeight + 48)
-      .attr("font-size", 14)
-      .attr("font-weight", 500)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#555")
-      .text(`${tick} min`);
-  });
+  const r = Math.min(23, visibleBarWidth / 2, barHeight / 2);
+  svg.append("rect")
+    .attr("x", barX).attr("y", barY)
+    .attr("width", visibleBarWidth).attr("height", barHeight)
+    .attr("rx", r).attr("ry", r).attr("fill", fill);
 
   const iconX = Math.min(barX + visibleBarWidth + 24, barX + trackWidth + 28);
+  svg.append("text").attr("x", iconX).attr("y", barY + 36).attr("font-size", 36).text(icon);
+}
 
-  svg
-    .append("text")
-    .attr("x", iconX)
-    .attr("y", barY + 36)
-    .attr("font-size", 36)
-    .text(icon);
+function drawWalkingRow(svg, config) {
+  const { y, datum, xScale, colorScale, maxMinutes, icon, thresholdLabel } = config;
+  const leftX = 54, barX = 940, barY = y + 2, barHeight = 46, trackWidth = 620;
+  const visibleBarWidth = Math.max(barHeight, xScale(datum.estimatedMinutes));
+  const barColor = colorScale(datum.estimatedMinutes);
+  const division = datum.division || "Unknown Division";
+  const province = cleanProvinceName(datum.province);
+  const minutesText = Number.isFinite(datum.estimatedMinutes) ? `~${datum.estimatedMinutes} min walk` : "N/A";
+  const proximityText = Number.isFinite(datum.indexValue) ? d3.format(".3f")(datum.indexValue) : "N/A";
+
+  svg.append("text").attr("x", leftX).attr("y", y + 8).attr("font-size", 34).attr("font-weight", 900).attr("letter-spacing", "-0.02em").text(`If you lived in ${division}, ${province}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 66).attr("font-size", 34).attr("font-weight", 900).attr("letter-spacing", "-0.02em").text(`Estimated walking time: ${minutesText}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 150).attr("font-size", 22).attr("fill", "#555").text(`Proximity index: ${proximityText}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 186).attr("font-size", 17).attr("fill", "#555").text(`Approximation based on the ${thresholdLabel}.`);
+
+  drawBarWithTrack(svg, { barX, barY, barHeight, trackWidth, visibleBarWidth, fill: barColor, icon });
+
+  const axisScale = d3.scaleLinear().domain([0, maxMinutes]).range([0, trackWidth]);
+  d3.range(0, maxMinutes + 0.001, 2).forEach((tick) => {
+    const xPos = barX + axisScale(tick);
+    svg.append("line").attr("x1", xPos).attr("x2", xPos).attr("y1", barY + barHeight + 10).attr("y2", barY + barHeight + 24).attr("stroke", "#555").attr("stroke-width", 1.5);
+    svg.append("text").attr("x", xPos).attr("y", barY + barHeight + 48).attr("font-size", 14).attr("font-weight", 500).attr("text-anchor", "middle").attr("fill", "#555").text(`${tick} min`);
+  });
 }
 
 function drawDrivingRow(svg, config) {
   const { y, datum, value, xScale, fill, label, icon } = config;
-
-  const leftX = 54;
-  const barX = 940;
-  const barY = y + 6;
-  const barHeight = 46;
-  const trackWidth = 620;
-  const rawBarWidth = xScale(value);
-  const visibleBarWidth = Math.max(barHeight, rawBarWidth);
-
+  const leftX = 54, barX = 940, barY = y + 6, barHeight = 46, trackWidth = 620;
+  const visibleBarWidth = Math.max(barHeight, xScale(value));
   const division = datum.division || "Unknown Division";
-  const province = cleanProvinceName(datum.province) || "Unknown Province";
-  const proximityText = Number.isFinite(value)
-    ? d3.format(".3f")(value)
-    : "N/A";
+  const province = cleanProvinceName(datum.province);
+  const proximityText = Number.isFinite(value) ? d3.format(".3f")(value) : "N/A";
 
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 8)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`If you lived in ${division}, ${province}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 8).attr("font-size", 34).attr("font-weight", 900).attr("letter-spacing", "-0.02em").text(`If you lived in ${division}, ${province}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 66).attr("font-size", 34).attr("font-weight", 900).attr("letter-spacing", "-0.02em").text(`Proximity index: ${proximityText}`);
+  svg.append("text").attr("x", leftX).attr("y", y + 150).attr("font-size", 17).attr("fill", "#555").text(`Measured using ${label}. Walking-time estimate not shown.`);
 
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 66)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`Proximity index: ${proximityText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 150)
-    .attr("font-size", 17)
-    .attr("fill", "#555")
-    .text(`Measured using ${label}. Walking-time estimate not shown.`);
-
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", trackWidth)
-    .attr("height", barHeight)
-    .attr("rx", 23)
-    .attr("ry", 23)
-    .attr("fill", "#e6e6e6");
-
-  const dynamicRadius = Math.min(23, visibleBarWidth / 2, barHeight / 2);
-
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", visibleBarWidth)
-    .attr("height", barHeight)
-    .attr("rx", dynamicRadius)
-    .attr("ry", dynamicRadius)
-    .attr("fill", fill);
-
-  const iconX = Math.min(barX + visibleBarWidth + 24, barX + trackWidth + 28);
-
-  svg
-    .append("text")
-    .attr("x", iconX)
-    .attr("y", barY + 36)
-    .attr("font-size", 36)
-    .text(icon);
+  drawBarWithTrack(svg, { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon });
 }
 
 function showError(message) {
   d3.select("#message").append("div").attr("class", "error").text(message);
-}
-
-// vis 2 ALTERNATIVE (THE BAR CHART ONE)
-function cleanProvinceName(name) {
-  if (!name) return "Unknown Province";
-  return String(name).split("/")[0].trim();
 }
 
 function formatPopulation(value) {
@@ -709,12 +567,7 @@ function computeOverallAccessibilityExtremes(data) {
 function initOverallAccessibilityScrolly(data) {
   const extremes = computeOverallAccessibilityExtremes(data);
 
-  if (!extremes) {
-    d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>",
-    );
-    return;
-  }
+  if (!extremes) return;
 
   const container = d3.select("#overall-vis");
   container.html("");
@@ -1166,15 +1019,6 @@ function updateScatterSelection(scatterData, points, color) {
     .style("font-size", "1.05rem")
     .text("Selected divisions");
 
-  if (!selectedData.length) {
-    container
-      .append("p")
-      .style("margin", 0)
-      .style("color", "#555")
-      .text("Click a dot to add its data here.");
-    return;
-  }
-
   const items = container
     .append("div")
     .style("display", "flex")
@@ -1252,82 +1096,97 @@ async function loadData() {
     const response = await fetch("archetypes_data_real.json");
     archetypesData = await response.json();
 
-    // Populate filter dropdown
-    const filterSelect = document.getElementById("archetypeFilter");
-    archetypesData.forEach((arch) => {
-      const option = document.createElement("option");
-      option.value = arch.name.toLowerCase().replace(/\s+/g, "_");
-      option.textContent = arch.name;
-      filterSelect.appendChild(option);
-    });
-
     renderArchetypes();
   } catch (error) {
     console.error("Error loading data:", error);
-    document.getElementById("archetypesGrid").innerHTML =
-      '<div class="loading">Error loading data</div>';
   }
 }
 
 function renderArchetypes(filter = "") {
   const grid = document.getElementById("archetypesGrid");
-  grid.innerHTML = "";
+  grid.replaceChildren();
 
   const filtered = filter
-    ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
-      )
+    ? archetypesData.filter((a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter)
     : archetypesData;
 
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="loading">No archetypes found</div>';
-    return;
-  }
-
-  filtered.forEach((arch) => {
+  for (const arch of filtered) {
     const card = document.createElement("div");
     card.className = "archetype-card";
     card.style.borderLeftColor = arch.color;
 
-    const barsHtml = Object.entries(arch.avg_scores)
-      .map(
-        ([service, value]) => `
-        <div class="service-bar">
-          <div class="service-label">${service}</div>
-          <div class="service-bar-bg">
-            <div class="service-bar-fill" style="width: ${Math.min(
-              value,
-              100,
-            )}%; background: ${serviceColors[service]};"></div>
-          </div>
-          <div class="service-value">${Math.round(value)}</div>
-        </div>
-      `,
-      )
-      .join("");
+    const archHeader = document.createElement("div");
+    archHeader.className = "archetype-header";
 
-    const citiesHtml = arch.example_cities
-      .map((city) => `<div class="city-tag">${city}</div>`)
-      .join("");
+    const iconDiv = document.createElement("div");
+    iconDiv.className = "archetype-icon";
+    iconDiv.style.background = `rgba(${hexToRgb(arch.color)}, 0.2)`;
+    iconDiv.style.color = arch.color;
+    iconDiv.textContent = arch.icon;
+    archHeader.appendChild(iconDiv);
 
-    card.innerHTML = `
-        <div class="archetype-header">
-          <div class="archetype-icon" style="background: rgba(${hexToRgb(
-            arch.color,
-          )}, 0.2); color: ${arch.color};">${arch.icon}</div>
-          <div>
-            <div class="archetype-title">${arch.name}</div>
-            <div class="archetype-desc">${arch.desc}</div>
-          </div>
-        </div>
-        ${barsHtml}
-        <div class="example-cities">
-          <strong>Example regions:</strong>
-          <div class="city-list">${citiesHtml}</div>
-        </div>
-      `;
+    const titleWrap = document.createElement("div");
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "archetype-title";
+    titleDiv.textContent = arch.name;
+    titleWrap.appendChild(titleDiv);
+
+    const descDiv = document.createElement("div");
+    descDiv.className = "archetype-desc";
+    descDiv.textContent = arch.desc;
+    titleWrap.appendChild(descDiv);
+
+    archHeader.appendChild(titleWrap);
+    card.appendChild(archHeader);
+
+    for (const [service, value] of Object.entries(arch.avg_scores)) {
+      const barDiv = document.createElement("div");
+      barDiv.className = "service-bar";
+
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "service-label";
+      labelDiv.textContent = service;
+      barDiv.appendChild(labelDiv);
+
+      const barBg = document.createElement("div");
+      barBg.className = "service-bar-bg";
+
+      const barFill = document.createElement("div");
+      barFill.className = "service-bar-fill";
+      barFill.style.width = `${Math.min(value, 100)}%`;
+      barFill.style.background = serviceColors[service];
+      barBg.appendChild(barFill);
+      barDiv.appendChild(barBg);
+
+      const valueDiv = document.createElement("div");
+      valueDiv.className = "service-value";
+      valueDiv.textContent = Math.round(value);
+      barDiv.appendChild(valueDiv);
+
+      card.appendChild(barDiv);
+    }
+
+    const citiesSection = document.createElement("div");
+    citiesSection.className = "example-cities";
+
+    const citiesLabel = document.createElement("strong");
+    citiesLabel.textContent = "Example regions:";
+    citiesSection.appendChild(citiesLabel);
+
+    const cityList = document.createElement("div");
+    cityList.className = "city-list";
+
+    for (const city of arch.example_cities) {
+      const tag = document.createElement("div");
+      tag.className = "city-tag";
+      tag.textContent = city;
+      cityList.appendChild(tag);
+    }
+    citiesSection.appendChild(cityList);
+    card.appendChild(citiesSection);
+
     grid.appendChild(card);
-  });
+  }
 }
 
 function hexToRgb(hex) {
@@ -1339,11 +1198,6 @@ function hexToRgb(hex) {
       )}`
     : "255, 255, 255";
 }
-
-// Initialize archetypes
-document.getElementById("archetypeFilter").addEventListener("change", (e) => {
-  renderArchetypes(e.target.value);
-});
 
 loadData();
 
@@ -1414,16 +1268,23 @@ const services = ["grocery", "transit", "healthcare", "parks"];
 // Render legend
 function renderLegend() {
   const legend = document.getElementById("legend");
-  legend.innerHTML = services
-    .map(
-      (svc) => `
-      <div class="legend-item">
-        <div class="legend-swatch" style="background: ${colors[svc]}"></div>
-        <span>${svc}</span>
-      </div>
-    `,
-    )
-    .join("");
+  legend.replaceChildren();
+
+  for (const svc of services) {
+    const item = document.createElement("div");
+    item.className = "legend-item";
+
+    const swatch = document.createElement("div");
+    swatch.className = "legend-swatch";
+    swatch.style.background = colors[svc];
+    item.appendChild(swatch);
+
+    const label = document.createElement("span");
+    label.textContent = svc;
+    item.appendChild(label);
+
+    legend.appendChild(item);
+  }
 }
 
 // Draw chart
@@ -1544,4 +1405,337 @@ function drawChart() {
 document.addEventListener("DOMContentLoaded", () => {
   renderLegend();
   drawChart();
+});
+
+
+//- MAP VISUALIZATION
+
+const METRO_CMA = 'Vancouver';
+
+const ALL_SERVICES = [
+  { key: 'grocery',   label: 'Grocery Store',     field: 'prox_idx_grocery'   },
+  { key: 'transit',   label: 'Transit',           field: 'prox_idx_transit'   },
+  { key: 'emp',       label: 'Employment',        field: 'prox_idx_emp'       },
+  { key: 'health',    label: 'Health Facility',   field: 'prox_idx_health'    },
+  { key: 'pharma',    label: 'Pharmacy',          field: 'prox_idx_pharma'    },
+  { key: 'educpri',   label: 'Primary School',    field: 'prox_idx_educpri'   },
+  { key: 'educsec',   label: 'Secondary School',  field: 'prox_idx_educsec'   },
+  { key: 'childcare', label: 'Childcare',         field: 'prox_idx_childcare' },
+  { key: 'lib',       label: 'Library',           field: 'prox_idx_lib'       },
+  { key: 'parks',     label: 'Parks',             field: 'prox_idx_parks'     },
+];
+
+
+function proxToMinutes(p) {
+  if (!p || p <= 0) return 60;
+  return Math.min(60, Math.max(1, Math.round(-7 * Math.log(p))));
+}
+function minutesToProx(m) {
+  return Math.exp(-m / 7);
+}
+
+let allData      = [];  
+let csds         = [];  
+let activeFilters = [];  
+let selectedCSD  = '';  
+let pickerOpen   = false;
+
+// Leaflet stuff
+let map, canvasRenderer, markersLayer = null;
+
+function initMap() {
+  map = L.map('map', { zoomControl: true, preferCanvas: true }).setView([49.25, -122.9], 10);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  canvasRenderer = L.canvas({ padding: 0.5 });
+  markersLayer   = L.layerGroup().addTo(map);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initMap();
+
+  fetch(DATA_PATH)
+    .then(r => {
+      if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+      return r.text();
+    })
+    .then(text => {
+      const { data } = Papa.parse(text, { header: true, skipEmptyLines: true });
+      processData(data);
+    })
+    .catch(err => {
+      console.error('Failed to load CSV:', err);
+    });
+});
+
+function processData(raw) {
+  const fields = ALL_SERVICES.map(s => s.field);
+
+  allData = raw
+    .filter(d => d.CMANAME && d.CMANAME.trim() === METRO_CMA)
+    .map(d => {
+      const prox = {};
+      for (const f of fields) {
+        const v = d[f];
+        prox[f] = (v === '..' || v === '' || v == null) ? null : parseFloat(v);
+      }
+      return {
+        DBUID:   d.DBUID,
+        CSDUID:  d.CSDUID || d.CSUID || '',
+        CSDNAME: (d.CSDNAME || 'Unknown').trim(),
+        DBPOP:   parseFloat(d.DBPOP) || 0,
+        lat:     parseFloat(d.lat),
+        lon:     parseFloat(d.lon),
+        prox
+      };
+    })
+    .filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+
+  const csdMap = {};
+  for (const d of allData) {
+    if (!csdMap[d.CSDUID]) csdMap[d.CSDUID] = d.CSDNAME;
+  }
+  csds = Object.entries(csdMap)
+    .map(([uid, name]) => ({ uid, name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const sel = document.getElementById('csd-select');
+  for (const c of csds) {
+    const opt = document.createElement('option');
+    opt.value = c.uid;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', () => { selectedCSD = sel.value; updateMap(); });
+
+  document.getElementById('map-loading').style.display = 'none';
+  document.getElementById('block-count').style.display = 'block';
+  buildPickerList();
+  updateMap();
+}
+
+function updateMap() {
+  markersLayer.clearLayers();
+
+  let subset = selectedCSD
+    ? allData.filter(d => d.CSDUID === selectedCSD)
+    : allData;
+
+  const visible = subset.filter(d => {
+    for (const f of activeFilters) {
+      const v = d.prox[f.field];
+      if (v === null || v < minutesToProx(f.minutes)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('visible-count').textContent = visible.length.toLocaleString();
+
+  if (visible.length === 0) {
+    return;
+  }
+
+  const withAvg = visible.map(d => {
+    let avg;
+    if (activeFilters.length === 0) {
+      avg = 0;
+    } else {
+      const sum = activeFilters.reduce((s, f) => s + (d.prox[f.field] ?? 0), 0);
+      avg = sum / activeFilters.length;
+    }
+    return { ...d, avg };
+  });
+
+  const avgs   = withAvg.map(d => d.avg);
+  const minAvg = Math.min(...avgs);
+  const maxAvg = Math.max(...avgs);
+  const range  = maxAvg - minAvg || 1;
+
+  for (const d of withAvg) {
+    const ratio = (d.avg - minAvg) / range; 
+    const color = proximityColor(ratio);
+
+    L.circleMarker([d.lat, d.lon], {
+      renderer:    canvasRenderer,
+      radius:      5,
+      fillColor:   color,
+      fillOpacity: 0.85,
+      color:       'rgba(0,0,0,0.15)',
+      weight:      0.5
+    })
+    .bindTooltip(buildTooltip(d), {
+      sticky:    true,
+      opacity:   1,
+      className: 'leaflet-tooltip',
+      offset:    [12, 0]
+    })
+    .addTo(markersLayer);
+  }
+
+}
+
+function proximityColor(ratio) {
+  const hue = Math.round(48 + ratio * 94); // 48° = yellow, 142° = green
+  return `hsl(${hue}, 85%, 52%)`;
+}
+
+function buildTooltip(d) {
+  const container = document.createElement('div');
+  container.className = 'block-tooltip';
+
+  const idDiv = document.createElement('div');
+  idDiv.className = 'tt-id';
+  idDiv.textContent = `Block ${d.DBUID}`;
+  container.appendChild(idDiv);
+
+  const csdDiv = document.createElement('div');
+  csdDiv.className = 'tt-csd';
+  csdDiv.textContent = d.CSDNAME;
+  container.appendChild(csdDiv);
+
+  for (const f of activeFilters) {
+    const v = d.prox[f.field];
+    const mins = v !== null ? proxToMinutes(v) : '—';
+    const color = v !== null ? proximityColor((v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))) : '#ccc';
+
+    const row = document.createElement('div');
+    row.className = 'tt-svc';
+
+    const dot = document.createElement('div');
+    dot.className = 'tt-dot';
+    dot.style.background = color;
+    row.appendChild(dot);
+
+    const lbl = document.createElement('span');
+    lbl.className = 'tt-svc-label';
+    lbl.textContent = f.label;
+    row.appendChild(lbl);
+
+    const val = document.createElement('span');
+    val.className = 'tt-svc-val';
+    val.textContent = mins !== '—' ? `${mins} min` : '—';
+    row.appendChild(val);
+
+    container.appendChild(row);
+  }
+
+  return container;
+}
+
+function addService(key) {
+  const svc = ALL_SERVICES.find(s => s.key === key);
+  if (!svc || activeFilters.find(f => f.key === key)) return;
+  activeFilters.push({ ...svc, minutes: 15 });
+  pickerOpen = false;
+  renderFilters();
+  updateMap();
+}
+
+function removeService(key) {
+  activeFilters = activeFilters.filter(f => f.key !== key);
+  renderFilters();
+  updateMap();
+}
+
+function updateMinutes(key, minutes) {
+  const f = activeFilters.find(f => f.key === key);
+  if (f) f.minutes = parseInt(minutes);
+  updateMap();
+}
+
+function renderFilters() {
+  const list = document.getElementById('service-list');
+  list.replaceChildren();
+
+  for (const f of activeFilters) {
+    const card = document.createElement('div');
+    card.className = 'service-card';
+
+    const header = document.createElement('div');
+    header.className = 'service-card-header';
+
+    const name = document.createElement('span');
+    name.className = 'svc-name';
+    name.textContent = f.label;
+    header.appendChild(name);
+
+    const controls = document.createElement('div');
+    controls.style.cssText = 'display:flex;align-items:center;gap:0.3rem';
+
+    const timeLabel = document.createElement('span');
+    timeLabel.className = 'svc-time';
+    timeLabel.id = `time-label-${f.key}`;
+    timeLabel.textContent = `${f.minutes} min walk`;
+    controls.appendChild(timeLabel);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.title = 'Remove';
+    removeBtn.textContent = '×';
+    removeBtn.onclick = () => removeService(f.key);
+    controls.appendChild(removeBtn);
+
+    header.appendChild(controls);
+    card.appendChild(header);
+
+    const sliderRow = document.createElement('div');
+    sliderRow.className = 'slider-row';
+
+    const minLabel = document.createElement('span');
+    minLabel.textContent = '5 min';
+    sliderRow.appendChild(minLabel);
+
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = '5';
+    input.max = '30';
+    input.step = '1';
+    input.value = f.minutes;
+    input.oninput = function () {
+      timeLabel.textContent = `${this.value} min walk`;
+      updateMinutes(f.key, this.value);
+    };
+    sliderRow.appendChild(input);
+
+    const maxLabel = document.createElement('span');
+    maxLabel.textContent = '30 min';
+    sliderRow.appendChild(maxLabel);
+
+    card.appendChild(sliderRow);
+    list.appendChild(card);
+  }
+
+  buildPickerList();
+}
+
+function buildPickerList() {
+  const picker = document.getElementById('svc-picker');
+  picker.replaceChildren();
+
+  const activeKeys = activeFilters.map(f => f.key);
+  const available = ALL_SERVICES.filter(s => !activeKeys.includes(s.key));
+
+  for (const s of available) {
+    const item = document.createElement('div');
+    item.className = 'svc-picker-item';
+    item.textContent = s.label;
+    item.onclick = () => addService(s.key);
+    picker.appendChild(item);
+  }
+}
+
+function togglePicker() {
+  pickerOpen = !pickerOpen;
+  document.getElementById('svc-picker').classList.toggle('open', pickerOpen);
+}
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('add-svc-wrap').contains(e.target)) {
+    pickerOpen = false;
+    document.getElementById('svc-picker').classList.remove('open');
+  }
 });

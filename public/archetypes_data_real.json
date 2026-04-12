@@ -39,19 +39,6 @@
     "example_cities": ["Capilano 5", "New Westminster", "Burnaby"]
   },
   {
-    "name": "Remote & independent",
-    "icon": "R",
-    "desc": "Self-sufficient, minimal services.",
-    "color": "#7c8491",
-    "avg_scores": {
-      "grocery": 0.5,
-      "transit": 0.0,
-      "health": 0.1,
-      "parks": 0.9
-    },
-    "example_cities": ["Courtenay", "Lytton", "Elkford"]
-  },
-  {
     "name": "Island lifestyle",
     "icon": "I",
     "desc": "Scenic, moderate services.",
