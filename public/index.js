@@ -154,6 +154,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       initDropdown();
       render(bcData);
+      initUnderstandingAccessibility(bcData);
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
       d3.select("#amenity-select").on("change", () => {
@@ -178,11 +179,149 @@ function initDropdown() {
     .text((d) => d);
 }
 
+const UA_AMENITIES = [
+  { label: "Grocery",          field: "grocery" },
+  { label: "Transit",          field: "transit" },
+  { label: "Employment",       field: "employment" },
+  { label: "Health",           field: "health" },
+  { label: "Pharmacy",         field: "pharmacy" },
+  { label: "Primary School",   field: "primary_school" },
+  { label: "Secondary School", field: "secondary_school" },
+  { label: "Childcare",        field: "childcare" },
+  { label: "Library",          field: "library" },
+  { label: "Park",             field: "park" },
+];
+
+function initUnderstandingAccessibility(data) {
+  const select = d3.select("#ua-amenity-select");
+  select
+    .selectAll("option")
+    .data(UA_AMENITIES)
+    .join("option")
+    .attr("value", (d) => d.field)
+    .property("selected", (d) => d.field === "grocery")
+    .text((d) => d.label);
+
+  const vancouverData = data.filter((d) => d.division === "Vancouver");
+  const rockiesData = data.filter((d) => d.division === "Mission");
+
+  function update() {
+    const field = select.property("value");
+    const vanValues = vancouverData.map((d) => d[field]).filter(Number.isFinite);
+    const vanAvg = d3.mean(vanValues);
+    const vanMinutes = Number.isFinite(vanAvg) ? proxToMinutes(vanAvg) : null;
+
+    const rockValues = rockiesData.map((d) => d[field]).filter(Number.isFinite);
+    const rockAvg = d3.mean(rockValues);
+    const rockMinutes = Number.isFinite(rockAvg) ? proxToMinutes(rockAvg) : null;
+
+    document.getElementById("ua-van-avg").textContent =
+      Number.isFinite(vanAvg) ? vanAvg.toFixed(2) : "N/A";
+    document.getElementById("ua-van-min").textContent =
+      vanMinutes !== null ? vanMinutes + " minute walk" : "N/A";
+
+    document.getElementById("ua-rock-avg").textContent =
+      Number.isFinite(rockAvg) ? rockAvg.toFixed(2) : "N/A";
+    document.getElementById("ua-rock-min").textContent =
+      rockMinutes !== null ? rockMinutes + " minute walk" : "N/A";
+
+    drawProximityBar("#ua-vancouver-chart", vanMinutes);
+    drawProximityBar("#ua-rockies-chart", rockMinutes);
+  }
+
+  function resizeSelect() {
+    const el = document.getElementById("ua-amenity-select");
+    const sizer = document.getElementById("ua-select-sizer");
+    if (!el || !sizer) return;
+    sizer.textContent = el.options[el.selectedIndex]?.text ?? "";
+    el.style.width = sizer.offsetWidth + "px";
+  }
+
+  initProximityBar("#ua-vancouver-chart");
+  initProximityBar("#ua-rockies-chart");
+
+  select.on("change", () => { resizeSelect(); update(); });
+  update();
+  // Defer resize until fonts are rendered
+  requestAnimationFrame(resizeSelect);
+}
+
+function barColor(clamped) {
+  if (clamped > 35) return "#ef4444";
+  if (clamped > 20) return "#f59e0b";
+  if (clamped > 10) return "#84cc16";
+  return "#22c55e";
+}
+
+function initProximityBar(selector) {
+  const container = d3.select(selector);
+  const W = 600;
+  const barH = 34;
+  const mt = 8;
+  const mb = 28;
+  const ml = 4;
+  const mr = 4;
+
+  const svg = container
+    .append("svg")
+    .attr("viewBox", `0 0 ${W + ml + mr} ${barH + mt + mb}`)
+    .style("width", "100%")
+    .style("height", "auto");
+
+  const g = svg.append("g").attr("transform", `translate(${ml}, ${mt})`);
+
+  // Track
+  g.append("rect")
+    .attr("class", "ua-track")
+    .attr("width", W)
+    .attr("height", barH)
+    .attr("rx", 6)
+    .attr("fill", "#e6e6e2");
+
+  // Fill — starts at 0 so it animates in on first update
+  g.append("rect")
+    .attr("class", "ua-fill")
+    .attr("width", 0)
+    .attr("height", barH)
+    .attr("rx", 6)
+    .attr("fill", "#22c55e");
+
+  // Ticks and labels
+  const xScale = d3.scaleLinear().domain([0, 60]).range([0, W]);
+  [0, 15, 30, 45, 60].forEach((t) => {
+    const x = xScale(t);
+    g.append("line")
+      .attr("x1", x).attr("x2", x)
+      .attr("y1", barH).attr("y2", barH + 5)
+      .attr("stroke", "#6b7080")
+      .attr("stroke-width", 1.5);
+    g.append("text")
+      .attr("x", x)
+      .attr("y", barH + 18)
+      .attr("text-anchor", t === 0 ? "start" : t === 60 ? "end" : "middle")
+      .attr("font-size", 12)
+      .attr("fill", "#6b7080")
+      .text(t === 0 ? "0 min" : t === 60 ? "60 min" : `${t}`);
+  });
+}
+
+function drawProximityBar(selector, minutes) {
+  const xScale = d3.scaleLinear().domain([0, 60]).range([0, 600]);
+  const clamped = Math.min(minutes !== null ? minutes : 0, 60);
+
+  d3.select(selector).select(".ua-fill")
+    .transition()
+    .duration(600)
+    .ease(d3.easeCubicOut)
+    .attr("width", xScale(clamped))
+    .attr("fill", barColor(clamped));
+}
+
 function render(data) {
   d3.select("#chart1").html("");
   d3.select("#message").html("");
 
-  const selectedAmenity = d3.select("#amenity-select").property("value");
+  const selectedAmenity = d3.select("#ua-amenity-select").property("value");
   const amenityInfo = AMENITY_INFO[selectedAmenity];
   const field = amenityInfo?.field;
 
@@ -285,12 +424,13 @@ function render(data) {
     return;
   }
 
-  const sortedByIndex = walkRows
-    .slice()
-    .sort((a, b) => d3.descending(a.indexValue, b.indexValue));
+  const newWestminsterRow = walkRows.find((d) => d.division === "New Westminster");
+  const centralSaanichRow = walkRows.find((d) => d.division === "Central Saanich");
 
-  const shortestWalk = sortedByIndex[0];
-  const longestWalk = sortedByIndex[sortedByIndex.length - 1];
+  if (!newWestminsterRow || !centralSaanichRow) {
+    showError("Could not find data for New Westminster or Central Saanich.");
+    return;
+  }
 
   const maxMinutes = Math.max(
     12,
@@ -313,7 +453,7 @@ function render(data) {
 
   drawWalkingRow(svg, {
     y: 260,
-    datum: shortestWalk,
+    datum: newWestminsterRow,
     amenity: selectedAmenity,
     xScale,
     colorScale: timeColor,
@@ -324,7 +464,7 @@ function render(data) {
 
   drawWalkingRow(svg, {
     y: 545,
-    datum: longestWalk,
+    datum: centralSaanichRow,
     amenity: selectedAmenity,
     xScale,
     colorScale: timeColor,

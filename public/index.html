@@ -19,6 +19,7 @@
         <h2>Page navigation</h2>
         <ul>
           <li><a href="#hero-vis">Accessibility overview</a></li>
+          <li><a href="#understanding-accessibility">Proximity comparison</a></li>
           <li><a href="#overall-section">Access to Services</a></li>
           <li><a href="#scatter-section">City comparison</a></li>
           <li><a href="#section-time-index">Time-to-Life Index</a></li>
@@ -28,7 +29,6 @@
       </nav>
 
       <main class="main-content">
-        <!-- Introduction -->
         <section id="intro-section" class="intro-section">
           <h1>How accessible are essential services throughout BC?</h1>
           <h3>
@@ -39,8 +39,8 @@
         </section>
 
         <!-- Vis 1 -->
-        <section id="hero-vis" class="hero-vis">
-          <div class="hero-description">
+        <!-- <section id="hero-vis" class="hero-vis"> -->
+          <!-- <div class="hero-description">
             <h2>Understanding Accessibility</h2>
             <p>
               Not all communities have the same level of access to everyday
@@ -49,8 +49,8 @@
               places. We converted this into estimated walking times to make
               accessibility easier to understand.
             </p>
-          </div>
-          <div class="hero-actions">
+          </div> -->
+          <!-- <div class="hero-actions">
             <h3>Compare accessibility to the nearest</h3>
             <div>
               <select id="amenity-select" aria-label="Amenity"></select>
@@ -59,6 +59,40 @@
 
           <div id="chart1"></div>
           <div id="message"></div>
+        </section> -->
+
+        <!-- Understanding Accessibility -->
+        <section id="understanding-accessibility" class="understanding-accessibility-section">
+          <h2>Understanding Accessibility</h2>
+            <p>
+              Not all communities have the same level of access to everyday
+              services. The proximity index measures how close people are to
+              essential amenities, helping us compare accessibility across
+              places. We converted this into estimated walking times to make
+              accessibility easier to understand.</p>
+              <br>
+              <br>
+              <div>
+              <!-- <select id="amenity-select" aria-label="Amenity"></select> -->
+            </div>
+          <div class="ua-city-block">
+            <h2>For example, the average proximity of all blocks in Vancouver to a<br>
+              <span class="ua-select-wrap">
+                <select id="ua-amenity-select"></select>
+                <span id="ua-select-sizer" aria-hidden="true"></span>
+                <svg class="ua-chevron" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M0 0L5 6L10 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              is <strong id="ua-van-avg"></strong>, which translates to about a <strong id="ua-van-min"></strong>.
+            </h2>
+            <div id="ua-vancouver-chart" class="ua-chart"></div>
+          </div>
+
+          <div class="ua-city-block">
+            <h2>However, in Mission, the average proximity is <strong id="ua-rock-avg"></strong>, which is more like a <strong id="ua-rock-min"></strong>.</h2>
+            <div id="ua-rockies-chart" class="ua-chart"></div>
+          </div>
         </section>
 
         <!-- Vis 2 -->
