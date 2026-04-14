@@ -164,7 +164,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in index.js.",
+        "Could not load the dataset. Check the file path and column names in index.js."
       );
     });
 });
@@ -180,16 +180,16 @@ function initDropdown() {
 }
 
 const UA_AMENITIES = [
-  { label: "Grocery",          field: "grocery" },
-  { label: "Transit",          field: "transit" },
-  { label: "Employment",       field: "employment" },
-  { label: "Health",           field: "health" },
-  { label: "Pharmacy",         field: "pharmacy" },
-  { label: "Primary School",   field: "primary_school" },
+  { label: "Grocery", field: "grocery" },
+  { label: "Transit", field: "transit" },
+  { label: "Employment", field: "employment" },
+  { label: "Health", field: "health" },
+  { label: "Pharmacy", field: "pharmacy" },
+  { label: "Primary School", field: "primary_school" },
   { label: "Secondary School", field: "secondary_school" },
-  { label: "Childcare",        field: "childcare" },
-  { label: "Library",          field: "library" },
-  { label: "Park",             field: "park" },
+  { label: "Childcare", field: "childcare" },
+  { label: "Library", field: "library" },
+  { label: "Park", field: "park" },
 ];
 
 function initUnderstandingAccessibility(data) {
@@ -207,21 +207,29 @@ function initUnderstandingAccessibility(data) {
 
   function update() {
     const field = select.property("value");
-    const vanValues = vancouverData.map((d) => d[field]).filter(Number.isFinite);
+    const vanValues = vancouverData
+      .map((d) => d[field])
+      .filter(Number.isFinite);
     const vanAvg = d3.mean(vanValues);
     const vanMinutes = Number.isFinite(vanAvg) ? proxToMinutes(vanAvg) : null;
 
     const rockValues = rockiesData.map((d) => d[field]).filter(Number.isFinite);
     const rockAvg = d3.mean(rockValues);
-    const rockMinutes = Number.isFinite(rockAvg) ? proxToMinutes(rockAvg) : null;
+    const rockMinutes = Number.isFinite(rockAvg)
+      ? proxToMinutes(rockAvg)
+      : null;
 
-    document.getElementById("ua-van-avg").textContent =
-      Number.isFinite(vanAvg) ? vanAvg.toFixed(2) : "N/A";
+    document.getElementById("ua-van-avg").textContent = Number.isFinite(vanAvg)
+      ? vanAvg.toFixed(2)
+      : "N/A";
     document.getElementById("ua-van-min").textContent =
       vanMinutes !== null ? vanMinutes + " minute walk" : "N/A";
 
-    document.getElementById("ua-rock-avg").textContent =
-      Number.isFinite(rockAvg) ? rockAvg.toFixed(2) : "N/A";
+    document.getElementById("ua-rock-avg").textContent = Number.isFinite(
+      rockAvg
+    )
+      ? rockAvg.toFixed(2)
+      : "N/A";
     document.getElementById("ua-rock-min").textContent =
       rockMinutes !== null ? rockMinutes + " minute walk" : "N/A";
 
@@ -240,7 +248,10 @@ function initUnderstandingAccessibility(data) {
   initProximityBar("#ua-vancouver-chart");
   initProximityBar("#ua-rockies-chart");
 
-  select.on("change", () => { resizeSelect(); update(); });
+  select.on("change", () => {
+    resizeSelect();
+    update();
+  });
   update();
   // Defer resize until fonts are rendered
   requestAnimationFrame(resizeSelect);
@@ -291,8 +302,10 @@ function initProximityBar(selector) {
   [0, 15, 30, 45, 60].forEach((t) => {
     const x = xScale(t);
     g.append("line")
-      .attr("x1", x).attr("x2", x)
-      .attr("y1", barH).attr("y2", barH + 5)
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", barH)
+      .attr("y2", barH + 5)
       .attr("stroke", "#6b7080")
       .attr("stroke-width", 1.5);
     g.append("text")
@@ -309,7 +322,8 @@ function drawProximityBar(selector, minutes) {
   const xScale = d3.scaleLinear().domain([0, 60]).range([0, 600]);
   const clamped = Math.min(minutes !== null ? minutes : 0, 60);
 
-  d3.select(selector).select(".ua-fill")
+  d3.select(selector)
+    .select(".ua-fill")
     .transition()
     .duration(600)
     .ease(d3.easeCubicOut)
@@ -334,7 +348,7 @@ function render(data) {
 
   if (!validRows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`,
+      `No valid rows found for ${selectedAmenity} in British Columbia.`
     );
     return;
   }
@@ -358,14 +372,14 @@ function render(data) {
           blockCount: group.length,
         };
       },
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.indexValue));
 
   if (!divisionRows.length) {
     showError(
-      `No division-level values could be calculated for ${selectedAmenity}.`,
+      `No division-level values could be calculated for ${selectedAmenity}.`
     );
     return;
   }
@@ -414,18 +428,22 @@ function render(data) {
   }
 
   const walkRows = divisionRows.filter((d) =>
-    Number.isFinite(d.estimatedMinutes),
+    Number.isFinite(d.estimatedMinutes)
   );
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`,
+      `No estimated walking times could be calculated for ${selectedAmenity}.`
     );
     return;
   }
 
-  const newWestminsterRow = walkRows.find((d) => d.division === "New Westminster");
-  const centralSaanichRow = walkRows.find((d) => d.division === "Central Saanich");
+  const newWestminsterRow = walkRows.find(
+    (d) => d.division === "New Westminster"
+  );
+  const centralSaanichRow = walkRows.find(
+    (d) => d.division === "Central Saanich"
+  );
 
   if (!newWestminsterRow || !centralSaanichRow) {
     showError("Could not find data for New Westminster or Central Saanich.");
@@ -434,7 +452,7 @@ function render(data) {
 
   const maxMinutes = Math.max(
     12,
-    d3.max(walkRows, (d) => d.estimatedMinutes) || 12,
+    d3.max(walkRows, (d) => d.estimatedMinutes) || 12
   );
 
   const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
@@ -517,7 +535,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(`${Math.round(val)} min`);
@@ -529,7 +547,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(tickLabels[i]);
@@ -538,7 +556,7 @@ function drawLegend(svg, { x, y, width }) {
 
 function drawBarWithTrack(
   svg,
-  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon },
+  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }
 ) {
   svg
     .append("rect")
@@ -626,7 +644,7 @@ function drawWalkingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`,
+      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
     );
 
   drawBarWithTrack(svg, {
@@ -709,7 +727,7 @@ function drawDrivingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`,
+      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
     );
 
   drawBarWithTrack(svg, {
@@ -758,7 +776,7 @@ function computeOverallAccessibilityExtremes(data) {
         SERVICE_TYPE_INFO.forEach((service) => {
           servicePercentages[service.field] = computeServicePresencePercentage(
             rows,
-            service.field,
+            service.field
           );
         });
 
@@ -768,7 +786,7 @@ function computeOverallAccessibilityExtremes(data) {
           }) || 0;
 
         const population = d3.sum(rows, (row) =>
-          Number.isFinite(row.population) ? row.population : 0,
+          Number.isFinite(row.population) ? row.population : 0
         );
 
         return {
@@ -780,7 +798,7 @@ function computeOverallAccessibilityExtremes(data) {
           ...servicePercentages,
         };
       },
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.averageServicePercentage));
@@ -793,7 +811,7 @@ function computeOverallAccessibilityExtremes(data) {
   const sorted = pool
     .slice()
     .sort((a, b) =>
-      d3.descending(a.averageServicePercentage, b.averageServicePercentage),
+      d3.descending(a.averageServicePercentage, b.averageServicePercentage)
     );
 
   const most = sorted[0];
@@ -801,7 +819,7 @@ function computeOverallAccessibilityExtremes(data) {
   const kelowna =
     pool.find((d) => (d.division || "").trim().toLowerCase() === "kelowna") ||
     pool.find((d) =>
-      (d.division || "").trim().toLowerCase().includes("kelowna"),
+      (d.division || "").trim().toLowerCase().includes("kelowna")
     ) ||
     sorted[sorted.length - 1];
 
@@ -838,7 +856,7 @@ function initOverallAccessibilityScrolly(data) {
 
   if (!extremes) {
     d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>",
+      "<div class='error'>Could not compute overall accessibility.</div>"
     );
     return;
   }
@@ -868,7 +886,7 @@ function initOverallAccessibilityScrolly(data) {
     d3.max(SERVICE_TYPE_INFO, (service) => {
       const value = division[service.field];
       return Number.isFinite(value) ? value : 0;
-    }),
+    })
   );
 
   const xScale = d3
@@ -902,7 +920,7 @@ function initOverallAccessibilityScrolly(data) {
       d3
         .axisBottom(xScale)
         .ticks(5)
-        .tickFormat((d) => `${d}%`),
+        .tickFormat((d) => `${d}%`)
     )
     .call((g) => g.selectAll("text").attr("font-size", 13))
     .call((g) => g.selectAll("line").attr("stroke", "#555"))
@@ -923,7 +941,7 @@ function initOverallAccessibilityScrolly(data) {
     .call(d3.axisLeft(yScale).tickSize(0))
     .call((g) => g.select(".domain").remove())
     .call((g) =>
-      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700),
+      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700)
     );
 
   chart
@@ -1012,7 +1030,7 @@ function initOverallAccessibilityScrolly(data) {
 
     const currentProvince = cleanProvinceName(current.province);
     overallTitle.text(
-      `Relative service access in ${current.division}, ${currentProvince}`,
+      `Relative service access in ${current.division}, ${currentProvince}`
     );
 
     rows.each(function (service) {
@@ -1035,7 +1053,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2,
+        yScale.bandwidth() / 2
       );
 
       row
@@ -1048,15 +1066,15 @@ function initOverallAccessibilityScrolly(data) {
         .attr("ry", dynamicRadius)
         .attr(
           "opacity",
-          isAnnotated ? (highlightedFields.has(service.field) ? 1 : 0.22) : 1,
+          isAnnotated ? (highlightedFields.has(service.field) ? 1 : 0.22) : 1
         )
         .attr(
           "stroke",
-          isAnnotated && highlightedFields.has(service.field) ? "#222" : "none",
+          isAnnotated && highlightedFields.has(service.field) ? "#222" : "none"
         )
         .attr(
           "stroke-width",
-          isAnnotated && highlightedFields.has(service.field) ? 2 : 0,
+          isAnnotated && highlightedFields.has(service.field) ? 2 : 0
         );
 
       row
@@ -1067,11 +1085,11 @@ function initOverallAccessibilityScrolly(data) {
         .attr("x", Math.min(currentBarWidth + 10, chartWidth + 10))
         .attr(
           "font-weight",
-          isAnnotated && highlightedFields.has(service.field) ? 800 : 700,
+          isAnnotated && highlightedFields.has(service.field) ? 800 : 700
         )
         .attr(
           "fill",
-          isAnnotated && highlightedFields.has(service.field) ? "#111" : "#555",
+          isAnnotated && highlightedFields.has(service.field) ? "#111" : "#555"
         )
         .tween("text", function () {
           const that = d3.select(this);
@@ -1086,13 +1104,13 @@ function initOverallAccessibilityScrolly(data) {
     if (!isAnnotated) {
       note.html(`
         <strong>${current.division}</strong>, ${cleanProvinceName(
-          current.province,
-        )} is shown here as the <strong>${
-          isLeast ? "comparison division" : "most accessible division"
-        }</strong>.
+        current.province
+      )} is shown here as the <strong>${
+        isLeast ? "comparison division" : "most accessible division"
+      }</strong>.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
+          current.averageServicePercentage
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1105,12 +1123,14 @@ function initOverallAccessibilityScrolly(data) {
 
     if (!isLeast) {
       note.html(`
-        <strong>In ${current.division}</strong> (most accessible), <strong>${formatServiceList(
-          topServices,
-        )}</strong> are most commonly found inside each block.
+        <strong>In ${
+          current.division
+        }</strong> (most accessible), <strong>${formatServiceList(
+        topServices
+      )}</strong> are most commonly found inside each block.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
+          current.averageServicePercentage
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1121,11 +1141,11 @@ function initOverallAccessibilityScrolly(data) {
     } else {
       note.html(`
         <strong>In ${current.division}</strong>, <strong>${formatServiceList(
-          topServices,
-        )}</strong> are the most commonly present services across blocks.
+        topServices
+      )}</strong> are the most commonly present services across blocks.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
+          current.averageServicePercentage
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1150,7 +1170,7 @@ function initOverallAccessibilityScrolly(data) {
     {
       threshold: 0.15,
       rootMargin: "0px 0px -25% 0px",
-    },
+    }
   );
 
   steps.forEach((step) => observer.observe(step));
@@ -1172,7 +1192,7 @@ function renderScatter(data) {
   const scatterData = d3
     .rollups(
       data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field]),
+        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
       ),
       (rows) => ({
         division: rows[0]?.division || "Unknown Division",
@@ -1181,11 +1201,11 @@ function renderScatter(data) {
         proximity: d3.mean(rows, (d) => d[field]),
         blockCount: rows.length,
       }),
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
     );
 
   if (!scatterData.length) return;
@@ -1280,7 +1300,7 @@ function renderScatter(data) {
     .attr("cy", (d) => y(d.proximity))
     .attr("r", 5)
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
     )
     .attr("opacity", 0.9)
     .attr("stroke", "transparent")
@@ -1306,7 +1326,7 @@ function renderScatter(data) {
       d3.select(this)
         .attr(
           "stroke",
-          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
+          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
         )
         .attr("stroke-width", selectedScatterDivisions.has(d.division) ? 2 : 0);
 
@@ -1341,13 +1361,13 @@ function renderScatter(data) {
 function updateScatterSelection(scatterData, points, color) {
   points
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division),
+      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
     )
     .attr("stroke", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
+      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
     )
     .attr("stroke-width", (d) =>
-      selectedScatterDivisions.has(d.division) ? 2 : 0,
+      selectedScatterDivisions.has(d.division) ? 2 : 0
     );
 
   const selectedData = scatterData
@@ -1453,7 +1473,7 @@ function renderArchetypes(filter = "") {
 
   const filtered = filter
     ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
       )
     : archetypesData;
 
@@ -1500,7 +1520,7 @@ function renderArchetypes(filter = "") {
 
       const barFill = document.createElement("div");
       barFill.className = "service-bar-fill";
-      barFill.style.width = `${Math.min(value, 100)}%`;
+      barFill.style.width = `${Math.min((value / 20) * 100, 100)}%`;
       barFill.style.background = serviceColors[service];
       barBg.appendChild(barFill);
       barDiv.appendChild(barBg);
@@ -1541,7 +1561,7 @@ function hexToRgb(hex) {
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
         result[3],
-        16,
+        16
       )}`
     : "255, 255, 255";
 }
@@ -1634,6 +1654,105 @@ function renderLegend() {
   }
 }
 
+// ── Tooltip element (shared, created once) ────────────────────────────
+const chartTooltip = (() => {
+  const el = document.createElement("div");
+  el.id = "chart-tooltip";
+  el.style.cssText = `
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    background: #ffffff;
+    border: 1px solid #e4e4e0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    min-width: 210px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  `;
+  document.body.appendChild(el);
+  return el;
+})();
+
+function showChartTooltip(event, cityData, hoveredService) {
+  const serviceLabels = {
+    grocery: "Grocery",
+    transit: "Transit",
+    healthcare: "Healthcare",
+    parks: "Parks",
+  };
+  const totalHours = (cityData.total / 60).toFixed(1);
+
+  let rows = services
+    .map((svc) => {
+      const mins = cityData[svc];
+      const isHovered = svc === hoveredService;
+      const pct = Math.round((mins / cityData.total) * 100);
+      return `
+      <div style="
+        display:flex; align-items:center; gap:10px;
+        padding: 5px 8px; border-radius:7px; margin-bottom:2px;
+        background: ${isHovered ? "rgba(0,0,0,0.04)" : "transparent"};
+        font-weight: ${isHovered ? "600" : "400"};
+      ">
+        <span style="
+          width:10px; height:10px; border-radius:50%; flex-shrink:0;
+          background:${colors[svc]};
+          ${isHovered ? "box-shadow:0 0 0 2px rgba(0,0,0,0.15);" : ""}
+        "></span>
+        <span style="flex:1; color:#6b7080; font-size:0.8125rem;">${
+          serviceLabels[svc]
+        }</span>
+        <span style="color:#18181a; font-size:0.8125rem; font-weight:600;">${mins} min</span>
+        <span style="color:#9a9fad; font-size:0.75rem; min-width:30px; text-align:right;">${pct}%</span>
+      </div>`;
+    })
+    .join("");
+
+  chartTooltip.innerHTML = `
+    <div style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #efefec;">
+      <div style="font-size:1rem; font-weight:700; color:#18181a; letter-spacing:-0.01em;">${
+        cityData.city
+      }</div>
+      <div style="font-size:0.75rem; color:#9a9fad; margin-top:1px;">Weekly travel time to services</div>
+    </div>
+    ${rows}
+    <div style="
+      display:flex; justify-content:space-between; align-items:center;
+      margin-top:10px; padding-top:10px; border-top:1px solid #efefec;
+    ">
+      <span style="font-size:0.8125rem; font-weight:600; color:#18181a;">Total</span>
+      <span style="font-size:0.8125rem; font-weight:700; color:#2563eb;">${Math.round(
+        cityData.total
+      )} min
+        <span style="font-weight:400; color:#9a9fad;">&nbsp;(${totalHours} hrs/wk)</span>
+      </span>
+    </div>
+  `;
+
+  positionChartTooltip(event);
+  chartTooltip.style.opacity = "1";
+}
+
+function positionChartTooltip(event) {
+  const pad = 14;
+  const tw = chartTooltip.offsetWidth || 220;
+  const th = chartTooltip.offsetHeight || 180;
+  let left = event.clientX + pad;
+  let top = event.clientY - th / 2;
+  if (left + tw > window.innerWidth - pad) left = event.clientX - tw - pad;
+  if (top < pad) top = pad;
+  if (top + th > window.innerHeight - pad) top = window.innerHeight - th - pad;
+  chartTooltip.style.left = left + "px";
+  chartTooltip.style.top = top + "px";
+}
+
+function hideChartTooltip() {
+  chartTooltip.style.opacity = "0";
+}
+
 // Draw chart
 function drawChart() {
   const svg = d3.select("#chart");
@@ -1646,7 +1765,7 @@ function drawChart() {
     "viewBox",
     `0 0 ${width + margin.left + margin.right} ${
       height + margin.top + margin.bottom
-    }`,
+    }`
   );
 
   const g = svg
@@ -1686,7 +1805,75 @@ function drawChart() {
     .attr("height", (d) => y(d[0]) - y(d[1]))
     .attr("width", x.bandwidth())
     .attr("stroke", "white")
-    .attr("stroke-width", 1);
+    .attr("stroke-width", 1)
+    .style("cursor", "pointer")
+    .style("transition", "filter 0.15s, opacity 0.15s")
+    .on("mousemove", function (event, d) {
+      const parentDatum = d3.select(this.parentNode).datum();
+      const hoveredService = parentDatum.key;
+      // Dim all bars, highlight the hovered column
+      svg
+        .selectAll("g.service rect")
+        .style("opacity", (rd) => (rd.data.city === d.data.city ? 1 : 0.45))
+        .style("filter", function (rd) {
+          const pk = d3.select(this.parentNode).datum().key;
+          return rd.data.city === d.data.city && pk === hoveredService
+            ? "brightness(1.08)"
+            : "none";
+        });
+      showChartTooltip(event, d.data, hoveredService);
+    })
+    .on("mouseleave", function () {
+      svg
+        .selectAll("g.service rect")
+        .style("opacity", 1)
+        .style("filter", "none");
+      hideChartTooltip();
+    });
+
+  // Invisible full-height hit targets per city (so moving between segments doesn't flicker)
+  g.selectAll(".city-hit")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", "city-hit")
+    .attr("x", (d) => x(d.city))
+    .attr("y", 0)
+    .attr("height", height)
+    .attr("width", x.bandwidth())
+    .attr("fill", "transparent")
+    .style("cursor", "pointer")
+    .on("mousemove", function (event, d) {
+      // find which service segment the mouse y falls on
+      const [, my] = d3.pointer(event, g.node());
+      const yVal = y.invert(my);
+      let cumulative = 0;
+      let hoveredService = services[services.length - 1];
+      for (const svc of services) {
+        cumulative += d[svc];
+        if (yVal <= cumulative) {
+          hoveredService = svc;
+          break;
+        }
+      }
+      svg
+        .selectAll("g.service rect")
+        .style("opacity", (rd) => (rd.data.city === d.city ? 1 : 0.45))
+        .style("filter", function (rd) {
+          const pk = d3.select(this.parentNode).datum().key;
+          return rd.data.city === d.city && pk === hoveredService
+            ? "brightness(1.08)"
+            : "none";
+        });
+      showChartTooltip(event, d, hoveredService);
+    })
+    .on("mouseleave", function () {
+      svg
+        .selectAll("g.service rect")
+        .style("opacity", 1)
+        .style("filter", "none");
+      hideChartTooltip();
+    });
 
   // Add total labels on top
   g.selectAll(".total-label")
@@ -1793,7 +1980,7 @@ let map,
 function initMap() {
   map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(
     [49.25, -122.9],
-    10,
+    10
   );
 
   L.tileLayer(
@@ -1801,7 +1988,7 @@ function initMap() {
     {
       attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 19,
-    },
+    }
   ).addTo(map);
 
   canvasRenderer = L.canvas({ padding: 0.5 });
@@ -1959,7 +2146,7 @@ function buildTooltip(d) {
     const color =
       v !== null
         ? proximityColor(
-            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes)),
+            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))
           )
         : "#ccc";
 
