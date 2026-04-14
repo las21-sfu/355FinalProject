@@ -159,12 +159,13 @@ window.addEventListener("DOMContentLoaded", () => {
       renderScatter(bcData);
       d3.select("#amenity-select").on("change", () => {
         render(bcData);
+        renderScatter(bcData);
       });
     })
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in index.js."
+        "Could not load the dataset. Check the file path and column names in index.js.",
       );
     });
 });
@@ -226,7 +227,7 @@ function initUnderstandingAccessibility(data) {
       vanMinutes !== null ? vanMinutes + " minute walk" : "N/A";
 
     document.getElementById("ua-rock-avg").textContent = Number.isFinite(
-      rockAvg
+      rockAvg,
     )
       ? rockAvg.toFixed(2)
       : "N/A";
@@ -348,7 +349,7 @@ function render(data) {
 
   if (!validRows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`
+      `No valid rows found for ${selectedAmenity} in British Columbia.`,
     );
     return;
   }
@@ -372,14 +373,14 @@ function render(data) {
           blockCount: group.length,
         };
       },
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.indexValue));
 
   if (!divisionRows.length) {
     showError(
-      `No division-level values could be calculated for ${selectedAmenity}.`
+      `No division-level values could be calculated for ${selectedAmenity}.`,
     );
     return;
   }
@@ -428,21 +429,21 @@ function render(data) {
   }
 
   const walkRows = divisionRows.filter((d) =>
-    Number.isFinite(d.estimatedMinutes)
+    Number.isFinite(d.estimatedMinutes),
   );
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`
+      `No estimated walking times could be calculated for ${selectedAmenity}.`,
     );
     return;
   }
 
   const newWestminsterRow = walkRows.find(
-    (d) => d.division === "New Westminster"
+    (d) => d.division === "New Westminster",
   );
   const centralSaanichRow = walkRows.find(
-    (d) => d.division === "Central Saanich"
+    (d) => d.division === "Central Saanich",
   );
 
   if (!newWestminsterRow || !centralSaanichRow) {
@@ -452,7 +453,7 @@ function render(data) {
 
   const maxMinutes = Math.max(
     12,
-    d3.max(walkRows, (d) => d.estimatedMinutes) || 12
+    d3.max(walkRows, (d) => d.estimatedMinutes) || 12,
   );
 
   const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
@@ -535,7 +536,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", "#555")
       .text(`${Math.round(val)} min`);
@@ -547,7 +548,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", "#555")
       .text(tickLabels[i]);
@@ -556,7 +557,7 @@ function drawLegend(svg, { x, y, width }) {
 
 function drawBarWithTrack(
   svg,
-  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }
+  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon },
 ) {
   svg
     .append("rect")
@@ -644,7 +645,7 @@ function drawWalkingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
+      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`,
     );
 
   drawBarWithTrack(svg, {
@@ -727,7 +728,7 @@ function drawDrivingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
+      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`,
     );
 
   drawBarWithTrack(svg, {
@@ -776,7 +777,7 @@ function computeOverallAccessibilityExtremes(data) {
         SERVICE_TYPE_INFO.forEach((service) => {
           servicePercentages[service.field] = computeServicePresencePercentage(
             rows,
-            service.field
+            service.field,
           );
         });
 
@@ -786,7 +787,7 @@ function computeOverallAccessibilityExtremes(data) {
           }) || 0;
 
         const population = d3.sum(rows, (row) =>
-          Number.isFinite(row.population) ? row.population : 0
+          Number.isFinite(row.population) ? row.population : 0,
         );
 
         return {
@@ -798,7 +799,7 @@ function computeOverallAccessibilityExtremes(data) {
           ...servicePercentages,
         };
       },
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.averageServicePercentage));
@@ -811,7 +812,7 @@ function computeOverallAccessibilityExtremes(data) {
   const sorted = pool
     .slice()
     .sort((a, b) =>
-      d3.descending(a.averageServicePercentage, b.averageServicePercentage)
+      d3.descending(a.averageServicePercentage, b.averageServicePercentage),
     );
 
   const most = sorted[0];
@@ -819,7 +820,7 @@ function computeOverallAccessibilityExtremes(data) {
   const kelowna =
     pool.find((d) => (d.division || "").trim().toLowerCase() === "kelowna") ||
     pool.find((d) =>
-      (d.division || "").trim().toLowerCase().includes("kelowna")
+      (d.division || "").trim().toLowerCase().includes("kelowna"),
     ) ||
     sorted[sorted.length - 1];
 
@@ -856,7 +857,7 @@ function initOverallAccessibilityScrolly(data) {
 
   if (!extremes) {
     d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>"
+      "<div class='error'>Could not compute overall accessibility.</div>",
     );
     return;
   }
@@ -886,7 +887,7 @@ function initOverallAccessibilityScrolly(data) {
     d3.max(SERVICE_TYPE_INFO, (service) => {
       const value = division[service.field];
       return Number.isFinite(value) ? value : 0;
-    })
+    }),
   );
 
   const xScale = d3
@@ -920,7 +921,7 @@ function initOverallAccessibilityScrolly(data) {
       d3
         .axisBottom(xScale)
         .ticks(5)
-        .tickFormat((d) => `${d}%`)
+        .tickFormat((d) => `${d}%`),
     )
     .call((g) => g.selectAll("text").attr("font-size", 13))
     .call((g) => g.selectAll("line").attr("stroke", "#555"))
@@ -941,7 +942,7 @@ function initOverallAccessibilityScrolly(data) {
     .call(d3.axisLeft(yScale).tickSize(0))
     .call((g) => g.select(".domain").remove())
     .call((g) =>
-      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700)
+      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700),
     );
 
   chart
@@ -1030,7 +1031,7 @@ function initOverallAccessibilityScrolly(data) {
 
     const currentProvince = cleanProvinceName(current.province);
     overallTitle.text(
-      `Relative service access in ${current.division}, ${currentProvince}`
+      `Relative service access in ${current.division}, ${currentProvince}`,
     );
 
     rows.each(function (service) {
@@ -1053,7 +1054,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2
+        yScale.bandwidth() / 2,
       );
 
       row
@@ -1066,15 +1067,15 @@ function initOverallAccessibilityScrolly(data) {
         .attr("ry", dynamicRadius)
         .attr(
           "opacity",
-          isAnnotated ? (highlightedFields.has(service.field) ? 1 : 0.22) : 1
+          isAnnotated ? (highlightedFields.has(service.field) ? 1 : 0.22) : 1,
         )
         .attr(
           "stroke",
-          isAnnotated && highlightedFields.has(service.field) ? "#222" : "none"
+          isAnnotated && highlightedFields.has(service.field) ? "#222" : "none",
         )
         .attr(
           "stroke-width",
-          isAnnotated && highlightedFields.has(service.field) ? 2 : 0
+          isAnnotated && highlightedFields.has(service.field) ? 2 : 0,
         );
 
       row
@@ -1085,11 +1086,11 @@ function initOverallAccessibilityScrolly(data) {
         .attr("x", Math.min(currentBarWidth + 10, chartWidth + 10))
         .attr(
           "font-weight",
-          isAnnotated && highlightedFields.has(service.field) ? 800 : 700
+          isAnnotated && highlightedFields.has(service.field) ? 800 : 700,
         )
         .attr(
           "fill",
-          isAnnotated && highlightedFields.has(service.field) ? "#111" : "#555"
+          isAnnotated && highlightedFields.has(service.field) ? "#111" : "#555",
         )
         .tween("text", function () {
           const that = d3.select(this);
@@ -1104,13 +1105,13 @@ function initOverallAccessibilityScrolly(data) {
     if (!isAnnotated) {
       note.html(`
         <strong>${current.division}</strong>, ${cleanProvinceName(
-        current.province
-      )} is shown here as the <strong>${
-        isLeast ? "comparison division" : "most accessible division"
-      }</strong>.
+          current.province,
+        )} is shown here as the <strong>${
+          isLeast ? "comparison division" : "most accessible division"
+        }</strong>.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage
+          current.averageServicePercentage,
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1126,11 +1127,11 @@ function initOverallAccessibilityScrolly(data) {
         <strong>In ${
           current.division
         }</strong> (most accessible), <strong>${formatServiceList(
-        topServices
-      )}</strong> are most commonly found inside each block.
+          topServices,
+        )}</strong> are most commonly found inside each block.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage
+          current.averageServicePercentage,
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1141,11 +1142,11 @@ function initOverallAccessibilityScrolly(data) {
     } else {
       note.html(`
         <strong>In ${current.division}</strong>, <strong>${formatServiceList(
-        topServices
-      )}</strong> are the most commonly present services across blocks.
+          topServices,
+        )}</strong> are the most commonly present services across blocks.
         <br /><br />
         Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage
+          current.averageServicePercentage,
         )}%</strong> of blocks contain these services on average.
         <br />
         <strong>Blocks included:</strong> ${current.blockCount}
@@ -1170,7 +1171,7 @@ function initOverallAccessibilityScrolly(data) {
     {
       threshold: 0.15,
       rootMargin: "0px 0px -25% 0px",
-    }
+    },
   );
 
   steps.forEach((step) => observer.observe(step));
@@ -1192,7 +1193,7 @@ function renderScatter(data) {
   const scatterData = d3
     .rollups(
       data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
+        (d) => Number.isFinite(d.population) && Number.isFinite(d[field]),
       ),
       (rows) => ({
         division: rows[0]?.division || "Unknown Division",
@@ -1201,11 +1202,11 @@ function renderScatter(data) {
         proximity: d3.mean(rows, (d) => d[field]),
         blockCount: rows.length,
       }),
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
     );
 
   if (!scatterData.length) return;
@@ -1300,7 +1301,7 @@ function renderScatter(data) {
     .attr("cy", (d) => y(d.proximity))
     .attr("r", 5)
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
+      selectedScatterDivisions.has(d.division) ? "#d62828" : "#607ab2",
     )
     .attr("opacity", 0.9)
     .attr("stroke", "transparent")
@@ -1326,7 +1327,7 @@ function renderScatter(data) {
       d3.select(this)
         .attr(
           "stroke",
-          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
+          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
         )
         .attr("stroke-width", selectedScatterDivisions.has(d.division) ? 2 : 0);
 
@@ -1361,13 +1362,13 @@ function renderScatter(data) {
 function updateScatterSelection(scatterData, points, color) {
   points
     .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : color(d.division)
+      selectedScatterDivisions.has(d.division) ? "#d62828" : "#607ab2",
     )
     .attr("stroke", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent"
+      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
     )
     .attr("stroke-width", (d) =>
-      selectedScatterDivisions.has(d.division) ? 2 : 0
+      selectedScatterDivisions.has(d.division) ? 2 : 0,
     );
 
   const selectedData = scatterData
@@ -1473,7 +1474,7 @@ function renderArchetypes(filter = "") {
 
   const filtered = filter
     ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
       )
     : archetypesData;
 
@@ -1561,7 +1562,7 @@ function hexToRgb(hex) {
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
         result[3],
-        16
+        16,
       )}`
     : "255, 255, 255";
 }
@@ -1725,7 +1726,7 @@ function showChartTooltip(event, cityData, hoveredService) {
     ">
       <span style="font-size:0.8125rem; font-weight:600; color:#18181a;">Total</span>
       <span style="font-size:0.8125rem; font-weight:700; color:#2563eb;">${Math.round(
-        cityData.total
+        cityData.total,
       )} min
         <span style="font-weight:400; color:#9a9fad;">&nbsp;(${totalHours} hrs/wk)</span>
       </span>
@@ -1765,7 +1766,7 @@ function drawChart() {
     "viewBox",
     `0 0 ${width + margin.left + margin.right} ${
       height + margin.top + margin.bottom
-    }`
+    }`,
   );
 
   const g = svg
@@ -1980,7 +1981,7 @@ let map,
 function initMap() {
   map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(
     [49.25, -122.9],
-    10
+    10,
   );
 
   L.tileLayer(
@@ -1988,7 +1989,7 @@ function initMap() {
     {
       attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 19,
-    }
+    },
   ).addTo(map);
 
   canvasRenderer = L.canvas({ padding: 0.5 });
@@ -2146,7 +2147,7 @@ function buildTooltip(d) {
     const color =
       v !== null
         ? proximityColor(
-            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))
+            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes)),
           )
         : "#ccc";
 
