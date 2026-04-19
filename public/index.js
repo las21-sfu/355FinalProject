@@ -760,15 +760,22 @@ function showError(message) {
 
 // Vis 2
 const CITY_HIGHLIGHTS = {
-  "maple ridge": new Set(["in_db_childcare", "in_db_educpri", "in_db_educsec", "in_db_emp"]),
-  "whistler": new Set(["in_db_parks", "in_db_health"]),
+  "maple ridge": new Set([
+    "in_db_childcare",
+    "in_db_educpri",
+    "in_db_educsec",
+    "in_db_emp",
+  ]),
+  whistler: new Set(["in_db_parks", "in_db_health"]),
 };
 
 const NARRATIVES = {
-  "most": "This is the percentage of blocks where a particular service is present, in Maple Ridge.",
-  "most-annotated": "Let's focus on <strong>employment, childcare</strong> and <strong>schooling</strong>.",
-  "least": "Compared to Whistler, those services are less prioritized.",
-  "least-annotated": "Instead, <strong>parks</strong> and <strong>health</strong> amenities are found more commonly inside Whistler's blocks.",
+  most: "This is the percentage of blocks where a particular service is present, in Maple Ridge.",
+  "most-annotated":
+    "Let's focus on <strong>employment, childcare</strong> and <strong>schooling</strong>.",
+  least: "Compared to Whistler, those services are less prioritized.",
+  "least-annotated":
+    "Instead, <strong>parks</strong> and <strong>health</strong> amenities are found more commonly inside Whistler's blocks.",
 };
 
 function formatPopulation(value) {
@@ -792,13 +799,18 @@ function initOverallAccessibilityScrolly(data) {
       (rows) => {
         const servicePercentages = {};
         SERVICE_TYPE_INFO.forEach((s) => {
-          servicePercentages[s.field] = computeServicePresencePercentage(rows, s.field);
+          servicePercentages[s.field] = computeServicePresencePercentage(
+            rows,
+            s.field,
+          );
         });
         return {
           division: rows[0]?.division || "Unknown Division",
           province: rows[0]?.province || "Unknown Province",
           blockCount: rows.length,
-          population: d3.sum(rows, (r) => Number.isFinite(r.population) ? r.population : 0),
+          population: d3.sum(rows, (r) =>
+            Number.isFinite(r.population) ? r.population : 0,
+          ),
           ...servicePercentages,
         };
       },
@@ -831,82 +843,149 @@ function initOverallAccessibilityScrolly(data) {
     .style("font-family", "inherit");
 
   const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartWidth]);
-  const yScale = d3.scaleBand()
+  const yScale = d3
+    .scaleBand()
     .domain(SERVICE_TYPE_INFO.map((d) => d.label))
     .range([0, chartHeight])
     .padding(0.28);
 
-  const chart = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
+  const chart = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  chart.append("g").attr("class", "x-axis")
+  chart
+    .append("g")
+    .attr("class", "x-axis")
     .attr("transform", `translate(0, ${chartHeight})`)
-    .call(d3.axisBottom(xScale).ticks(5).tickFormat((d) => `${d}%`))
-    .call((g) => g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"))
-    .call((g) => g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5))
+    .call(
+      d3
+        .axisBottom(xScale)
+        .ticks(5)
+        .tickFormat((d) => `${d}%`),
+    )
+    .call((g) =>
+      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"),
+    )
+    .call((g) =>
+      g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5),
+    )
     .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
-  chart.append("text")
-    .attr("x", chartWidth / 2).attr("y", chartHeight + 52)
-    .attr("text-anchor", "middle").attr("font-size", 12).attr("fill", "#6b7080")
+  chart
+    .append("text")
+    .attr("x", chartWidth / 2)
+    .attr("y", chartHeight + 52)
+    .attr("text-anchor", "middle")
+    .attr("font-size", 12)
+    .attr("fill", "#6b7080")
     .text("Percent of blocks in the division where the service is present");
 
-  chart.append("g").attr("class", "y-axis")
+  chart
+    .append("g")
+    .attr("class", "y-axis")
     .call(d3.axisLeft(yScale).tickSize(0).tickPadding(10))
     .call((g) => g.select(".domain").remove())
-    .call((g) => g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080").attr("font-weight", 600));
+    .call((g) =>
+      g
+        .selectAll("text")
+        .attr("font-size", 12)
+        .attr("fill", "#6b7080")
+        .attr("font-weight", 600),
+    );
 
-  chart.append("g").attr("class", "grid")
+  chart
+    .append("g")
+    .attr("class", "grid")
     .call(d3.axisBottom(xScale).ticks(5).tickSize(chartHeight).tickFormat(""))
     .call((g) => g.attr("transform", `translate(0, 0)`))
     .call((g) => g.select(".domain").remove())
     .call((g) => g.selectAll("line").attr("stroke", "#ddd"));
 
-  const rows = chart.selectAll(".overall-bar-row")
-    .data(SERVICE_TYPE_INFO).join("g")
+  const rows = chart
+    .selectAll(".overall-bar-row")
+    .data(SERVICE_TYPE_INFO)
+    .join("g")
     .attr("class", "overall-bar-row")
     .attr("transform", (d) => `translate(0, ${yScale(d.label)})`);
 
-  rows.append("rect").attr("class", "overall-bar-bg")
-    .attr("x", 0).attr("y", 0)
-    .attr("width", chartWidth).attr("height", yScale.bandwidth())
-    .attr("rx", 8).attr("ry", 8).attr("fill", "#e3e3e3").attr("opacity", 0.9);
+  rows
+    .append("rect")
+    .attr("class", "overall-bar-bg")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", chartWidth)
+    .attr("height", yScale.bandwidth())
+    .attr("rx", 8)
+    .attr("ry", 8)
+    .attr("fill", "#e3e3e3")
+    .attr("opacity", 0.9);
 
-  rows.append("rect").attr("class", "overall-bar-fill")
-    .attr("x", 0).attr("y", 0).attr("width", 0).attr("height", yScale.bandwidth())
-    .attr("rx", 0).attr("ry", 0).attr("fill", (d) => d.color)
-    .attr("opacity", 1).attr("stroke", "none").attr("stroke-width", 0);
+  rows
+    .append("rect")
+    .attr("class", "overall-bar-fill")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 0)
+    .attr("height", yScale.bandwidth())
+    .attr("rx", 0)
+    .attr("ry", 0)
+    .attr("fill", (d) => d.color)
+    .attr("opacity", 1)
+    .attr("stroke", "none")
+    .attr("stroke-width", 0);
 
-  rows.append("text").attr("class", "overall-bar-value")
-    .attr("x", 8).attr("y", yScale.bandwidth() / 2 + 5)
-    .attr("font-size", 12).attr("font-weight", 600).attr("fill", "#555").text("0%");
+  rows
+    .append("text")
+    .attr("class", "overall-bar-value")
+    .attr("x", 8)
+    .attr("y", yScale.bandwidth() / 2 + 5)
+    .attr("font-size", 12)
+    .attr("font-weight", 600)
+    .attr("fill", "#555")
+    .text("0%");
 
   function updateState(stateName) {
     const isLeast = stateName === "least" || stateName === "least-annotated";
-    const isAnnotated = stateName === "most-annotated" || stateName === "least-annotated";
+    const isAnnotated =
+      stateName === "most-annotated" || stateName === "least-annotated";
     const current = isLeast ? cities.least : cities.most;
-    const highlightedFields = CITY_HIGHLIGHTS[(current.division || "").trim().toLowerCase()] || new Set();
+    const highlightedFields =
+      CITY_HIGHLIGHTS[(current.division || "").trim().toLowerCase()] ||
+      new Set();
 
     d3.select("#overall-narrative").html(NARRATIVES[stateName] || "");
 
     cityLabel.text(
-      `${current.division}, ${cleanProvinceName(current.province)}  ·  ${current.blockCount} blocks  ·  Population: ${formatPopulation(current.population)}`
+      `${current.division}, ${cleanProvinceName(current.province)}  ·  ${current.blockCount} blocks  ·  Population: ${formatPopulation(current.population)}`,
     );
 
     rows.each(function (service) {
       const currentValue = Math.max(0, +current[service.field] || 0);
       const currentBarWidth = xScale(currentValue);
-      const dynamicRadius = Math.min(8, currentBarWidth / 2, yScale.bandwidth() / 2);
+      const dynamicRadius = Math.min(
+        8,
+        currentBarWidth / 2,
+        yScale.bandwidth() / 2,
+      );
       const highlighted = isAnnotated && highlightedFields.has(service.field);
 
-      d3.select(this).select(".overall-bar-fill")
-        .transition().duration(1000).ease(d3.easeCubicInOut)
-        .attr("width", currentBarWidth).attr("rx", dynamicRadius).attr("ry", dynamicRadius)
+      d3.select(this)
+        .select(".overall-bar-fill")
+        .transition()
+        .duration(1000)
+        .ease(d3.easeCubicInOut)
+        .attr("width", currentBarWidth)
+        .attr("rx", dynamicRadius)
+        .attr("ry", dynamicRadius)
         .attr("opacity", isAnnotated ? (highlighted ? 1 : 0.22) : 1)
         .attr("stroke", highlighted ? "#222" : "none")
         .attr("stroke-width", highlighted ? 2 : 0);
 
-      d3.select(this).select(".overall-bar-value")
-        .transition().duration(1000).ease(d3.easeCubicInOut)
+      d3.select(this)
+        .select(".overall-bar-value")
+        .transition()
+        .duration(1000)
+        .ease(d3.easeCubicInOut)
         .attr("x", Math.min(currentBarWidth + 10, chartWidth + 10))
         .attr("font-weight", highlighted ? 800 : 700)
         .attr("fill", highlighted ? "#111" : "#555")
@@ -930,18 +1009,83 @@ function initOverallAccessibilityScrolly(data) {
     { threshold: 0.15, rootMargin: "0px 0px -25% 0px" },
   );
 
-  document.querySelectorAll(".overall-step").forEach((step) => observer.observe(step));
+  document
+    .querySelectorAll(".overall-step")
+    .forEach((step) => observer.observe(step));
 }
 
 /* Vis 3 */
-let selectedScatterDivisions = new Set();
+const SCATTER_POP_FILTERS = [
+  { key: "all", label: "All", max: null },
+  { key: "100kplus", label: "100K+", min: 100000, max: null },
+  { key: "50k-100k", label: "50k–100k", min: 50000, max: 100000 },
+  { key: "25k-50k", label: "25k–50k", min: 25000, max: 50000 },
+  { key: "15k-25k", label: "15k-25k", min: 15000, max: 25000 },
+  { key: "under15k", label: "Under 15k", min: 0, max: 15000 },
+];
+
+const scatterState = {
+  activePopFilter: "all",
+  bandMinRatio: 0.1,
+  bandMaxRatio: 0.34,
+};
+
+function passesPopulationFilter(d, filterKey) {
+  const filter = SCATTER_POP_FILTERS.find((f) => f.key === filterKey);
+  if (!filter) return true;
+
+  if (filter.key === "all") return true;
+  if (filter.min !== undefined && d.population < filter.min) return false;
+  if (
+    filter.max !== null &&
+    filter.max !== undefined &&
+    d.population >= filter.max
+  )
+    return false;
+  return true;
+}
+
+function getScatterMaxPopulation(scatterData, filterKey) {
+  const overallMax = d3.max(scatterData, (d) => d.population) || 1;
+  const filter = SCATTER_POP_FILTERS.find((f) => f.key === filterKey);
+
+  if (!filter || filter.key === "all") return overallMax;
+
+  if (filter.key === "100kplus") {
+    return overallMax;
+  }
+
+  return filter.max || overallMax;
+}
+
+function buildScatterPopulationButtons(data) {
+  const wrap = d3.select("#scatter-pop-buttons");
+
+  wrap
+    .selectAll("button")
+    .data(SCATTER_POP_FILTERS, (d) => d.key)
+    .join("button")
+    .attr("type", "button")
+    .attr(
+      "class",
+      (d) =>
+        `scatter-pop-btn ${d.key === scatterState.activePopFilter ? "active" : ""}`,
+    )
+    .text((d) => d.label)
+    .on("click", (_, d) => {
+      scatterState.activePopFilter = d.key;
+      buildScatterPopulationButtons(data);
+      renderScatter(data);
+    });
+}
 
 function renderScatter(data) {
   d3.select("#scatter-vis").html("");
   d3.select("#scatter-selection").html("");
 
   const scatterField = d3.select("#scatter-amenity-select").property("value");
-  const scatterLabel = UA_AMENITIES.find((a) => a.field === scatterField)?.label || scatterField;
+  const scatterLabel =
+    UA_AMENITIES.find((a) => a.field === scatterField)?.label || scatterField;
   const selectedAmenity = scatterLabel;
   const amenityInfo = AMENITY_INFO[selectedAmenity];
   const field = amenityInfo?.field;
@@ -965,13 +1109,48 @@ function renderScatter(data) {
     .map(([, value]) => value)
     .filter(
       (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
-    );
+    )
+    .sort((a, b) => d3.descending(a.proximity, b.proximity));
 
   if (!scatterData.length) return;
 
-  const width = 760;
-  const height = 460;
-  const margin = { top: 50, right: 40, bottom: 65, left: 75 };
+  buildScatterPopulationButtons(data);
+
+  const populationFilteredData = scatterData.filter((d) =>
+    passesPopulationFilter(d, scatterState.activePopFilter),
+  );
+
+  const width = 900;
+  const height = 520;
+  const margin = { top: 24, right: 32, bottom: 72, left: 88 };
+
+  const chartLeft = margin.left;
+  const chartRight = width - margin.right;
+  const chartTop = margin.top;
+  const chartBottom = height - margin.bottom;
+  const chartWidth = chartRight - chartLeft;
+  const chartHeight = chartBottom - chartTop;
+
+  const xMax = getScatterMaxPopulation(
+    scatterData,
+    scatterState.activePopFilter,
+  );
+  const x = d3
+    .scaleLinear()
+    .domain([0, xMax])
+    .nice()
+    .range([chartLeft, chartRight]);
+
+  const yExtent = d3.extent(scatterData, (d) => d.proximity);
+  const yPadding = ((yExtent[1] || 0) - (yExtent[0] || 0)) * 0.08 || 0.01;
+  const y = d3
+    .scaleLinear()
+    .domain([
+      Math.max(0, (yExtent[0] || 0) - yPadding),
+      (yExtent[1] || 0) + yPadding,
+    ])
+    .nice()
+    .range([chartBottom, chartTop]);
 
   const svg = d3
     .select("#scatter-vis")
@@ -980,47 +1159,37 @@ function renderScatter(data) {
     .style("width", "100%")
     .style("height", "auto");
 
-  const x = d3
-    .scaleLinear()
-    .domain(d3.extent(scatterData, (d) => d.population))
-    .nice()
-    .range([margin.left, width - margin.right]);
-
-  const y = d3
-    .scaleLinear()
-    .domain(d3.extent(scatterData, (d) => d.proximity))
-    .nice()
-    .range([height - margin.bottom, margin.top]);
-
-  const color = d3.scaleOrdinal(d3.schemeTableau10);
+  svg
+    .append("g")
+    .attr("transform", `translate(0, ${chartBottom})`)
+    .call(d3.axisBottom(x).ticks(7).tickFormat(d3.format(",")))
+    .call((g) => g.selectAll("text").attr("font-size", 12))
+    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
+    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
   svg
     .append("g")
-    .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(",")))
-    .call((g) => g.selectAll("text").attr("font-size", 12));
-
-  svg
-    .append("g")
-    .attr("transform", `translate(${margin.left}, 0)`)
+    .attr("transform", `translate(${chartLeft}, 0)`)
     .call(d3.axisLeft(y).ticks(6))
-    .call((g) => g.selectAll("text").attr("font-size", 12));
+    .call((g) => g.selectAll("text").attr("font-size", 12))
+    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
+    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
   svg
     .append("text")
+    .attr("class", "scatter-axis-label")
     .attr("x", width / 2)
-    .attr("y", height - 18)
+    .attr("y", height - 20)
     .attr("text-anchor", "middle")
-    .attr("font-size", 14)
     .text("Population");
 
   svg
     .append("text")
+    .attr("class", "scatter-axis-label")
     .attr("transform", "rotate(-90)")
     .attr("x", -height / 2)
-    .attr("y", 22)
+    .attr("y", 26)
     .attr("text-anchor", "middle")
-    .attr("font-size", 14)
     .text(`Average ${selectedAmenity.toLowerCase()} proximity`);
 
   const tooltip = d3
@@ -1041,171 +1210,299 @@ function renderScatter(data) {
     .style("box-shadow", "0 6px 18px rgba(0,0,0,0.12)")
     .style("z-index", 9999);
 
-  const points = svg
+  const bandLayer = svg.append("g");
+  const pointsLayer = svg.append("g");
+  const labelsLayer = svg.append("g");
+
+  const bandWidthMin = chartWidth * 0.08;
+
+  const clampBand = () => {
+    scatterState.bandMinRatio = Math.max(
+      0,
+      Math.min(1, scatterState.bandMinRatio),
+    );
+    scatterState.bandMaxRatio = Math.max(
+      0,
+      Math.min(1, scatterState.bandMaxRatio),
+    );
+
+    if (scatterState.bandMaxRatio < scatterState.bandMinRatio) {
+      const temp = scatterState.bandMinRatio;
+      scatterState.bandMinRatio = scatterState.bandMaxRatio;
+      scatterState.bandMaxRatio = temp;
+    }
+
+    if (
+      scatterState.bandMaxRatio - scatterState.bandMinRatio <
+      bandWidthMin / chartWidth
+    ) {
+      scatterState.bandMaxRatio = Math.min(
+        1,
+        scatterState.bandMinRatio + bandWidthMin / chartWidth,
+      );
+
+      if (scatterState.bandMaxRatio >= 1) {
+        scatterState.bandMaxRatio = 1;
+        scatterState.bandMinRatio = Math.max(0, 1 - bandWidthMin / chartWidth);
+      }
+    }
+  };
+
+  clampBand();
+
+  function getBandPixels() {
+    const x1 = chartLeft + scatterState.bandMinRatio * chartWidth;
+    const x2 = chartLeft + scatterState.bandMaxRatio * chartWidth;
+    return { x1, x2, width: x2 - x1 };
+  }
+
+  function getBandPopulationRange() {
+    const { x1, x2 } = getBandPixels();
+    const popMin = x.invert(x1);
+    const popMax = x.invert(x2);
+    return [Math.min(popMin, popMax), Math.max(popMin, popMax)];
+  }
+
+  function getBandSelectedData() {
+    const [bandPopMin, bandPopMax] = getBandPopulationRange();
+
+    return populationFilteredData.filter(
+      (d) => d.population >= bandPopMin && d.population <= bandPopMax,
+    );
+  }
+
+  function updateScatter() {
+    const bandData = getBandSelectedData();
+    const top10 = [...bandData]
+      .sort((a, b) => d3.descending(a.proximity, b.proximity))
+      .slice(0, 10);
+
+    const top10Names = new Set(top10.map((d) => d.division));
+    const bandSelectedNames = new Set(bandData.map((d) => d.division));
+    const { x1, x2, width: bandWidth } = getBandPixels();
+
+    bandLayer.selectAll("*").remove();
+
+    bandLayer
+      .append("rect")
+      .attr("class", "scatter-band")
+      .attr("x", x1)
+      .attr("y", chartTop)
+      .attr("width", bandWidth)
+      .attr("height", chartHeight);
+
+    bandLayer
+      .append("rect")
+      .attr("class", "scatter-band-handle")
+      .attr("x", x1)
+      .attr("y", chartTop)
+      .attr("width", bandWidth)
+      .attr("height", chartHeight)
+      .call(
+        d3.drag().on("drag", (event) => {
+          const dxRatio = event.dx / chartWidth;
+          const currentWidth =
+            scatterState.bandMaxRatio - scatterState.bandMinRatio;
+
+          scatterState.bandMinRatio += dxRatio;
+          scatterState.bandMaxRatio += dxRatio;
+
+          if (scatterState.bandMinRatio < 0) {
+            scatterState.bandMinRatio = 0;
+            scatterState.bandMaxRatio = currentWidth;
+          }
+
+          if (scatterState.bandMaxRatio > 1) {
+            scatterState.bandMaxRatio = 1;
+            scatterState.bandMinRatio = 1 - currentWidth;
+          }
+
+          clampBand();
+          updateScatter();
+        }),
+      );
+
+    pointsLayer
+      .selectAll("circle")
+      .data(populationFilteredData, (d) => d.division)
+      .join("circle")
+      .attr("class", "scatter-dot")
+      .attr("cx", (d) => x(d.population))
+      .attr("cy", (d) => y(d.proximity))
+      .attr("r", 5.5)
+      .attr("fill", (d) =>
+        bandSelectedNames.has(d.division) ? "#335693" : "#a4a4a4",
+      )
+      .attr("opacity", 0.6)
+      .on("mouseenter", function (event, d) {
+        pointsLayer.selectAll("circle").classed("is-hovered", false);
+        d3.select(this).classed("is-hovered", true);
+
+        tooltip.style("opacity", 1).html(`
+    <strong>${d.division}</strong><br>
+    Population: ${d3.format(",")(d.population)}<br>
+    Average proximity: ${d3.format(".3f")(d.proximity)}<br>
+    Blocks: ${d.blockCount}
+  `);
+      })
+      .on("mousemove", function (event) {
+        tooltip
+          .style("left", `${event.clientX + 12}px`)
+          .style("top", `${event.clientY + 12}px`);
+      })
+      .on("mouseleave", function () {
+        pointsLayer.selectAll("circle").classed("is-hovered", false);
+        tooltip.style("opacity", 0);
+      });
+
+    labelsLayer.selectAll("*").remove();
+
+    labelsLayer
+      .selectAll("text")
+      .data(top10, (d) => d.division)
+      .join("text")
+      .attr("class", "scatter-label")
+      .attr("x", (d) => x(d.population) + 8)
+      .attr("y", (d) => y(d.proximity) - 8)
+      .text((d) => d.division);
+
+    renderScatterRanking(top10, selectedAmenity, y);
+  }
+
+  updateScatter();
+}
+
+function renderScatterRanking(top10, amenityLabel, yScale) {
+  const container = d3.select("#scatter-selection");
+  container.html("");
+
+  const tooltip = d3.select(".scatter-tooltip");
+
+  container
+    .append("div")
+    .attr("class", "scatter-secondary-title")
+    .text(
+      `Top 10 cities in the filter band ranked by highest average ${amenityLabel.toLowerCase()} proximity`,
+    );
+
+  if (!top10.length) {
+    container
+      .append("div")
+      .attr("class", "scatter-empty-note")
+      .text(
+        "No cities fall inside the grey filter band for this population view.",
+      );
+    return;
+  }
+
+  const width = 760;
+  const fixedHeight = 400;
+  const margin = { top: 12, right: 24, bottom: 48, left: 170 };
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = fixedHeight - margin.top - margin.bottom;
+
+  const svg = container
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${fixedHeight}`)
+    .style("width", "100%")
+    .style("height", "auto");
+
+  const chart = svg
     .append("g")
-    .selectAll("circle")
-    .data(scatterData, (d) => d.division)
-    .join("circle")
-    .attr("cx", (d) => x(d.population))
-    .attr("cy", (d) => y(d.proximity))
-    .attr("r", 5)
-    .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : "#607ab2",
-    )
-    .attr("opacity", 0.9)
-    .attr("stroke", "transparent")
-    .attr("stroke-width", 0);
+    .attr("transform", `translate(${margin.left - 50}, ${margin.top})`);
 
-  points
+  const x = d3.scaleLinear().domain(yScale.domain()).range([0, innerWidth]);
+  const rowHeight = 24;
+  const rowGap = 10;
+  const barStep = rowHeight + rowGap;
+
+  const y = (division) =>
+    top10.findIndex((d) => d.division === division) * barStep;
+  chart
+    .append("g")
+    .attr("class", "rank-grid")
+    .call(d3.axisBottom(x).ticks(5).tickSize(innerHeight).tickFormat(""))
+    .call((g) => g.select(".domain").remove())
+    .call((g) => g.selectAll("line").attr("stroke", "#e5e5e5"));
+
+  chart
+    .selectAll(".rank-bar")
+    .data(top10, (d) => d.division)
+    .join("rect")
+    .attr("class", "rank-bar")
+    .attr("x", 0)
+    .attr("y", (d) => y(d.division))
+    .attr("width", (d) => x(d.proximity))
+    .attr("height", rowHeight)
+    .attr("rx", 6)
+    .attr("ry", 6)
+    .attr("fill", "#5f7fb8")
+    .attr("opacity", 0.95)
+    .attr("stroke", (_, i) => (i === 0 ? "#222" : "none"))
+    .attr("stroke-width", (_, i) => (i === 0 ? 2 : 0))
     .on("mouseenter", function (event, d) {
-      d3.select(this).raise().attr("stroke", "#111").attr("stroke-width", 2.5);
-
       tooltip.style("opacity", 1).html(`
-          <strong>${d.division}</strong><br>
-          Population: ${d3.format(",")(d.population)}<br>
-          Average proximity: ${d3.format(".3f")(d.proximity)}<br>
-          Blocks: ${d.blockCount}
-        `);
+      <strong>${d.division}</strong><br>
+      Population: ${d3.format(",")(d.population)}<br>
+      Average proximity: ${d3.format(".3f")(d.proximity)}<br>
+      Blocks: ${d.blockCount}
+    `);
     })
     .on("mousemove", function (event) {
       tooltip
         .style("left", `${event.clientX + 12}px`)
         .style("top", `${event.clientY + 12}px`);
     })
-    .on("mouseleave", function (event, d) {
-      d3.select(this)
-        .attr(
-          "stroke",
-          selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
-        )
-        .attr("stroke-width", selectedScatterDivisions.has(d.division) ? 2 : 0);
-
+    .on("mouseleave", function () {
       tooltip.style("opacity", 0);
-    })
-    .on("click", function (event, d) {
-      selectedScatterDivisions.add(d.division);
-      updateScatterSelection(scatterData, points, color);
     });
 
-  const topOutliers = scatterData
-    .slice()
-    .sort((a, b) => d3.descending(a.proximity, b.proximity))
-    .slice(0, 10);
+  chart
+    .selectAll(".rank-best-fit")
+    .data(top10.slice(0, 1))
+    .join("text")
+    .attr("class", "rank-best-fit")
+    .attr("x", (d) => Math.min(x(d.proximity) + 10, innerWidth + 10))
+    .attr("y", (d) => y(d.division) + rowHeight / 2 + 5)
+    .attr("font-size", 12)
+    .attr("font-weight", 800)
+    .attr("fill", "#111")
+    .text("Highest match!");
+
+  chart
+    .append("g")
+    .attr("class", "rank-y-axis")
+    .selectAll("text")
+    .data(top10, (d) => d.division)
+    .join("text")
+    .attr("class", "scatter-rank-label")
+    .attr("x", -10)
+    .attr("y", (d) => y(d.division) + rowHeight / 2 + 5)
+    .attr("text-anchor", "end")
+    .text((d) => d.division);
+
+  chart
+    .append("g")
+    .attr("class", "rank-x-axis")
+    .attr("transform", `translate(0, ${innerHeight})`)
+    .call(
+      d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f")),
+    )
+    .call((g) =>
+      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"),
+    )
+    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
+    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
   svg
-    .append("g")
-    .selectAll("text.scatter-label")
-    .data(topOutliers)
-    .join("text")
-    .attr("class", "scatter-label")
-    .attr("x", (d) => x(d.population))
-    .attr("y", (d) => y(d.proximity) - 8)
+    .append("text")
+    .attr("class", "scatter-axis-label")
+    .attr("x", width / 2)
+    .attr("y", fixedHeight - 8)
     .attr("text-anchor", "middle")
-    .attr("font-size", 10)
-    .attr("fill", "#111")
-    .text((d) => d.division);
-
-  updateScatterSelection(scatterData, points, color);
+    .style("font-size", "12px")
+    .text(`Average ${amenityLabel.toLowerCase()} proximity index`);
 }
-
-function updateScatterSelection(scatterData, points, color) {
-  points
-    .attr("fill", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#d62828" : "#607ab2",
-    )
-    .attr("stroke", (d) =>
-      selectedScatterDivisions.has(d.division) ? "#7f0000" : "transparent",
-    )
-    .attr("stroke-width", (d) =>
-      selectedScatterDivisions.has(d.division) ? 2 : 0,
-    );
-
-  const selectedData = scatterData
-    .filter((d) => selectedScatterDivisions.has(d.division))
-    .sort((a, b) => d3.descending(a.population, b.population));
-
-  const container = d3.select("#scatter-selection");
-
-  container.html("");
-
-  if (selectedData.length === 0) {
-    container
-      .append("p")
-      .style("color", "var(--text-muted)")
-      .style("font-style", "italic")
-      .style("margin-top", "0.75rem")
-      .text("Click on points in the above graph to compare between multiple cities.");
-    return;
-  }
-
-  container
-    .append("h3")
-    .style("margin", "1rem 0 0.75rem 0")
-    .style("font-size", "1.05rem")
-    .text("Selected divisions");
-
-  const items = container
-    .append("div")
-    .style("display", "flex")
-    .style("flex-direction", "column")
-    .style("gap", "0.6rem")
-    .selectAll(".scatter-selected-item")
-    .data(selectedData, (d) => d.division)
-    .join("div")
-    .attr("class", "scatter-selected-item")
-    .style("display", "flex")
-    .style("justify-content", "space-between")
-    .style("align-items", "center")
-    .style("gap", "1rem")
-    .style("padding", "2rem 2rem")
-    .style("background", "#e8e8e4")
-    .style("border-radius", "10px");
-
-  const textWrap = items
-    .append("div")
-    .style("display", "flex")
-    .style("flex-direction", "column")
-    .style("gap", "0.2rem");
-
-  textWrap
-    .append("div")
-    .style("font-weight", 700)
-    .style("font-size", "1rem")
-    .text((d) => d.division);
-
-  textWrap
-    .append("div")
-    .style("font-size", "0.92rem")
-    .style("color", "#555")
-    .text((d) => `Population: ${d3.format(",")(d.population)}`);
-
-  const cardAmenityLabel = UA_AMENITIES.find(
-    (a) => a.field === d3.select("#scatter-amenity-select").property("value"),
-  )?.label || "service";
-
-  textWrap
-    .append("div")
-    .style("font-size", "0.92rem")
-    .style("color", "#555")
-    .text((d) => `Average proximity to ${cardAmenityLabel}: ${d3.format(".3f")(d.proximity)}`);
-
-  items
-    .append("button")
-    .attr("type", "button")
-    .text("×")
-    .style("border", "none")
-    .style("background", "transparent")
-    .style("font-size", "1.2rem")
-    .style("cursor", "pointer")
-    .style("line-height", 1)
-    .style("padding", "0.2rem 0.35rem")
-    .on("click", function (event, d) {
-      event.stopPropagation();
-      selectedScatterDivisions.delete(d.division);
-      updateScatterSelection(scatterData, points, color);
-    });
-}
-
 // ── BC TIME-TO-LIFE INDEX VISUALIZATION ──────────────────────────────
 
 // ── LIFESTYLE ARCHETYPES ─────────────────────────────────────────────

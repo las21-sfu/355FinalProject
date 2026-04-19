@@ -125,7 +125,7 @@
             rather than measuring how close or accessible that service is.
           </p>
         </section>
-
+        
         <!-- Vis 3 -->
         <section id="scatter-section" class="scatter-section">
           <h2>Not everyone prefers to live in busy cities.</h2>
@@ -136,17 +136,27 @@
           </p>
           <br>
 
-        
-          <h2>
-            Population vs Average Proximity to 
-            <span class="ua-select-wrap">
-              <select id="scatter-amenity-select"></select>
-              <span id="scatter-select-sizer" aria-hidden="true"></span>
-            </span>
-          </h2>
-          <p>
-            The top 10 cities (divisions) with the best accessibility are labeled in the chart.
-          </p>
+          <div class="scatter-header-row">
+            <div class="scatter-title-wrap">
+              <h2>
+                Population vs Average Proximity to
+                <span class="ua-select-wrap">
+                  <select id="scatter-amenity-select"></select>
+                  <span id="scatter-select-sizer" aria-hidden="true"></span>
+                </span>
+              </h2>
+              <p>
+                The top 10 cities (divisions) with the best accessibility inside
+                the grey band are labeled and ranked below.
+              </p>
+            </div>
+
+            <div class="scatter-filter-panel">
+              <div class="scatter-filter-title">Filter by population size:</div>
+              <div class="scatter-pop-buttons" id="scatter-pop-buttons"></div>
+            </div>
+          </div>
+
           <div id="scatter-vis"></div>
           <div id="scatter-selection"></div>
         </section>
