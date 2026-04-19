@@ -88,21 +88,6 @@
               <span class="ua-select-wrap">
                 <select id="ua-amenity-select"></select>
                 <span id="ua-select-sizer" aria-hidden="true"></span>
-                <svg
-                  class="ua-chevron"
-                  viewBox="0 0 10 6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M0 0L5 6L10 0"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
               </span>
               is <strong id="ua-van-avg"></strong>, which translates to about a
               <strong id="ua-van-min"></strong>.
@@ -122,49 +107,46 @@
 
         <!-- Vis 2 -->
         <section id="overall-section" class="overall-section">
-          <h2>
-            Different areas may prioritize easier access to different services.
-          </h2>
-          <p>
-            NOTE!! This visualization shows how evenly services are distributed
-            across neighborhoods, not how strong or frequent they are. It checks
-            whether at least one service is present in each block, rather than
-            measuring how good or accessible that service is. Therefore, some
-            divisions may have strong transit systems overall, but if services
-            are unevenly distributed, they may appear to have lower coverage in
-            this visualization.
-          </p>
-
           <div id="overall-scrolly">
             <div id="overall-sticky">
+              <h2>Different areas may prioritize easier access to different services.</h2>
+              <h3 id="overall-narrative"></h3>
               <div id="overall-vis"></div>
             </div>
 
-            <div class="overall-step overall-step-long" data-state="most"></div>
+            <div class="overall-step" data-state="most"></div>
             <div class="overall-step" data-state="most-annotated"></div>
-            <div
-              class="overall-step overall-step-long"
-              data-state="least"
-            ></div>
+            <div class="overall-step" data-state="least"></div>
             <div class="overall-step" data-state="least-annotated"></div>
           </div>
+
+          <p class="overall-footnote">
+            Note: This visualization shows whether at least one service is present in each block,
+            rather than measuring how close or accessible that service is.
+          </p>
         </section>
 
         <!-- Vis 3 -->
         <section id="scatter-section" class="scatter-section">
           <h2>Not everyone prefers to live in busy cities.</h2>
-          <h3>Which city fits your lifestyle?</h3>
           <p>
             Even though Vancouver stands out for its diverse community and high
-            accessibility ranking across the amenities, some smaller communities
-            may provide just as much access.
+            accessibility ranking across most amenities, some smaller communities
+            may provide just as much (or even more) access.
           </p>
+          <br>
 
-          <h3>Click on cities you want to explore</h3>
-          <p class="subtext">
-            The top 10 accessibility outliers are labeled in the chart.
+        
+          <h2>
+            Population vs Average Proximity to 
+            <span class="ua-select-wrap">
+              <select id="scatter-amenity-select"></select>
+              <span id="scatter-select-sizer" aria-hidden="true"></span>
+            </span>
+          </h2>
+          <p>
+            The top 10 cities (divisions) with the best accessibility are labeled in the chart.
           </p>
-          <select id="amenity-select" aria-label="Amenity"></select>
           <div id="scatter-vis"></div>
           <div id="scatter-selection"></div>
         </section>
@@ -182,16 +164,16 @@
             week (walking there and back) we can estimate how many hours you’ll
             spend in transit if your chosen mode is your own two feet.
           </p>
-          <p class="subtitle">
-            British Columbia Regions — Weekly minutes spent accessing essential
-            services
-          </p>
+          <br>
+          <h2>
+            Comparing weekly minutes spent accessing essential services
+          <h2>
 
           <svg id="chart"></svg>
 
           <div class="legend" id="legend"></div>
 
-          <div class="methodology">
+          <!-- <div class="methodology">
             <h3>Index Score → Travel Time Mapping</h3>
             <p>
               <strong>0.8–1.0:</strong> 5 min/trip &nbsp;&nbsp;
@@ -203,7 +185,7 @@
               Data source: Statistics Canada Proximity Measures Database
               (PMD-en.csv). Services shown: Grocery, Transit, Healthcare, Parks.
             </p>
-          </div>
+          </div> -->
         </section>
 
         <!-- Section 2: Lifestyle Archetypes -->
@@ -212,6 +194,7 @@
             You can also choose a suitable location based on the four proximity
             archetypes; what matters to you most?
           </h2>
+          <br>
 
           <div class="archetypes-grid" id="archetypesGrid">
             <div class="loading">Loading data...</div>

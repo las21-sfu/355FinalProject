@@ -152,15 +152,11 @@ window.addEventListener("DOMContentLoaded", () => {
         return province.includes("british columbia");
       });
 
-      initDropdown();
+      initScatterDropdown(bcData);
       render(bcData);
       initUnderstandingAccessibility(bcData);
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
-      d3.select("#amenity-select").on("change", () => {
-        render(bcData);
-        renderScatter(bcData);
-      });
     })
     .catch((error) => {
       console.error(error);
@@ -170,14 +166,30 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function initDropdown() {
-  d3.select("#amenity-select")
+function initScatterDropdown(bcData) {
+  const select = d3.select("#scatter-amenity-select");
+  select
     .selectAll("option")
-    .data(Object.keys(AMENITY_INFO))
+    .data(UA_AMENITIES)
     .join("option")
-    .attr("value", (d) => d)
-    .property("selected", (d) => d === "Grocery")
-    .text((d) => d);
+    .attr("value", (d) => d.field)
+    .property("selected", (d) => d.field === "grocery")
+    .text((d) => d.label);
+
+  function resizeSelect() {
+    const el = document.getElementById("scatter-amenity-select");
+    const sizer = document.getElementById("scatter-select-sizer");
+    if (!el || !sizer) return;
+    sizer.textContent = el.options[el.selectedIndex]?.text ?? "";
+    el.style.width = sizer.offsetWidth + 4 + "px";
+  }
+
+  select.on("change", () => {
+    resizeSelect();
+    renderScatter(bcData);
+  });
+
+  requestAnimationFrame(resizeSelect);
 }
 
 const UA_AMENITIES = [
@@ -243,7 +255,7 @@ function initUnderstandingAccessibility(data) {
     const sizer = document.getElementById("ua-select-sizer");
     if (!el || !sizer) return;
     sizer.textContent = el.options[el.selectedIndex]?.text ?? "";
-    el.style.width = sizer.offsetWidth + "px";
+    el.style.width = sizer.offsetWidth + 4 + "px";
   }
 
   initProximityBar("#ua-vancouver-chart");
@@ -747,434 +759,178 @@ function showError(message) {
 }
 
 // Vis 2
-const MIN_BLOCK_THRESHOLD = 100;
+const CITY_HIGHLIGHTS = {
+  "maple ridge": new Set(["in_db_childcare", "in_db_educpri", "in_db_educsec", "in_db_emp"]),
+  "whistler": new Set(["in_db_parks", "in_db_health"]),
+};
+
+const NARRATIVES = {
+  "most": "This is the percentage of blocks where a particular service is present, in Maple Ridge.",
+  "most-annotated": "Let's focus on <strong>employment, childcare</strong> and <strong>schooling</strong>.",
+  "least": "Compared to Whistler, those services are less prioritized.",
+  "least-annotated": "Instead, <strong>parks</strong> and <strong>health</strong> amenities are found more commonly inside Whistler's blocks.",
+};
 
 function formatPopulation(value) {
   if (!Number.isFinite(value)) return "N/A";
   return d3.format(",")(Math.round(value));
 }
 
-function countServicePresenceAcrossBlocks(rows, field) {
-  return d3.sum(rows, (row) => {
-    const value = row[field];
-    return Number.isFinite(value) && value >= 1 ? 1 : 0;
-  });
-}
-
 function computeServicePresencePercentage(rows, field) {
   if (!rows.length) return 0;
-  const count = countServicePresenceAcrossBlocks(rows, field);
+  const count = d3.sum(rows, (row) => {
+    const v = row[field];
+    return Number.isFinite(v) && v >= 1 ? 1 : 0;
+  });
   return (count / rows.length) * 100;
 }
 
-function computeOverallAccessibilityExtremes(data) {
+function initOverallAccessibilityScrolly(data) {
   const grouped = d3
     .rollups(
       data,
       (rows) => {
         const servicePercentages = {};
-
-        SERVICE_TYPE_INFO.forEach((service) => {
-          servicePercentages[service.field] = computeServicePresencePercentage(
-            rows,
-            service.field,
-          );
+        SERVICE_TYPE_INFO.forEach((s) => {
+          servicePercentages[s.field] = computeServicePresencePercentage(rows, s.field);
         });
-
-        const averageServicePercentage =
-          d3.mean(SERVICE_TYPE_INFO, (service) => {
-            return servicePercentages[service.field];
-          }) || 0;
-
-        const population = d3.sum(rows, (row) =>
-          Number.isFinite(row.population) ? row.population : 0,
-        );
-
         return {
           division: rows[0]?.division || "Unknown Division",
           province: rows[0]?.province || "Unknown Province",
           blockCount: rows.length,
-          population,
-          averageServicePercentage,
+          population: d3.sum(rows, (r) => Number.isFinite(r.population) ? r.population : 0),
           ...servicePercentages,
         };
       },
       (d) => d.division,
     )
-    .map(([, value]) => value)
-    .filter((d) => Number.isFinite(d.averageServicePercentage));
+    .map(([, v]) => v);
 
-  if (!grouped.length) return null;
+  const findCity = (name) =>
+    grouped.find((d) => (d.division || "").trim().toLowerCase() === name) ||
+    grouped.find((d) => (d.division || "").trim().toLowerCase().includes(name));
 
-  const eligible = grouped.filter((d) => d.blockCount >= MIN_BLOCK_THRESHOLD);
-  const pool = eligible.length ? eligible : grouped;
-
-  const sorted = pool
-    .slice()
-    .sort((a, b) =>
-      d3.descending(a.averageServicePercentage, b.averageServicePercentage),
-    );
-
-  const most = sorted[0];
-
-  const kelowna =
-    pool.find((d) => (d.division || "").trim().toLowerCase() === "kelowna") ||
-    pool.find((d) =>
-      (d.division || "").trim().toLowerCase().includes("kelowna"),
-    ) ||
-    sorted[sorted.length - 1];
-
-  return {
-    most,
-    least: kelowna,
-    grouped: pool,
-  };
-}
-
-function getTopServicesForDivision(divisionData, topN = 3) {
-  return SERVICE_TYPE_INFO.map((service) => ({
-    ...service,
-    value: Number.isFinite(divisionData[service.field])
-      ? divisionData[service.field]
-      : 0,
-  }))
-    .sort((a, b) => d3.descending(a.value, b.value))
-    .slice(0, topN);
-}
-
-function formatServiceList(services) {
-  const names = services.map((d) => d.label);
-
-  if (names.length === 0) return "";
-  if (names.length === 1) return names[0];
-  if (names.length === 2) return `${names[0]} and ${names[1]}`;
-
-  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
-}
-
-function initOverallAccessibilityScrolly(data) {
-  const extremes = computeOverallAccessibilityExtremes(data);
-
-  if (!extremes) {
-    d3.select("#overall-vis").html(
-      "<div class='error'>Could not compute overall accessibility.</div>",
-    );
-    return;
-  }
+  const cities = { most: findCity("maple ridge"), least: findCity("whistler") };
 
   const container = d3.select("#overall-vis");
   container.html("");
 
-  const layout = container.append("div").attr("class", "overall-layout");
+  const cityLabel = container.append("h4").attr("class", "overall-city-label");
 
-  const visPane = layout.append("div").attr("class", "overall-vis-pane");
-  const note = layout.append("div").attr("class", "overall-note");
+  const width = 800;
+  const height = 480;
+  const margin = { top: 20, right: 20, bottom: 60, left: 120 };
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = 400;
 
-  const width = 1200;
-  const height = 780;
-
-  const svg = visPane
+  const svg = container
     .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
     .style("width", "100%")
-    .style("height", "auto");
+    .style("height", "auto")
+    .style("font-family", "inherit");
 
-  const margin = { top: 90, right: 120, bottom: 90, left: 260 };
-  const chartWidth = width - margin.left - margin.right;
-  const chartHeight = 460;
-
-  const maxPercent = d3.max(extremes.grouped, (division) =>
-    d3.max(SERVICE_TYPE_INFO, (service) => {
-      const value = division[service.field];
-      return Number.isFinite(value) ? value : 0;
-    }),
-  );
-
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, Math.max(100, maxPercent || 0)])
-    .nice()
-    .range([0, chartWidth]);
-
-  const yScale = d3
-    .scaleBand()
+  const xScale = d3.scaleLinear().domain([0, 100]).range([0, chartWidth]);
+  const yScale = d3.scaleBand()
     .domain(SERVICE_TYPE_INFO.map((d) => d.label))
     .range([0, chartHeight])
     .padding(0.28);
 
-  const overallTitle = svg
-    .append("text")
-    .attr("x", 40)
-    .attr("y", 38)
-    .attr("font-size", 30)
-    .attr("font-weight", 800);
+  const chart = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  const chart = svg
-    .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-  chart
-    .append("g")
-    .attr("class", "x-axis")
+  chart.append("g").attr("class", "x-axis")
     .attr("transform", `translate(0, ${chartHeight})`)
-    .call(
-      d3
-        .axisBottom(xScale)
-        .ticks(5)
-        .tickFormat((d) => `${d}%`),
-    )
-    .call((g) => g.selectAll("text").attr("font-size", 13))
-    .call((g) => g.selectAll("line").attr("stroke", "#555"))
-    .call((g) => g.select(".domain").attr("stroke", "#555"));
+    .call(d3.axisBottom(xScale).ticks(5).tickFormat((d) => `${d}%`))
+    .call((g) => g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"))
+    .call((g) => g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5))
+    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
-  chart
-    .append("text")
-    .attr("x", chartWidth / 2)
-    .attr("y", chartHeight + 52)
-    .attr("text-anchor", "middle")
-    .attr("font-size", 15)
-    .attr("fill", "#555")
+  chart.append("text")
+    .attr("x", chartWidth / 2).attr("y", chartHeight + 52)
+    .attr("text-anchor", "middle").attr("font-size", 12).attr("fill", "#6b7080")
     .text("Percent of blocks in the division where the service is present");
 
-  chart
-    .append("g")
-    .attr("class", "y-axis")
-    .call(d3.axisLeft(yScale).tickSize(0))
+  chart.append("g").attr("class", "y-axis")
+    .call(d3.axisLeft(yScale).tickSize(0).tickPadding(10))
     .call((g) => g.select(".domain").remove())
-    .call((g) =>
-      g.selectAll("text").attr("font-size", 16).attr("font-weight", 700),
-    );
+    .call((g) => g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080").attr("font-weight", 600));
 
-  chart
-    .append("g")
-    .attr("class", "grid")
+  chart.append("g").attr("class", "grid")
     .call(d3.axisBottom(xScale).ticks(5).tickSize(chartHeight).tickFormat(""))
     .call((g) => g.attr("transform", `translate(0, 0)`))
     .call((g) => g.select(".domain").remove())
     .call((g) => g.selectAll("line").attr("stroke", "#ddd"));
 
-  const rows = chart
-    .selectAll(".overall-bar-row")
-    .data(SERVICE_TYPE_INFO)
-    .join("g")
+  const rows = chart.selectAll(".overall-bar-row")
+    .data(SERVICE_TYPE_INFO).join("g")
     .attr("class", "overall-bar-row")
     .attr("transform", (d) => `translate(0, ${yScale(d.label)})`);
 
-  rows
-    .append("rect")
-    .attr("class", "overall-bar-bg")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", chartWidth)
-    .attr("height", yScale.bandwidth())
-    .attr("rx", 8)
-    .attr("ry", 8)
-    .attr("fill", "#e3e3e3")
-    .attr("opacity", 0.9);
+  rows.append("rect").attr("class", "overall-bar-bg")
+    .attr("x", 0).attr("y", 0)
+    .attr("width", chartWidth).attr("height", yScale.bandwidth())
+    .attr("rx", 8).attr("ry", 8).attr("fill", "#e3e3e3").attr("opacity", 0.9);
 
-  rows
-    .append("rect")
-    .attr("class", "overall-bar-reference")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", (d) => {
-      const referenceValue = Math.max(0, +extremes.most[d.field] || 0);
-      return xScale(referenceValue);
-    })
-    .attr("height", yScale.bandwidth())
-    .attr("rx", (d) => {
-      const referenceValue = Math.max(0, +extremes.most[d.field] || 0);
-      const referenceWidth = xScale(referenceValue);
-      return Math.min(8, referenceWidth / 2, yScale.bandwidth() / 2);
-    })
-    .attr("ry", (d) => {
-      const referenceValue = Math.max(0, +extremes.most[d.field] || 0);
-      const referenceWidth = xScale(referenceValue);
-      return Math.min(8, referenceWidth / 2, yScale.bandwidth() / 2);
-    })
-    .attr("fill", "#bdbdbd")
-    .attr("opacity", 0);
+  rows.append("rect").attr("class", "overall-bar-fill")
+    .attr("x", 0).attr("y", 0).attr("width", 0).attr("height", yScale.bandwidth())
+    .attr("rx", 0).attr("ry", 0).attr("fill", (d) => d.color)
+    .attr("opacity", 1).attr("stroke", "none").attr("stroke-width", 0);
 
-  rows
-    .append("rect")
-    .attr("class", "overall-bar-fill")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", 0)
-    .attr("height", yScale.bandwidth())
-    .attr("rx", 0)
-    .attr("ry", 0)
-    .attr("fill", (d) => d.color)
-    .attr("opacity", 1)
-    .attr("stroke", "none")
-    .attr("stroke-width", 0);
-
-  rows
-    .append("text")
-    .attr("class", "overall-bar-value")
-    .attr("x", 8)
-    .attr("y", yScale.bandwidth() / 2 + 5)
-    .attr("font-size", 15)
-    .attr("font-weight", 700)
-    .attr("fill", "#555")
-    .text("0%");
+  rows.append("text").attr("class", "overall-bar-value")
+    .attr("x", 8).attr("y", yScale.bandwidth() / 2 + 5)
+    .attr("font-size", 12).attr("font-weight", 600).attr("fill", "#555").text("0%");
 
   function updateState(stateName) {
     const isLeast = stateName === "least" || stateName === "least-annotated";
-    const isAnnotated =
-      stateName === "most-annotated" || stateName === "least-annotated";
+    const isAnnotated = stateName === "most-annotated" || stateName === "least-annotated";
+    const current = isLeast ? cities.least : cities.most;
+    const highlightedFields = CITY_HIGHLIGHTS[(current.division || "").trim().toLowerCase()] || new Set();
 
-    const current = isLeast ? extremes.least : extremes.most;
-    const highlightCount = isLeast ? 2 : 3;
-    const topServices = getTopServicesForDivision(current, highlightCount);
-    const highlightedFields = new Set(topServices.map((d) => d.field));
+    d3.select("#overall-narrative").html(NARRATIVES[stateName] || "");
 
-    const currentProvince = cleanProvinceName(current.province);
-    overallTitle.text(
-      `Relative service access in ${current.division}, ${currentProvince}`,
+    cityLabel.text(
+      `${current.division}, ${cleanProvinceName(current.province)}  ·  ${current.blockCount} blocks  ·  Population: ${formatPopulation(current.population)}`
     );
 
     rows.each(function (service) {
       const currentValue = Math.max(0, +current[service.field] || 0);
-      const referenceValue = Math.max(0, +extremes.most[service.field] || 0);
+      const currentBarWidth = xScale(currentValue);
+      const dynamicRadius = Math.min(8, currentBarWidth / 2, yScale.bandwidth() / 2);
+      const highlighted = isAnnotated && highlightedFields.has(service.field);
 
-      const row = d3.select(this);
+      d3.select(this).select(".overall-bar-fill")
+        .transition().duration(1000).ease(d3.easeCubicInOut)
+        .attr("width", currentBarWidth).attr("rx", dynamicRadius).attr("ry", dynamicRadius)
+        .attr("opacity", isAnnotated ? (highlighted ? 1 : 0.22) : 1)
+        .attr("stroke", highlighted ? "#222" : "none")
+        .attr("stroke-width", highlighted ? 2 : 0);
 
-      const rawCurrentBarWidth = xScale(currentValue);
-      const referenceBarWidth = xScale(referenceValue);
-      const currentBarWidth = Math.min(rawCurrentBarWidth, referenceBarWidth);
-
-      row
-        .select(".overall-bar-reference")
-        .transition()
-        .duration(250)
-        .ease(d3.easeLinear)
-        .attr("opacity", isLeast ? 0.45 : 0);
-
-      const dynamicRadius = Math.min(
-        8,
-        currentBarWidth / 2,
-        yScale.bandwidth() / 2,
-      );
-
-      row
-        .select(".overall-bar-fill")
-        .transition()
-        .duration(1000)
-        .ease(d3.easeCubicInOut)
-        .attr("width", currentBarWidth)
-        .attr("rx", dynamicRadius)
-        .attr("ry", dynamicRadius)
-        .attr(
-          "opacity",
-          isAnnotated ? (highlightedFields.has(service.field) ? 1 : 0.22) : 1,
-        )
-        .attr(
-          "stroke",
-          isAnnotated && highlightedFields.has(service.field) ? "#222" : "none",
-        )
-        .attr(
-          "stroke-width",
-          isAnnotated && highlightedFields.has(service.field) ? 2 : 0,
-        );
-
-      row
-        .select(".overall-bar-value")
-        .transition()
-        .duration(1000)
-        .ease(d3.easeCubicInOut)
+      d3.select(this).select(".overall-bar-value")
+        .transition().duration(1000).ease(d3.easeCubicInOut)
         .attr("x", Math.min(currentBarWidth + 10, chartWidth + 10))
-        .attr(
-          "font-weight",
-          isAnnotated && highlightedFields.has(service.field) ? 800 : 700,
-        )
-        .attr(
-          "fill",
-          isAnnotated && highlightedFields.has(service.field) ? "#111" : "#555",
-        )
+        .attr("font-weight", highlighted ? 800 : 700)
+        .attr("fill", highlighted ? "#111" : "#555")
         .tween("text", function () {
           const that = d3.select(this);
           const start = parseFloat(that.text().replace("%", "")) || 0;
-          const i = d3.interpolateNumber(start, currentValue);
-          return function (t) {
-            that.text(`${d3.format(".1f")(i(t))}%`);
-          };
+          const interp = d3.interpolateNumber(start, currentValue);
+          return (t) => that.text(`${d3.format(".1f")(interp(t))}%`);
         });
     });
-
-    if (!isAnnotated) {
-      note.html(`
-        <strong>${current.division}</strong>, ${cleanProvinceName(
-          current.province,
-        )} is shown here as the <strong>${
-          isLeast ? "comparison division" : "most accessible division"
-        }</strong>.
-        <br /><br />
-        Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
-        )}%</strong> of blocks contain these services on average.
-        <br />
-        <strong>Blocks included:</strong> ${current.blockCount}
-        <br />
-        <strong>Population:</strong> ${formatPopulation(current.population)}
-        <br />
-      `);
-      return;
-    }
-
-    if (!isLeast) {
-      note.html(`
-        <strong>In ${
-          current.division
-        }</strong> (most accessible), <strong>${formatServiceList(
-          topServices,
-        )}</strong> are most commonly found inside each block.
-        <br /><br />
-        Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
-        )}%</strong> of blocks contain these services on average.
-        <br />
-        <strong>Blocks included:</strong> ${current.blockCount}
-        <br />
-        <strong>Population:</strong> ${formatPopulation(current.population)}
-        <br />
-      `);
-    } else {
-      note.html(`
-        <strong>In ${current.division}</strong>, <strong>${formatServiceList(
-          topServices,
-        )}</strong> are the most commonly present services across blocks.
-        <br /><br />
-        Across all categories, <strong>${d3.format(".1f")(
-          current.averageServicePercentage,
-        )}%</strong> of blocks contain these services on average.
-        <br />
-        <strong>Blocks included:</strong> ${current.blockCount}
-        <br />
-        <strong>Population:</strong> ${formatPopulation(current.population)}
-        <br />
-      `);
-    }
   }
 
   updateState("most");
 
-  const steps = document.querySelectorAll(".overall-step");
-
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        updateState(entry.target.dataset.state);
+        if (entry.isIntersecting) updateState(entry.target.dataset.state);
       });
     },
-    {
-      threshold: 0.15,
-      rootMargin: "0px 0px -25% 0px",
-    },
+    { threshold: 0.15, rootMargin: "0px 0px -25% 0px" },
   );
 
-  steps.forEach((step) => observer.observe(step));
+  document.querySelectorAll(".overall-step").forEach((step) => observer.observe(step));
 }
 
 /* Vis 3 */
@@ -1184,7 +940,9 @@ function renderScatter(data) {
   d3.select("#scatter-vis").html("");
   d3.select("#scatter-selection").html("");
 
-  const selectedAmenity = d3.select("#amenity-select").property("value");
+  const scatterField = d3.select("#scatter-amenity-select").property("value");
+  const scatterLabel = UA_AMENITIES.find((a) => a.field === scatterField)?.label || scatterField;
+  const selectedAmenity = scatterLabel;
   const amenityInfo = AMENITY_INFO[selectedAmenity];
   const field = amenityInfo?.field;
 
@@ -1264,15 +1022,6 @@ function renderScatter(data) {
     .attr("text-anchor", "middle")
     .attr("font-size", 14)
     .text(`Average ${selectedAmenity.toLowerCase()} proximity`);
-
-  svg
-    .append("text")
-    .attr("x", width / 2)
-    .attr("y", 26)
-    .attr("text-anchor", "middle")
-    .attr("font-size", 16)
-    .attr("font-weight", 700)
-    .text(`Population vs ${selectedAmenity} accessibility in British Columbia`);
 
   const tooltip = d3
     .select("body")
@@ -1379,6 +1128,16 @@ function updateScatterSelection(scatterData, points, color) {
 
   container.html("");
 
+  if (selectedData.length === 0) {
+    container
+      .append("p")
+      .style("color", "var(--text-muted)")
+      .style("font-style", "italic")
+      .style("margin-top", "0.75rem")
+      .text("Click on points in the above graph to compare between multiple cities.");
+    return;
+  }
+
   container
     .append("h3")
     .style("margin", "1rem 0 0.75rem 0")
@@ -1398,10 +1157,8 @@ function updateScatterSelection(scatterData, points, color) {
     .style("justify-content", "space-between")
     .style("align-items", "center")
     .style("gap", "1rem")
-    .style("padding", "0.75rem 0.9rem")
-    .style("background", "#fff")
-    .style("border", "1px solid #d9d9d9")
-    .style("border-left", "8px solid #d62828")
+    .style("padding", "2rem 2rem")
+    .style("background", "#e8e8e4")
     .style("border-radius", "10px");
 
   const textWrap = items
@@ -1413,6 +1170,7 @@ function updateScatterSelection(scatterData, points, color) {
   textWrap
     .append("div")
     .style("font-weight", 700)
+    .style("font-size", "1rem")
     .text((d) => d.division);
 
   textWrap
@@ -1421,11 +1179,15 @@ function updateScatterSelection(scatterData, points, color) {
     .style("color", "#555")
     .text((d) => `Population: ${d3.format(",")(d.population)}`);
 
+  const cardAmenityLabel = UA_AMENITIES.find(
+    (a) => a.field === d3.select("#scatter-amenity-select").property("value"),
+  )?.label || "service";
+
   textWrap
     .append("div")
     .style("font-size", "0.92rem")
     .style("color", "#555")
-    .text((d) => `Average proximity: ${d3.format(".3f")(d.proximity)}`);
+    .text((d) => `Average proximity to ${cardAmenityLabel}: ${d3.format(".3f")(d.proximity)}`);
 
   items
     .append("button")
@@ -1481,15 +1243,12 @@ function renderArchetypes(filter = "") {
   for (const arch of filtered) {
     const card = document.createElement("div");
     card.className = "archetype-card";
-    card.style.borderLeftColor = arch.color;
 
     const archHeader = document.createElement("div");
     archHeader.className = "archetype-header";
 
     const iconDiv = document.createElement("div");
     iconDiv.className = "archetype-icon";
-    iconDiv.style.background = `rgba(${hexToRgb(arch.color)}, 0.2)`;
-    iconDiv.style.color = arch.color;
     iconDiv.textContent = arch.icon;
     archHeader.appendChild(iconDiv);
 
