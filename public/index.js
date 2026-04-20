@@ -1438,7 +1438,7 @@ function renderScatter(data) {
       .attr("y", (d) => y(d.proximity) - 8)
       .text((d) => d.division);
 
-    renderScatterRanking(top10, selectedAmenity, y);
+    renderScatterRanking(top10, scatterLabel, y);
   }
 
   updateScatter();
