@@ -27,6 +27,40 @@ const PALETTE = {
   transit: "#5b9fd4",
 };
 
+// ── Loading Screen Management ────────────────────────
+
+/**
+ * Hide the loading screen with a smooth fade-out
+ */
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById("loading-screen");
+  if (loadingScreen) {
+    loadingScreen.classList.add("hidden");
+  }
+}
+
+/**
+ * Initialize loading screen behavior
+ * The screen will automatically hide when the page is fully loaded
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  // Wait for all resources (images, scripts, etc.) to load
+  window.addEventListener("load", function () {
+    // Optional: Add a small delay for a smoother experience
+    setTimeout(hideLoadingScreen, 500);
+  });
+});
+
+/**
+ * Alternative: Hide loading screen manually when your data is ready
+ * Call this function from your main script when your data/visualizations are loaded
+ * Example: hideLoadingScreen() after your D3/Leaflet charts are rendered
+ */
+
+// If you want to hide the loading screen at a specific point in your code,
+// you can call hideLoadingScreen() directly from your index.js file
+// For example, after your data has been fetched and visualizations are rendered
+
 const SERVICE_TYPE_INFO = [
   { label: "Employment", field: "in_db_emp", color: PALETTE.emp },
   { label: "Pharmacy", field: "in_db_pharma", color: PALETTE.pharmacy },
