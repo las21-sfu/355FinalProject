@@ -2,42 +2,46 @@ const DATA_PATH = "./PMD-en.csv";
 
 /* ── Shared colour palette (mirrors CSS :root variables) ── */
 const PALETTE = {
-  bg:           "#f7f7f4",
-  surface:      "#ffffff",
-  border:       "#e4e4e0",
+  bg: "#f7f7f4",
+  surface: "#ffffff",
+  border: "#e4e4e0",
   borderSubtle: "#efefec",
-  grayMid:      "#bcbcbc",
-  text:         "#18181a",
-  textMuted:    "#6b7080",
-  textLight:    "#9a9fad",
-  accent:       "#2563eb",
-  accentSoft:   "#eff6ff",
-  danger:       "#ef4444",
-  success:      "#22c55e",
-  chartAccent:  "#335693",
-  emp:          "#4363ee",
-  pharmacy:     "#6c63ff",
-  childcare:    "#f2b441",
-  health:       "#f4a5a5",
-  grocery:      "#7fd3a0",
-  primary:      "#2a9d8f",
-  secondary:    "#8e7dff",
-  library:      "#c77dff",
-  park:         "#f4d79f",
-  transit:      "#5b9fd4",
+  grayMid: "#bcbcbc",
+  text: "#18181a",
+  textMuted: "#6b7080",
+  textLight: "#9a9fad",
+  accent: "#2563eb",
+  accentSoft: "#eff6ff",
+  danger: "#ef4444",
+  success: "#22c55e",
+  chartAccent: "#335693",
+  emp: "#4363ee",
+  pharmacy: "#6c63ff",
+  childcare: "#f2b441",
+  health: "#f4a5a5",
+  grocery: "#7fd3a0",
+  primary: "#2a9d8f",
+  secondary: "#8e7dff",
+  library: "#c77dff",
+  park: "#f4d79f",
+  transit: "#5b9fd4",
 };
 
 const SERVICE_TYPE_INFO = [
-  { label: "Employment",       field: "in_db_emp",       color: PALETTE.emp },
-  { label: "Pharmacy",         field: "in_db_pharma",    color: PALETTE.pharmacy },
-  { label: "Childcare",        field: "in_db_childcare", color: PALETTE.childcare },
-  { label: "Health",           field: "in_db_health",    color: PALETTE.health },
-  { label: "Grocery",          field: "in_db_grocery",   color: PALETTE.grocery },
-  { label: "Primary School",   field: "in_db_educpri",   color: PALETTE.primary },
-  { label: "Secondary School", field: "in_db_educsec",   color: PALETTE.secondary },
-  { label: "Library",          field: "in_db_lib",       color: PALETTE.library },
-  { label: "Park",             field: "in_db_parks",     color: PALETTE.park },
-  { label: "Transit",          field: "in_db_transit",   color: PALETTE.transit },
+  { label: "Employment", field: "in_db_emp", color: PALETTE.emp },
+  { label: "Pharmacy", field: "in_db_pharma", color: PALETTE.pharmacy },
+  { label: "Childcare", field: "in_db_childcare", color: PALETTE.childcare },
+  { label: "Health", field: "in_db_health", color: PALETTE.health },
+  { label: "Grocery", field: "in_db_grocery", color: PALETTE.grocery },
+  { label: "Primary School", field: "in_db_educpri", color: PALETTE.primary },
+  {
+    label: "Secondary School",
+    field: "in_db_educsec",
+    color: PALETTE.secondary,
+  },
+  { label: "Library", field: "in_db_lib", color: PALETTE.library },
+  { label: "Park", field: "in_db_parks", color: PALETTE.park },
+  { label: "Transit", field: "in_db_transit", color: PALETTE.transit },
 ];
 
 const AMENITY_INFO = {
@@ -189,7 +193,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in index.js."
+        "Could not load the dataset. Check the file path and column names in index.js.",
       );
     });
 });
@@ -201,7 +205,7 @@ function initScatterDropdown(bcData) {
     .data(UA_AMENITIES)
     .join("option")
     .attr("value", (d) => d.field)
-    .property("selected", (d) => d.field === "grocery")
+    .property("selected", (d) => d.field === "all")
     .text((d) => d.label);
 
   function resizeSelect() {
@@ -221,6 +225,7 @@ function initScatterDropdown(bcData) {
 }
 
 const UA_AMENITIES = [
+  { label: "All", field: "all" },
   { label: "Grocery", field: "grocery" },
   { label: "Transit", field: "transit" },
   { label: "Employment", field: "employment" },
@@ -267,7 +272,7 @@ function initUnderstandingAccessibility(data) {
       vanMinutes !== null ? vanMinutes + " minute walk" : "N/A";
 
     document.getElementById("ua-rock-avg").textContent = Number.isFinite(
-      rockAvg
+      rockAvg,
     )
       ? rockAvg.toFixed(2)
       : "N/A";
@@ -389,7 +394,7 @@ function render(data) {
 
   if (!validRows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`
+      `No valid rows found for ${selectedAmenity} in British Columbia.`,
     );
     return;
   }
@@ -413,14 +418,14 @@ function render(data) {
           blockCount: group.length,
         };
       },
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.indexValue));
 
   if (!divisionRows.length) {
     showError(
-      `No division-level values could be calculated for ${selectedAmenity}.`
+      `No division-level values could be calculated for ${selectedAmenity}.`,
     );
     return;
   }
@@ -469,21 +474,21 @@ function render(data) {
   }
 
   const walkRows = divisionRows.filter((d) =>
-    Number.isFinite(d.estimatedMinutes)
+    Number.isFinite(d.estimatedMinutes),
   );
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`
+      `No estimated walking times could be calculated for ${selectedAmenity}.`,
     );
     return;
   }
 
   const newWestminsterRow = walkRows.find(
-    (d) => d.division === "New Westminster"
+    (d) => d.division === "New Westminster",
   );
   const centralSaanichRow = walkRows.find(
-    (d) => d.division === "Central Saanich"
+    (d) => d.division === "Central Saanich",
   );
 
   if (!newWestminsterRow || !centralSaanichRow) {
@@ -493,7 +498,7 @@ function render(data) {
 
   const maxMinutes = Math.max(
     12,
-    d3.max(walkRows, (d) => d.estimatedMinutes) || 12
+    d3.max(walkRows, (d) => d.estimatedMinutes) || 12,
   );
 
   const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
@@ -576,7 +581,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", PALETTE.textMuted)
       .text(`${Math.round(val)} min`);
@@ -588,7 +593,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
       )
       .attr("fill", PALETTE.textMuted)
       .text(tickLabels[i]);
@@ -597,7 +602,7 @@ function drawLegend(svg, { x, y, width }) {
 
 function drawBarWithTrack(
   svg,
-  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }
+  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon },
 ) {
   svg
     .append("rect")
@@ -685,7 +690,7 @@ function drawWalkingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", PALETTE.textMuted)
     .text(
-      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
+      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`,
     );
 
   drawBarWithTrack(svg, {
@@ -768,7 +773,7 @@ function drawDrivingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", PALETTE.textMuted)
     .text(
-      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
+      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`,
     );
 
   drawBarWithTrack(svg, {
@@ -829,7 +834,7 @@ function initOverallAccessibilityScrolly(data) {
         SERVICE_TYPE_INFO.forEach((s) => {
           servicePercentages[s.field] = computeServicePresencePercentage(
             rows,
-            s.field
+            s.field,
           );
         });
         return {
@@ -837,12 +842,12 @@ function initOverallAccessibilityScrolly(data) {
           province: rows[0]?.province || "Unknown Province",
           blockCount: rows.length,
           population: d3.sum(rows, (r) =>
-            Number.isFinite(r.population) ? r.population : 0
+            Number.isFinite(r.population) ? r.population : 0,
           ),
           ...servicePercentages,
         };
       },
-      (d) => d.division
+      (d) => d.division,
     )
     .map(([, v]) => v);
 
@@ -889,13 +894,16 @@ function initOverallAccessibilityScrolly(data) {
       d3
         .axisBottom(xScale)
         .ticks(5)
-        .tickFormat((d) => `${d}%`)
+        .tickFormat((d) => `${d}%`),
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted)
+      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted),
     )
     .call((g) =>
-      g.selectAll("line").attr("stroke", PALETTE.textMuted).attr("stroke-width", 1.5)
+      g
+        .selectAll("line")
+        .attr("stroke", PALETTE.textMuted)
+        .attr("stroke-width", 1.5),
     )
     .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
 
@@ -918,7 +926,7 @@ function initOverallAccessibilityScrolly(data) {
         .selectAll("text")
         .attr("font-size", 12)
         .attr("fill", PALETTE.textMuted)
-        .attr("font-weight", 600)
+        .attr("font-weight", 600),
     );
 
   chart
@@ -986,7 +994,7 @@ function initOverallAccessibilityScrolly(data) {
     cityLabel.text(
       `${current.division}, ${cleanProvinceName(current.province)}  ·  ${
         current.blockCount
-      } blocks  ·  Population: ${formatPopulation(current.population)}`
+      } blocks  ·  Population: ${formatPopulation(current.population)}`,
     );
 
     rows.each(function (service) {
@@ -995,7 +1003,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2
+        yScale.bandwidth() / 2,
       );
       const highlighted = isAnnotated && highlightedFields.has(service.field);
 
@@ -1036,7 +1044,7 @@ function initOverallAccessibilityScrolly(data) {
         if (entry.isIntersecting) updateState(entry.target.dataset.state);
       });
     },
-    { threshold: 0.15, rootMargin: "0px 0px -25% 0px" }
+    { threshold: 0.15, rootMargin: "0px 0px -25% 0px" },
   );
 
   document
@@ -1101,7 +1109,7 @@ function buildScatterPopulationButtons(data) {
       (d) =>
         `scatter-pop-btn ${
           d.key === scatterState.activePopFilter ? "active" : ""
-        }`
+        }`,
     )
     .text((d) => d.label)
     .on("click", (_, d) => {
@@ -1118,29 +1126,55 @@ function renderScatter(data) {
   const scatterField = d3.select("#scatter-amenity-select").property("value");
   const scatterLabel =
     UA_AMENITIES.find((a) => a.field === scatterField)?.label || scatterField;
-  const selectedAmenity = scatterLabel;
-  const amenityInfo = AMENITY_INFO[selectedAmenity];
-  const field = amenityInfo?.field;
 
-  if (!field) return;
+  const allServiceFields = [
+    "grocery",
+    "transit",
+    "employment",
+    "health",
+    "pharmacy",
+    "primary_school",
+    "secondary_school",
+    "childcare",
+    "library",
+    "park",
+  ];
 
   const scatterData = d3
     .rollups(
-      data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
-      ),
-      (rows) => ({
-        division: rows[0]?.division || "Unknown Division",
-        province: rows[0]?.province || "Unknown Province",
-        population: rows[0]?.population || 0,
-        proximity: d3.mean(rows, (d) => d[field]),
-        blockCount: rows.length,
-      }),
-      (d) => d.division
+      data.filter((d) => Number.isFinite(d.population)),
+      (rows) => {
+        let proximity;
+
+        if (scatterField === "all") {
+          const rowMeans = rows
+            .map((row) => {
+              const vals = allServiceFields
+                .map((f) => row[f])
+                .filter(Number.isFinite);
+              return vals.length ? d3.mean(vals) : NaN;
+            })
+            .filter(Number.isFinite);
+
+          proximity = rowMeans.length ? d3.mean(rowMeans) : NaN;
+        } else {
+          const vals = rows.map((d) => d[scatterField]).filter(Number.isFinite);
+          proximity = vals.length ? d3.mean(vals) : NaN;
+        }
+
+        return {
+          division: rows[0]?.division || "Unknown Division",
+          province: rows[0]?.province || "Unknown Province",
+          population: rows[0]?.population || 0,
+          proximity,
+          blockCount: rows.length,
+        };
+      },
+      (d) => d.division,
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
     )
     .sort((a, b) => d3.descending(a.proximity, b.proximity));
 
@@ -1149,7 +1183,7 @@ function renderScatter(data) {
   buildScatterPopulationButtons(data);
 
   const populationFilteredData = scatterData.filter((d) =>
-    passesPopulationFilter(d, scatterState.activePopFilter)
+    passesPopulationFilter(d, scatterState.activePopFilter),
   );
 
   const width = 900;
@@ -1165,7 +1199,7 @@ function renderScatter(data) {
 
   const xMax = getScatterMaxPopulation(
     scatterData,
-    scatterState.activePopFilter
+    scatterState.activePopFilter,
   );
   const x = d3
     .scaleLinear()
@@ -1222,7 +1256,11 @@ function renderScatter(data) {
     .attr("x", -height / 2)
     .attr("y", 26)
     .attr("text-anchor", "middle")
-    .text(`Average ${selectedAmenity.toLowerCase()} proximity`);
+    .text(
+      scatterField === "all"
+        ? "Average proximity across all services"
+        : `Average ${scatterLabel.toLowerCase()} proximity`,
+    );
 
   const tooltip = d3
     .select("body")
@@ -1251,11 +1289,11 @@ function renderScatter(data) {
   const clampBand = () => {
     scatterState.bandMinRatio = Math.max(
       0,
-      Math.min(1, scatterState.bandMinRatio)
+      Math.min(1, scatterState.bandMinRatio),
     );
     scatterState.bandMaxRatio = Math.max(
       0,
-      Math.min(1, scatterState.bandMaxRatio)
+      Math.min(1, scatterState.bandMaxRatio),
     );
 
     if (scatterState.bandMaxRatio < scatterState.bandMinRatio) {
@@ -1270,7 +1308,7 @@ function renderScatter(data) {
     ) {
       scatterState.bandMaxRatio = Math.min(
         1,
-        scatterState.bandMinRatio + bandWidthMin / chartWidth
+        scatterState.bandMinRatio + bandWidthMin / chartWidth,
       );
 
       if (scatterState.bandMaxRatio >= 1) {
@@ -1299,7 +1337,7 @@ function renderScatter(data) {
     const [bandPopMin, bandPopMax] = getBandPopulationRange();
 
     return populationFilteredData.filter(
-      (d) => d.population >= bandPopMin && d.population <= bandPopMax
+      (d) => d.population >= bandPopMin && d.population <= bandPopMax,
     );
   }
 
@@ -1351,7 +1389,7 @@ function renderScatter(data) {
 
           clampBand();
           updateScatter();
-        })
+        }),
       );
 
     pointsLayer
@@ -1363,7 +1401,9 @@ function renderScatter(data) {
       .attr("cy", (d) => y(d.proximity))
       .attr("r", 5.5)
       .attr("fill", (d) =>
-        bandSelectedNames.has(d.division) ? PALETTE.chartAccent : PALETTE.grayMid
+        bandSelectedNames.has(d.division)
+          ? PALETTE.chartAccent
+          : PALETTE.grayMid,
       )
       .attr("opacity", 0.6)
       .on("mouseenter", function (event, d) {
@@ -1414,7 +1454,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .append("div")
     .attr("class", "scatter-secondary-title")
     .text(
-      `Top 10 cities in the filter band ranked by highest average ${amenityLabel.toLowerCase()} proximity`
+      `Top 10 cities in the filter band ranked by highest average ${amenityLabel.toLowerCase()} proximity`,
     );
 
   if (!top10.length) {
@@ -1422,7 +1462,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
       .append("div")
       .attr("class", "scatter-empty-note")
       .text(
-        "No cities fall inside the grey filter band for this population view."
+        "No cities fall inside the grey filter band for this population view.",
       );
     return;
   }
@@ -1518,10 +1558,10 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .attr("class", "rank-x-axis")
     .attr("transform", `translate(0, ${innerHeight})`)
     .call(
-      d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f"))
+      d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f")),
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted)
+      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted),
     )
     .call((g) => g.selectAll("line").attr("stroke", PALETTE.textMuted))
     .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
@@ -1542,8 +1582,8 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
 const serviceColors = {
   grocery: PALETTE.grocery,
   transit: PALETTE.transit,
-  health:  PALETTE.health,
-  parks:   PALETTE.park,
+  health: PALETTE.health,
+  parks: PALETTE.park,
 };
 
 let archetypesData = [];
@@ -1587,7 +1627,7 @@ function renderArchetypes(filter = "") {
 
   const filtered = filter
     ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
       )
     : archetypesData;
 
@@ -1685,7 +1725,7 @@ function hexToRgb(hex) {
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
         result[3],
-        16
+        16,
       )}`
     : "255, 255, 255";
 }
@@ -1696,10 +1736,10 @@ loadData();
 
 // Service colors
 const colors = {
-  grocery:    PALETTE.grocery,
-  transit:    PALETTE.transit,
+  grocery: PALETTE.grocery,
+  transit: PALETTE.transit,
   healthcare: PALETTE.health,
-  parks:      PALETTE.park,
+  parks: PALETTE.park,
 };
 
 const services = ["grocery", "transit", "healthcare", "parks"];
@@ -1794,7 +1834,7 @@ function showChartTooltip(event, cityData, hoveredService) {
       margin-top:10px;padding-top:10px;border-top:1px solid #efefec;">
       <span style="font-size:0.8125rem;font-weight:600;color:${PALETTE.text};">Total</span>
       <span style="font-size:0.8125rem;font-weight:700;color:#2563eb;">${Math.round(
-        cityData.total
+        cityData.total,
       )} min
         <span style="font-weight:400;color:${PALETTE.textLight};">&nbsp;(${totalHours} hrs/wk)</span>
       </span>
@@ -1833,7 +1873,7 @@ function drawChart(data) {
     "viewBox",
     `0 0 ${width + margin.left + margin.right} ${
       height + margin.top + margin.bottom
-    }`
+    }`,
   );
 
   const g = svg
@@ -1971,7 +2011,7 @@ function drawChart(data) {
       d3
         .axisLeft(y)
         .ticks(5)
-        .tickFormat((d) => d)
+        .tickFormat((d) => d),
     )
     .append("text")
     .attr("transform", "rotate(-90)")
@@ -2065,7 +2105,12 @@ function minutesToProx(m) {
 let allData = [];
 let csds = [];
 let activeFilters = [
-  { key: "childcare", label: "Childcare", field: "prox_idx_childcare", minutes: 15 },
+  {
+    key: "childcare",
+    label: "Childcare",
+    field: "prox_idx_childcare",
+    minutes: 15,
+  },
   { key: "parks", label: "Parks", field: "prox_idx_parks", minutes: 15 },
 ];
 let selectedCSD = "";
@@ -2079,7 +2124,7 @@ let map,
 function initMap() {
   map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(
     [49.25, -122.9],
-    10
+    10,
   );
 
   L.tileLayer(
@@ -2087,7 +2132,7 @@ function initMap() {
     {
       attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 19,
-    }
+    },
   ).addTo(map);
 
   canvasRenderer = L.canvas({ padding: 0.5 });
@@ -2222,14 +2267,19 @@ function updateMap() {
 
 function proximityColor(ratio) {
   const stops = [
-    { r: 0,    c: [250, 204,  21] }, // yellow    #facc15
-    { r: 0.33, c: [ 74, 222, 128] }, // green     #4ade80
-    { r: 0.67, c: [ 59, 130, 246] }, // blue      #3b82f6
-    { r: 1,    c: [ 30,  64, 175] }, // dark blue #1e40af
+    { r: 0, c: [250, 204, 21] }, // yellow    #facc15
+    { r: 0.33, c: [74, 222, 128] }, // green     #4ade80
+    { r: 0.67, c: [59, 130, 246] }, // blue      #3b82f6
+    { r: 1, c: [30, 64, 175] }, // dark blue #1e40af
   ];
-  let lo = stops[0], hi = stops[stops.length - 1];
+  let lo = stops[0],
+    hi = stops[stops.length - 1];
   for (let i = 0; i < stops.length - 1; i++) {
-    if (ratio <= stops[i + 1].r) { lo = stops[i]; hi = stops[i + 1]; break; }
+    if (ratio <= stops[i + 1].r) {
+      lo = stops[i];
+      hi = stops[i + 1];
+      break;
+    }
   }
   const t = (ratio - lo.r) / (hi.r - lo.r || 1);
   const r = Math.round(lo.c[0] + t * (hi.c[0] - lo.c[0]));
@@ -2258,7 +2308,7 @@ function buildTooltip(d) {
     const color =
       v !== null
         ? proximityColor(
-            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))
+            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes)),
           )
         : PALETTE.grayMid;
 
