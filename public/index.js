@@ -1532,6 +1532,28 @@ async function loadData() {
   }
 }
 
+const ARCHETYPE_STYLES = {
+  "Urban convenience": {
+    overlay: "rgba(147, 210, 253, 0.3)",
+    image:
+      "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=700&q=80",
+  },
+  "Balanced access": {
+    overlay: "rgba(250, 220, 80, 0.3)",
+    image:
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=700&q=80",
+  },
+  "Car-dependent suburb": {
+    overlay: "rgba(251, 146, 60, 0.3)",
+    image: "/data/carSuburb.jpg",
+  },
+  "Island lifestyle": {
+    overlay: "rgba(110, 220, 150, 0.3)",
+    image:
+      "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=700&q=80",
+  },
+};
+
 function renderArchetypes(filter = "") {
   const grid = document.getElementById("archetypesGrid");
   grid.replaceChildren();
@@ -1543,9 +1565,17 @@ function renderArchetypes(filter = "") {
     : archetypesData;
 
   for (const arch of filtered) {
+    const style = ARCHETYPE_STYLES[arch.name] || {
+      overlay: "rgba(200,200,200,0.3)",
+      image: "",
+    };
+
     const card = document.createElement("div");
     card.className = "archetype-card";
+    card.style.setProperty("--card-overlay", style.overlay);
+    card.style.setProperty("--card-image", `url('${style.image}')`);
 
+    // ── Header (sits on top of the photo) ──
     const archHeader = document.createElement("div");
     archHeader.className = "archetype-header";
 
@@ -1567,6 +1597,10 @@ function renderArchetypes(filter = "") {
 
     archHeader.appendChild(titleWrap);
     card.appendChild(archHeader);
+
+    // ── Content panel (white bg so text stays readable) ──
+    const contentPanel = document.createElement("div");
+    contentPanel.className = "archetype-content-panel";
 
     for (const [service, value] of Object.entries(arch.avg_scores)) {
       const barDiv = document.createElement("div");
@@ -1592,7 +1626,7 @@ function renderArchetypes(filter = "") {
       valueDiv.textContent = Math.round(value);
       barDiv.appendChild(valueDiv);
 
-      card.appendChild(barDiv);
+      contentPanel.appendChild(barDiv);
     }
 
     const citiesSection = document.createElement("div");
@@ -1612,7 +1646,8 @@ function renderArchetypes(filter = "") {
       cityList.appendChild(tag);
     }
     citiesSection.appendChild(cityList);
-    card.appendChild(citiesSection);
+    contentPanel.appendChild(citiesSection);
+    card.appendChild(contentPanel);
 
     grid.appendChild(card);
   }
