@@ -1,16 +1,43 @@
 const DATA_PATH = "./PMD-en.csv";
 
+/* ── Shared colour palette (mirrors CSS :root variables) ── */
+const PALETTE = {
+  bg:           "#f7f7f4",
+  surface:      "#ffffff",
+  border:       "#e4e4e0",
+  borderSubtle: "#efefec",
+  grayMid:      "#bcbcbc",
+  text:         "#18181a",
+  textMuted:    "#6b7080",
+  textLight:    "#9a9fad",
+  accent:       "#2563eb",
+  accentSoft:   "#eff6ff",
+  danger:       "#ef4444",
+  success:      "#22c55e",
+  chartAccent:  "#335693",
+  emp:          "#4363ee",
+  pharmacy:     "#6c63ff",
+  childcare:    "#f2b441",
+  health:       "#f4a5a5",
+  grocery:      "#7fd3a0",
+  primary:      "#2a9d8f",
+  secondary:    "#8e7dff",
+  library:      "#c77dff",
+  park:         "#f4d79f",
+  transit:      "#5b9fd4",
+};
+
 const SERVICE_TYPE_INFO = [
-  { label: "Employment", field: "in_db_emp", color: "#4363ee" },
-  { label: "Pharmacy", field: "in_db_pharma", color: "#6c63ff" },
-  { label: "Childcare", field: "in_db_childcare", color: "#f2b441" },
-  { label: "Health", field: "in_db_health", color: "#e49b8c" },
-  { label: "Grocery", field: "in_db_grocery", color: "#58a55c" },
-  { label: "Primary School", field: "in_db_educpri", color: "#2a9d8f" },
-  { label: "Secondary School", field: "in_db_educsec", color: "#8e7dff" },
-  { label: "Library", field: "in_db_lib", color: "#c77dff" },
-  { label: "Park", field: "in_db_parks", color: "#7cb342" },
-  { label: "Transit", field: "in_db_transit", color: "#f28482" },
+  { label: "Employment",       field: "in_db_emp",       color: PALETTE.emp },
+  { label: "Pharmacy",         field: "in_db_pharma",    color: PALETTE.pharmacy },
+  { label: "Childcare",        field: "in_db_childcare", color: PALETTE.childcare },
+  { label: "Health",           field: "in_db_health",    color: PALETTE.health },
+  { label: "Grocery",          field: "in_db_grocery",   color: PALETTE.grocery },
+  { label: "Primary School",   field: "in_db_educpri",   color: PALETTE.primary },
+  { label: "Secondary School", field: "in_db_educsec",   color: PALETTE.secondary },
+  { label: "Library",          field: "in_db_lib",       color: PALETTE.library },
+  { label: "Park",             field: "in_db_parks",     color: PALETTE.park },
+  { label: "Transit",          field: "in_db_transit",   color: PALETTE.transit },
 ];
 
 const AMENITY_INFO = {
@@ -272,10 +299,10 @@ function initUnderstandingAccessibility(data) {
 }
 
 function barColor(clamped) {
-  if (clamped > 35) return "#ef4444";
-  if (clamped > 20) return "#f59e0b";
-  if (clamped > 10) return "#84cc16";
-  return "#22c55e";
+  if (clamped > 35) return PALETTE.danger;
+  if (clamped > 20) return PALETTE.childcare;
+  if (clamped > 10) return PALETTE.grocery;
+  return PALETTE.success;
 }
 
 function initProximityBar(selector) {
@@ -301,7 +328,7 @@ function initProximityBar(selector) {
     .attr("width", W)
     .attr("height", barH)
     .attr("rx", 6)
-    .attr("fill", "#e6e6e2");
+    .attr("fill", PALETTE.border);
 
   // Fill — starts at 0 so it animates in on first update
   g.append("rect")
@@ -309,7 +336,7 @@ function initProximityBar(selector) {
     .attr("width", 0)
     .attr("height", barH)
     .attr("rx", 6)
-    .attr("fill", "#22c55e");
+    .attr("fill", PALETTE.success);
 
   // Ticks and labels
   const xScale = d3.scaleLinear().domain([0, 60]).range([0, W]);
@@ -320,14 +347,14 @@ function initProximityBar(selector) {
       .attr("x2", x)
       .attr("y1", barH)
       .attr("y2", barH + 5)
-      .attr("stroke", "#6b7080")
+      .attr("stroke", PALETTE.textMuted)
       .attr("stroke-width", 1.5);
     g.append("text")
       .attr("x", x)
       .attr("y", barH + 18)
       .attr("text-anchor", t === 0 ? "start" : t === 60 ? "end" : "middle")
       .attr("font-size", 12)
-      .attr("fill", "#6b7080")
+      .attr("fill", PALETTE.textMuted)
       .text(t === 0 ? "0 min" : t === 60 ? "60 min" : `${t}`);
   });
 }
@@ -539,7 +566,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("x2", xPos)
       .attr("y1", y + 28)
       .attr("y2", y + 40)
-      .attr("stroke", "#555")
+      .attr("stroke", PALETTE.textMuted)
       .attr("stroke-width", 1.5);
 
     svg
@@ -551,7 +578,7 @@ function drawLegend(svg, { x, y, width }) {
         "text-anchor",
         i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
-      .attr("fill", "#555")
+      .attr("fill", PALETTE.textMuted)
       .text(`${Math.round(val)} min`);
 
     svg
@@ -563,7 +590,7 @@ function drawLegend(svg, { x, y, width }) {
         "text-anchor",
         i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
-      .attr("fill", "#555")
+      .attr("fill", PALETTE.textMuted)
       .text(tickLabels[i]);
   });
 }
@@ -580,7 +607,7 @@ function drawBarWithTrack(
     .attr("height", barHeight)
     .attr("rx", 23)
     .attr("ry", 23)
-    .attr("fill", "#e6e6e6");
+    .attr("fill", PALETTE.border);
 
   const dynamicRadius = Math.min(23, visibleBarWidth / 2, barHeight / 2);
 
@@ -648,7 +675,7 @@ function drawWalkingRow(svg, config) {
     .attr("x", leftX)
     .attr("y", y + 150)
     .attr("font-size", 22)
-    .attr("fill", "#555")
+    .attr("fill", PALETTE.textMuted)
     .text(`Average proximity index: ${proximityText}`);
 
   svg
@@ -656,7 +683,7 @@ function drawWalkingRow(svg, config) {
     .attr("x", leftX)
     .attr("y", y + 186)
     .attr("font-size", 17)
-    .attr("fill", "#555")
+    .attr("fill", PALETTE.textMuted)
     .text(
       `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
     );
@@ -684,7 +711,7 @@ function drawWalkingRow(svg, config) {
       .attr("x2", xPos)
       .attr("y1", barY + barHeight + 10)
       .attr("y2", barY + barHeight + 24)
-      .attr("stroke", "#555")
+      .attr("stroke", PALETTE.textMuted)
       .attr("stroke-width", 1.5);
 
     svg
@@ -694,7 +721,7 @@ function drawWalkingRow(svg, config) {
       .attr("font-size", 14)
       .attr("font-weight", 500)
       .attr("text-anchor", "middle")
-      .attr("fill", "#555")
+      .attr("fill", PALETTE.textMuted)
       .text(`${tick} min`);
   });
 }
@@ -739,7 +766,7 @@ function drawDrivingRow(svg, config) {
     .attr("x", leftX)
     .attr("y", y + 150)
     .attr("font-size", 17)
-    .attr("fill", "#555")
+    .attr("fill", PALETTE.textMuted)
     .text(
       `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
     );
@@ -865,12 +892,12 @@ function initOverallAccessibilityScrolly(data) {
         .tickFormat((d) => `${d}%`)
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080")
+      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted)
     )
     .call((g) =>
-      g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5)
+      g.selectAll("line").attr("stroke", PALETTE.textMuted).attr("stroke-width", 1.5)
     )
-    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
+    .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
 
   chart
     .append("text")
@@ -878,7 +905,7 @@ function initOverallAccessibilityScrolly(data) {
     .attr("y", chartHeight + 52)
     .attr("text-anchor", "middle")
     .attr("font-size", 12)
-    .attr("fill", "#6b7080")
+    .attr("fill", PALETTE.textMuted)
     .text("Percent of blocks in the division where the service is present");
 
   chart
@@ -890,7 +917,7 @@ function initOverallAccessibilityScrolly(data) {
       g
         .selectAll("text")
         .attr("font-size", 12)
-        .attr("fill", "#6b7080")
+        .attr("fill", PALETTE.textMuted)
         .attr("font-weight", 600)
     );
 
@@ -900,7 +927,7 @@ function initOverallAccessibilityScrolly(data) {
     .call(d3.axisBottom(xScale).ticks(5).tickSize(chartHeight).tickFormat(""))
     .call((g) => g.attr("transform", `translate(0, 0)`))
     .call((g) => g.select(".domain").remove())
-    .call((g) => g.selectAll("line").attr("stroke", "#ddd"));
+    .call((g) => g.selectAll("line").attr("stroke", PALETTE.border));
 
   const rows = chart
     .selectAll(".overall-bar-row")
@@ -918,7 +945,7 @@ function initOverallAccessibilityScrolly(data) {
     .attr("height", yScale.bandwidth())
     .attr("rx", 8)
     .attr("ry", 8)
-    .attr("fill", "#e3e3e3")
+    .attr("fill", PALETTE.borderSubtle)
     .attr("opacity", 0.9);
 
   rows
@@ -942,7 +969,7 @@ function initOverallAccessibilityScrolly(data) {
     .attr("y", yScale.bandwidth() / 2 + 5)
     .attr("font-size", 12)
     .attr("font-weight", 600)
-    .attr("fill", "#555")
+    .attr("fill", PALETTE.textMuted)
     .text("0%");
 
   function updateState(stateName) {
@@ -981,7 +1008,7 @@ function initOverallAccessibilityScrolly(data) {
         .attr("rx", dynamicRadius)
         .attr("ry", dynamicRadius)
         .attr("opacity", isAnnotated ? (highlighted ? 1 : 0.22) : 1)
-        .attr("stroke", highlighted ? "#222" : "none")
+        .attr("stroke", highlighted ? PALETTE.text : "none")
         .attr("stroke-width", highlighted ? 2 : 0);
 
       d3.select(this)
@@ -991,7 +1018,7 @@ function initOverallAccessibilityScrolly(data) {
         .ease(d3.easeCubicInOut)
         .attr("x", Math.min(currentBarWidth + 10, chartWidth + 10))
         .attr("font-weight", highlighted ? 800 : 700)
-        .attr("fill", highlighted ? "#111" : "#555")
+        .attr("fill", highlighted ? PALETTE.text : PALETTE.textMuted)
         .tween("text", function () {
           const that = d3.select(this);
           const start = parseFloat(that.text().replace("%", "")) || 0;
@@ -1169,16 +1196,16 @@ function renderScatter(data) {
     .attr("transform", `translate(0, ${chartBottom})`)
     .call(d3.axisBottom(x).ticks(7).tickFormat(d3.format(",")))
     .call((g) => g.selectAll("text").attr("font-size", 12))
-    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
-    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
+    .call((g) => g.selectAll("line").attr("stroke", PALETTE.textMuted))
+    .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
 
   svg
     .append("g")
     .attr("transform", `translate(${chartLeft}, 0)`)
     .call(d3.axisLeft(y).ticks(6))
     .call((g) => g.selectAll("text").attr("font-size", 12))
-    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
-    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
+    .call((g) => g.selectAll("line").attr("stroke", PALETTE.textMuted))
+    .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
 
   svg
     .append("text")
@@ -1207,7 +1234,7 @@ function renderScatter(data) {
     .style("pointer-events", "none")
     .style("opacity", 0)
     .style("background", "rgba(255,255,255,0.96)")
-    .style("border", "1px solid #bbb")
+    .style("border", `1px solid ${PALETTE.grayMid}`)
     .style("border-radius", "10px")
     .style("padding", "0.65rem 0.8rem")
     .style("font-size", "0.9rem")
@@ -1336,7 +1363,7 @@ function renderScatter(data) {
       .attr("cy", (d) => y(d.proximity))
       .attr("r", 5.5)
       .attr("fill", (d) =>
-        bandSelectedNames.has(d.division) ? "#335693" : "#a4a4a4"
+        bandSelectedNames.has(d.division) ? PALETTE.chartAccent : PALETTE.grayMid
       )
       .attr("opacity", 0.6)
       .on("mouseenter", function (event, d) {
@@ -1428,7 +1455,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .attr("class", "rank-grid")
     .call(d3.axisBottom(x).ticks(5).tickSize(innerHeight).tickFormat(""))
     .call((g) => g.select(".domain").remove())
-    .call((g) => g.selectAll("line").attr("stroke", "#e5e5e5"));
+    .call((g) => g.selectAll("line").attr("stroke", PALETTE.border));
 
   chart
     .selectAll(".rank-bar")
@@ -1441,9 +1468,9 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .attr("height", rowHeight)
     .attr("rx", 6)
     .attr("ry", 6)
-    .attr("fill", "#5f7fb8")
+    .attr("fill", PALETTE.chartAccent)
     .attr("opacity", 0.95)
-    .attr("stroke", (_, i) => (i === 0 ? "#222" : "none"))
+    .attr("stroke", (_, i) => (i === 0 ? PALETTE.text : "none"))
     .attr("stroke-width", (_, i) => (i === 0 ? 2 : 0))
     .on("mouseenter", function (event, d) {
       tooltip.style("opacity", 1).html(`
@@ -1471,7 +1498,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .attr("y", (d) => y(d.division) + rowHeight / 2 + 5)
     .attr("font-size", 12)
     .attr("font-weight", 800)
-    .attr("fill", "#111")
+    .attr("fill", PALETTE.text)
     .text("Highest match!");
 
   chart
@@ -1494,10 +1521,10 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
       d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f"))
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080")
+      g.selectAll("text").attr("font-size", 12).attr("fill", PALETTE.textMuted)
     )
-    .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
-    .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
+    .call((g) => g.selectAll("line").attr("stroke", PALETTE.textMuted))
+    .call((g) => g.select(".domain").attr("stroke", PALETTE.textMuted));
 
   svg
     .append("text")
@@ -1513,10 +1540,10 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
 // ── LIFESTYLE ARCHETYPES ─────────────────────────────────────────────
 
 const serviceColors = {
-  grocery: "#7fd3a0",
-  transit: "#5b9fd4",
-  health: "#f4a5a5",
-  parks: "#f4d79f",
+  grocery: PALETTE.grocery,
+  transit: PALETTE.transit,
+  health:  PALETTE.health,
+  parks:   PALETTE.park,
 };
 
 let archetypesData = [];
@@ -1669,10 +1696,10 @@ loadData();
 
 // Service colors
 const colors = {
-  grocery: "#7fd3a0", // green
-  transit: "#5b9fd4", // blue
-  healthcare: "#f4a5a5", // pink/red
-  parks: "#f4d79f", // yellow/beige
+  grocery:    PALETTE.grocery,
+  transit:    PALETTE.transit,
+  healthcare: PALETTE.health,
+  parks:      PALETTE.park,
 };
 
 const services = ["grocery", "transit", "healthcare", "parks"];
@@ -1749,27 +1776,27 @@ function showChartTooltip(event, cityData, hoveredService) {
         <span style="flex:1;color:#6b7080;font-size:0.8125rem;">${
           serviceLabels[svc]
         }</span>
-        <span style="color:#18181a;font-size:0.8125rem;font-weight:600;">${mins} min</span>
-        <span style="color:#9a9fad;font-size:0.75rem;min-width:30px;text-align:right;">${pct}%</span>
+        <span style="color:${PALETTE.text};font-size:0.8125rem;font-weight:600;">${mins} min</span>
+        <span style="color:${PALETTE.textLight};font-size:0.75rem;min-width:30px;text-align:right;">${pct}%</span>
       </div>`;
     })
     .join("");
 
   chartTooltip.innerHTML = `
     <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #efefec;">
-      <div style="font-size:1rem;font-weight:700;color:#18181a;letter-spacing:-0.01em;">${
+      <div style="font-size:1rem;font-weight:700;color:${PALETTE.text};letter-spacing:-0.01em;">${
         cityData.city
       }</div>
-      <div style="font-size:0.75rem;color:#9a9fad;margin-top:1px;">Weekly travel time to services</div>
+      <div style="font-size:0.75rem;color:${PALETTE.textLight};margin-top:1px;">Weekly travel time to services</div>
     </div>
     ${rows}
     <div style="display:flex;justify-content:space-between;align-items:center;
       margin-top:10px;padding-top:10px;border-top:1px solid #efefec;">
-      <span style="font-size:0.8125rem;font-weight:600;color:#18181a;">Total</span>
+      <span style="font-size:0.8125rem;font-weight:600;color:${PALETTE.text};">Total</span>
       <span style="font-size:0.8125rem;font-weight:700;color:#2563eb;">${Math.round(
         cityData.total
       )} min
-        <span style="font-weight:400;color:#9a9fad;">&nbsp;(${totalHours} hrs/wk)</span>
+        <span style="font-weight:400;color:${PALETTE.textLight};">&nbsp;(${totalHours} hrs/wk)</span>
       </span>
     </div>`;
 
@@ -1834,7 +1861,7 @@ function drawChart(data) {
     .attr("x2", width)
     .attr("y1", (d) => y(d))
     .attr("y2", (d) => y(d))
-    .attr("stroke", "#eee")
+    .attr("stroke", PALETTE.border)
     .attr("stroke-dasharray", "4 4")
     .attr("stroke-width", 1);
 
@@ -1935,7 +1962,7 @@ function drawChart(data) {
     .attr("text-anchor", "middle")
     .attr("font-size", "12px")
     .attr("font-weight", "bold")
-    .attr("fill", "#333")
+    .attr("fill", PALETTE.text)
     .text((d) => Math.round(d.total));
 
   // Y axis
@@ -1953,7 +1980,7 @@ function drawChart(data) {
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .style("font-size", "13px")
-    .style("fill", "#666")
+    .style("fill", PALETTE.textMuted)
     .text("minutes per week");
 
   // X axis
@@ -1962,7 +1989,7 @@ function drawChart(data) {
     .call(d3.axisBottom(x))
     .selectAll("text")
     .style("font-size", "12px")
-    .style("fill", "#666");
+    .style("fill", PALETTE.textMuted);
 }
 
 // ── Init: aggregate from already-loaded bcData ────────────────────────
@@ -2037,7 +2064,10 @@ function minutesToProx(m) {
 
 let allData = [];
 let csds = [];
-let activeFilters = [];
+let activeFilters = [
+  { key: "childcare", label: "Childcare", field: "prox_idx_childcare", minutes: 15 },
+  { key: "parks", label: "Parks", field: "prox_idx_parks", minutes: 15 },
+];
 let selectedCSD = "";
 let pickerOpen = false;
 
@@ -2126,7 +2156,7 @@ function processData(raw) {
 
   document.getElementById("map-loading").style.display = "none";
   document.getElementById("block-count").style.display = "block";
-  buildPickerList();
+  renderFilters();
   updateMap();
 }
 
@@ -2191,8 +2221,21 @@ function updateMap() {
 }
 
 function proximityColor(ratio) {
-  const hue = Math.round(48 + ratio * 94); // 48° = yellow, 142° = green
-  return `hsl(${hue}, 85%, 52%)`;
+  const stops = [
+    { r: 0,    c: [250, 204,  21] }, // yellow    #facc15
+    { r: 0.33, c: [ 74, 222, 128] }, // green     #4ade80
+    { r: 0.67, c: [ 59, 130, 246] }, // blue      #3b82f6
+    { r: 1,    c: [ 30,  64, 175] }, // dark blue #1e40af
+  ];
+  let lo = stops[0], hi = stops[stops.length - 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (ratio <= stops[i + 1].r) { lo = stops[i]; hi = stops[i + 1]; break; }
+  }
+  const t = (ratio - lo.r) / (hi.r - lo.r || 1);
+  const r = Math.round(lo.c[0] + t * (hi.c[0] - lo.c[0]));
+  const g = Math.round(lo.c[1] + t * (hi.c[1] - lo.c[1]));
+  const b = Math.round(lo.c[2] + t * (hi.c[2] - lo.c[2]));
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 function buildTooltip(d) {
@@ -2217,7 +2260,7 @@ function buildTooltip(d) {
         ? proximityColor(
             (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))
           )
-        : "#ccc";
+        : PALETTE.grayMid;
 
     const row = document.createElement("div");
     row.className = "tt-svc";

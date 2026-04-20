@@ -1,36 +1,45 @@
 /* ── Variables ────────────────────────────────── */
 :root {
-  --bg: #f7f7f4;
-  --surface: #ffffff;
-  --border: #e4e4e0;
+  /* ── Core palette ────────────────────────────── */
+  --bg:            #f7f7f4;
+  --surface:       #ffffff;
+  --border:        #e4e4e0;
   --border-subtle: #efefec;
-  --text: #18181a;
-  --text-muted: #6b7080;
-  --text-light: #9a9fad;
-  --accent: #2563eb;
-  --accent-soft: #eff6ff;
-  --danger: #ef4444;
-  --success: #22c55e;
+  --gray-mid:      #bcbcbc;
 
-  /* Service colour palette */
-  --c0: #4f8ef7;
-  --c1: #34d399;
-  --c2: #f59e0b;
-  --c3: #f7574f;
-  --c4: #a78bfa;
-  --c5: #38bdf8;
-  --c6: #fb923c;
-  --c7: #e879f9;
-  --c8: #86efac;
-  --c9: #fbbf24;
+  /* ── Text ────────────────────────────────────── */
+  --text:          #18181a;
+  --text-muted:    #3c3f49;
+  --text-light:    #6d717b;
 
-  --radius: 12px;
-  --radius-sm: 7px;
+  /* ── Accent / Status ─────────────────────────── */
+  --accent:        #2563eb;
+  --accent-soft:   #eff6ff;
+  --danger:        #ef4444;
+  --success:       #22c55e;
+
+  /* ── Chart ───────────────────────────────────── */
+  --chart-accent:  #4363ee;
+
+  /* ── Service colours (shared across all vis) ─── */
+  --svc-emp:       #4363ee;
+  --svc-pharmacy:  #6c63ff;
+  --svc-childcare: #f2b441;
+  --svc-health:    #f4a5a5;
+  --svc-grocery:   #7fd3a0;
+  --svc-primary:   #2a9d8f;
+  --svc-secondary: #8e7dff;
+  --svc-library:   #c77dff;
+  --svc-park:      #f4d79f;
+  --svc-transit:   #5b9fd4;
+
+  /* ── Radii / Shadows / Font ──────────────────── */
+  --radius:    12px;
+  --radius-sm:  7px;
   --radius-lg: 16px;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  --shadow:    0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ── Google Font ──────────────────────────────── */
@@ -228,7 +237,7 @@ button {
 .ua-select-wrap select {
   appearance: none;
   -webkit-appearance: none;
-  background: #e8e8e4;
+  background: var(--border);
   border: none;
   border-radius: 6px;
   padding: 0.1em 2.2em 0.1em 0.7em;
@@ -243,7 +252,7 @@ button {
 }
 
 .ua-select-wrap select:hover {
-  background: #dcdcd8;
+  background: var(--border-subtle);
 }
 
 #ua-select-sizer,
@@ -381,9 +390,9 @@ button {
 
 .scatter-pop-btn {
   appearance: none;
-  border: 1px solid #2f2f2f;
-  background: #f7f7f4;
-  color: #222;
+  border: 1px solid var(--text);
+  background: var(--bg);
+  color: var(--text);
   border-radius: 999px;
   padding: 0.38rem 0.95rem;
   font-size: 0.8rem;
@@ -394,13 +403,13 @@ button {
 }
 
 .scatter-pop-btn:hover {
-  background: #ecece7;
+  background: var(--border-subtle);
 }
 
 .scatter-pop-btn.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
+  background: var(--text);
+  color: var(--surface);
+  border-color: var(--text);
 }
 
 .scatter-label {
@@ -410,7 +419,7 @@ button {
 }
 
 .scatter-band {
-  fill: #bcbcbc;
+  fill: var(--gray-mid);
   opacity: 0.45;
   cursor: grab;
 }
@@ -424,7 +433,7 @@ button {
   transition: opacity 0.15s ease;
 }
 .scatter-dot.is-hovered {
-  stroke: #111;
+  stroke: var(--text);
   stroke-width: 2;
 }
 
@@ -530,7 +539,7 @@ select {
 select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); /* accent at 12% opacity */
 }
 
 .archetypes-grid {
@@ -593,7 +602,7 @@ select:focus {
 .archetype-title {
   font-size: 0.9375rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--surface);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
@@ -765,13 +774,13 @@ select:focus {
 }
 
 .grid-line {
-  stroke: #ebebea;
+  stroke: var(--border);
   stroke-width: 1;
   stroke-dasharray: 4 4;
 }
 
 .axis-line {
-  stroke: #ebebea;
+  stroke: var(--border);
 }
 
 .axis-tick {
@@ -930,6 +939,7 @@ select:focus {
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text);
+  text-align: center;
 }
 
 /* ── Responsive ───────────────────────────────── */
@@ -982,17 +992,9 @@ select:focus {
   all: initial;
   box-sizing: border-box;
 
-  --bg: #f4f4f2;
-  --surface: #ffffff;
-  --border: #e5e5e3;
-  --text: #1a1a18;
-  --text-muted: #888884;
-  --accent: #2563eb;
-  --accent-bg: #eff6ff;
-  --panel-w: 272px;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --panel-w: 340px;
 
-  font-family: var(--sans);
+  font-family: var(--font);
   font-size: 14px;
   color: var(--text);
   background: var(--bg);
@@ -1114,7 +1116,7 @@ select:focus {
 }
 
 .app .remove-btn:hover {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 .app .slider-row {
@@ -1184,7 +1186,7 @@ select:focus {
 }
 
 .app .svc-picker-item:hover {
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -1337,7 +1339,7 @@ select:focus {
   flex: 1;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, #facc15, #4ade80);
+  background: linear-gradient(to right, #facc15, #4ade80, #3b82f6, #1e40af);
 }
 
 @keyframes spin {
