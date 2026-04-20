@@ -157,11 +157,12 @@ window.addEventListener("DOMContentLoaded", () => {
       initUnderstandingAccessibility(bcData);
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
+      initTimeIndex(bcData);
     })
     .catch((error) => {
       console.error(error);
       showError(
-        "Could not load the dataset. Check the file path and column names in index.js.",
+        "Could not load the dataset. Check the file path and column names in index.js."
       );
     });
 });
@@ -239,7 +240,7 @@ function initUnderstandingAccessibility(data) {
       vanMinutes !== null ? vanMinutes + " minute walk" : "N/A";
 
     document.getElementById("ua-rock-avg").textContent = Number.isFinite(
-      rockAvg,
+      rockAvg
     )
       ? rockAvg.toFixed(2)
       : "N/A";
@@ -361,7 +362,7 @@ function render(data) {
 
   if (!validRows.length) {
     showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`,
+      `No valid rows found for ${selectedAmenity} in British Columbia.`
     );
     return;
   }
@@ -385,14 +386,14 @@ function render(data) {
           blockCount: group.length,
         };
       },
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter((d) => Number.isFinite(d.indexValue));
 
   if (!divisionRows.length) {
     showError(
-      `No division-level values could be calculated for ${selectedAmenity}.`,
+      `No division-level values could be calculated for ${selectedAmenity}.`
     );
     return;
   }
@@ -441,21 +442,21 @@ function render(data) {
   }
 
   const walkRows = divisionRows.filter((d) =>
-    Number.isFinite(d.estimatedMinutes),
+    Number.isFinite(d.estimatedMinutes)
   );
 
   if (!walkRows.length) {
     showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`,
+      `No estimated walking times could be calculated for ${selectedAmenity}.`
     );
     return;
   }
 
   const newWestminsterRow = walkRows.find(
-    (d) => d.division === "New Westminster",
+    (d) => d.division === "New Westminster"
   );
   const centralSaanichRow = walkRows.find(
-    (d) => d.division === "Central Saanich",
+    (d) => d.division === "Central Saanich"
   );
 
   if (!newWestminsterRow || !centralSaanichRow) {
@@ -465,7 +466,7 @@ function render(data) {
 
   const maxMinutes = Math.max(
     12,
-    d3.max(walkRows, (d) => d.estimatedMinutes) || 12,
+    d3.max(walkRows, (d) => d.estimatedMinutes) || 12
   );
 
   const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
@@ -548,7 +549,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 13)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(`${Math.round(val)} min`);
@@ -560,7 +561,7 @@ function drawLegend(svg, { x, y, width }) {
       .attr("font-size", 12)
       .attr(
         "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle",
+        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
       )
       .attr("fill", "#555")
       .text(tickLabels[i]);
@@ -569,7 +570,7 @@ function drawLegend(svg, { x, y, width }) {
 
 function drawBarWithTrack(
   svg,
-  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon },
+  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }
 ) {
   svg
     .append("rect")
@@ -657,7 +658,7 @@ function drawWalkingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`,
+      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
     );
 
   drawBarWithTrack(svg, {
@@ -740,7 +741,7 @@ function drawDrivingRow(svg, config) {
     .attr("font-size", 17)
     .attr("fill", "#555")
     .text(
-      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`,
+      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
     );
 
   drawBarWithTrack(svg, {
@@ -801,7 +802,7 @@ function initOverallAccessibilityScrolly(data) {
         SERVICE_TYPE_INFO.forEach((s) => {
           servicePercentages[s.field] = computeServicePresencePercentage(
             rows,
-            s.field,
+            s.field
           );
         });
         return {
@@ -809,12 +810,12 @@ function initOverallAccessibilityScrolly(data) {
           province: rows[0]?.province || "Unknown Province",
           blockCount: rows.length,
           population: d3.sum(rows, (r) =>
-            Number.isFinite(r.population) ? r.population : 0,
+            Number.isFinite(r.population) ? r.population : 0
           ),
           ...servicePercentages,
         };
       },
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, v]) => v);
 
@@ -861,13 +862,13 @@ function initOverallAccessibilityScrolly(data) {
       d3
         .axisBottom(xScale)
         .ticks(5)
-        .tickFormat((d) => `${d}%`),
+        .tickFormat((d) => `${d}%`)
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"),
+      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080")
     )
     .call((g) =>
-      g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5),
+      g.selectAll("line").attr("stroke", "#6b7080").attr("stroke-width", 1.5)
     )
     .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
 
@@ -890,7 +891,7 @@ function initOverallAccessibilityScrolly(data) {
         .selectAll("text")
         .attr("font-size", 12)
         .attr("fill", "#6b7080")
-        .attr("font-weight", 600),
+        .attr("font-weight", 600)
     );
 
   chart
@@ -956,7 +957,9 @@ function initOverallAccessibilityScrolly(data) {
     d3.select("#overall-narrative").html(NARRATIVES[stateName] || "");
 
     cityLabel.text(
-      `${current.division}, ${cleanProvinceName(current.province)}  ·  ${current.blockCount} blocks  ·  Population: ${formatPopulation(current.population)}`,
+      `${current.division}, ${cleanProvinceName(current.province)}  ·  ${
+        current.blockCount
+      } blocks  ·  Population: ${formatPopulation(current.population)}`
     );
 
     rows.each(function (service) {
@@ -965,7 +968,7 @@ function initOverallAccessibilityScrolly(data) {
       const dynamicRadius = Math.min(
         8,
         currentBarWidth / 2,
-        yScale.bandwidth() / 2,
+        yScale.bandwidth() / 2
       );
       const highlighted = isAnnotated && highlightedFields.has(service.field);
 
@@ -1006,7 +1009,7 @@ function initOverallAccessibilityScrolly(data) {
         if (entry.isIntersecting) updateState(entry.target.dataset.state);
       });
     },
-    { threshold: 0.15, rootMargin: "0px 0px -25% 0px" },
+    { threshold: 0.15, rootMargin: "0px 0px -25% 0px" }
   );
 
   document
@@ -1069,7 +1072,9 @@ function buildScatterPopulationButtons(data) {
     .attr(
       "class",
       (d) =>
-        `scatter-pop-btn ${d.key === scatterState.activePopFilter ? "active" : ""}`,
+        `scatter-pop-btn ${
+          d.key === scatterState.activePopFilter ? "active" : ""
+        }`
     )
     .text((d) => d.label)
     .on("click", (_, d) => {
@@ -1095,7 +1100,7 @@ function renderScatter(data) {
   const scatterData = d3
     .rollups(
       data.filter(
-        (d) => Number.isFinite(d.population) && Number.isFinite(d[field]),
+        (d) => Number.isFinite(d.population) && Number.isFinite(d[field])
       ),
       (rows) => ({
         division: rows[0]?.division || "Unknown Division",
@@ -1104,11 +1109,11 @@ function renderScatter(data) {
         proximity: d3.mean(rows, (d) => d[field]),
         blockCount: rows.length,
       }),
-      (d) => d.division,
+      (d) => d.division
     )
     .map(([, value]) => value)
     .filter(
-      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity),
+      (d) => Number.isFinite(d.population) && Number.isFinite(d.proximity)
     )
     .sort((a, b) => d3.descending(a.proximity, b.proximity));
 
@@ -1117,7 +1122,7 @@ function renderScatter(data) {
   buildScatterPopulationButtons(data);
 
   const populationFilteredData = scatterData.filter((d) =>
-    passesPopulationFilter(d, scatterState.activePopFilter),
+    passesPopulationFilter(d, scatterState.activePopFilter)
   );
 
   const width = 900;
@@ -1133,7 +1138,7 @@ function renderScatter(data) {
 
   const xMax = getScatterMaxPopulation(
     scatterData,
-    scatterState.activePopFilter,
+    scatterState.activePopFilter
   );
   const x = d3
     .scaleLinear()
@@ -1219,11 +1224,11 @@ function renderScatter(data) {
   const clampBand = () => {
     scatterState.bandMinRatio = Math.max(
       0,
-      Math.min(1, scatterState.bandMinRatio),
+      Math.min(1, scatterState.bandMinRatio)
     );
     scatterState.bandMaxRatio = Math.max(
       0,
-      Math.min(1, scatterState.bandMaxRatio),
+      Math.min(1, scatterState.bandMaxRatio)
     );
 
     if (scatterState.bandMaxRatio < scatterState.bandMinRatio) {
@@ -1238,7 +1243,7 @@ function renderScatter(data) {
     ) {
       scatterState.bandMaxRatio = Math.min(
         1,
-        scatterState.bandMinRatio + bandWidthMin / chartWidth,
+        scatterState.bandMinRatio + bandWidthMin / chartWidth
       );
 
       if (scatterState.bandMaxRatio >= 1) {
@@ -1267,7 +1272,7 @@ function renderScatter(data) {
     const [bandPopMin, bandPopMax] = getBandPopulationRange();
 
     return populationFilteredData.filter(
-      (d) => d.population >= bandPopMin && d.population <= bandPopMax,
+      (d) => d.population >= bandPopMin && d.population <= bandPopMax
     );
   }
 
@@ -1319,7 +1324,7 @@ function renderScatter(data) {
 
           clampBand();
           updateScatter();
-        }),
+        })
       );
 
     pointsLayer
@@ -1331,7 +1336,7 @@ function renderScatter(data) {
       .attr("cy", (d) => y(d.proximity))
       .attr("r", 5.5)
       .attr("fill", (d) =>
-        bandSelectedNames.has(d.division) ? "#335693" : "#a4a4a4",
+        bandSelectedNames.has(d.division) ? "#335693" : "#a4a4a4"
       )
       .attr("opacity", 0.6)
       .on("mouseenter", function (event, d) {
@@ -1382,7 +1387,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .append("div")
     .attr("class", "scatter-secondary-title")
     .text(
-      `Top 10 cities in the filter band ranked by highest average ${amenityLabel.toLowerCase()} proximity`,
+      `Top 10 cities in the filter band ranked by highest average ${amenityLabel.toLowerCase()} proximity`
     );
 
   if (!top10.length) {
@@ -1390,7 +1395,7 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
       .append("div")
       .attr("class", "scatter-empty-note")
       .text(
-        "No cities fall inside the grey filter band for this population view.",
+        "No cities fall inside the grey filter band for this population view."
       );
     return;
   }
@@ -1486,10 +1491,10 @@ function renderScatterRanking(top10, amenityLabel, yScale) {
     .attr("class", "rank-x-axis")
     .attr("transform", `translate(0, ${innerHeight})`)
     .call(
-      d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f")),
+      d3.axisBottom(x).tickValues(yScale.ticks(6)).tickFormat(d3.format(".2f"))
     )
     .call((g) =>
-      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080"),
+      g.selectAll("text").attr("font-size", 12).attr("fill", "#6b7080")
     )
     .call((g) => g.selectAll("line").attr("stroke", "#6b7080"))
     .call((g) => g.select(".domain").attr("stroke", "#6b7080"));
@@ -1533,7 +1538,7 @@ function renderArchetypes(filter = "") {
 
   const filtered = filter
     ? archetypesData.filter(
-        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter,
+        (a) => a.name.toLowerCase().replace(/\s+/g, "_") === filter
       )
     : archetypesData;
 
@@ -1618,7 +1623,7 @@ function hexToRgb(hex) {
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
         result[3],
-        16,
+        16
       )}`
     : "255, 255, 255";
 }
@@ -1627,59 +1632,7 @@ loadData();
 
 // ── BC TIME-TO-LIFE INDEX CHART ───────────────────────────────────────
 
-// Data
-const data = [
-  {
-    city: "Vancouver",
-    grocery: 37.5,
-    transit: 150.0,
-    healthcare: 7.5,
-    parks: 60.0,
-    total: 255.0,
-  },
-  {
-    city: "Victoria",
-    grocery: 75.0,
-    transit: 150.0,
-    healthcare: 15.0,
-    parks: 60.0,
-    total: 300.0,
-  },
-  {
-    city: "Burnaby",
-    grocery: 75.0,
-    transit: 150.0,
-    healthcare: 27.5,
-    parks: 60.0,
-    total: 312.5,
-  },
-  {
-    city: "Chilliwack",
-    grocery: 137.5,
-    transit: 275.0,
-    healthcare: 27.5,
-    parks: 60.0,
-    total: 500.0,
-  },
-  {
-    city: "Prince George",
-    grocery: 137.5,
-    transit: 275.0,
-    healthcare: 27.5,
-    parks: 60.0,
-    total: 500.0,
-  },
-  {
-    city: "Fort St. John",
-    grocery: 137.5,
-    transit: 275.0,
-    healthcare: 27.5,
-    parks: 110.0,
-    total: 550.0,
-  },
-];
-
-// Service colors (matching the screenshot style)
+// Service colors
 const colors = {
   grocery: "#7fd3a0", // green
   transit: "#5b9fd4", // blue
@@ -1689,7 +1642,7 @@ const colors = {
 
 const services = ["grocery", "transit", "healthcare", "parks"];
 
-// Render legend
+// ── Legend ────────────────────────────────────────────────────────────
 function renderLegend() {
   const legend = document.getElementById("legend");
   legend.replaceChildren();
@@ -1742,7 +1695,7 @@ function showChartTooltip(event, cityData, hoveredService) {
   };
   const totalHours = (cityData.total / 60).toFixed(1);
 
-  let rows = services
+  const rows = services
     .map((svc) => {
       const mins = cityData[svc];
       const isHovered = svc === hoveredService;
@@ -1750,44 +1703,40 @@ function showChartTooltip(event, cityData, hoveredService) {
       return `
       <div style="
         display:flex; align-items:center; gap:10px;
-        padding: 5px 8px; border-radius:7px; margin-bottom:2px;
-        background: ${isHovered ? "rgba(0,0,0,0.04)" : "transparent"};
-        font-weight: ${isHovered ? "600" : "400"};
+        padding:5px 8px; border-radius:7px; margin-bottom:2px;
+        background:${isHovered ? "rgba(0,0,0,0.04)" : "transparent"};
+        font-weight:${isHovered ? "600" : "400"};
       ">
-        <span style="
-          width:10px; height:10px; border-radius:50%; flex-shrink:0;
-          background:${colors[svc]};
-          ${isHovered ? "box-shadow:0 0 0 2px rgba(0,0,0,0.15);" : ""}
-        "></span>
-        <span style="flex:1; color:#6b7080; font-size:0.8125rem;">${
+        <span style="width:10px;height:10px;border-radius:50%;flex-shrink:0;background:${
+          colors[svc]
+        };
+          ${isHovered ? "box-shadow:0 0 0 2px rgba(0,0,0,0.15);" : ""}"></span>
+        <span style="flex:1;color:#6b7080;font-size:0.8125rem;">${
           serviceLabels[svc]
         }</span>
-        <span style="color:#18181a; font-size:0.8125rem; font-weight:600;">${mins} min</span>
-        <span style="color:#9a9fad; font-size:0.75rem; min-width:30px; text-align:right;">${pct}%</span>
+        <span style="color:#18181a;font-size:0.8125rem;font-weight:600;">${mins} min</span>
+        <span style="color:#9a9fad;font-size:0.75rem;min-width:30px;text-align:right;">${pct}%</span>
       </div>`;
     })
     .join("");
 
   chartTooltip.innerHTML = `
-    <div style="margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #efefec;">
-      <div style="font-size:1rem; font-weight:700; color:#18181a; letter-spacing:-0.01em;">${
+    <div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #efefec;">
+      <div style="font-size:1rem;font-weight:700;color:#18181a;letter-spacing:-0.01em;">${
         cityData.city
       }</div>
-      <div style="font-size:0.75rem; color:#9a9fad; margin-top:1px;">Weekly travel time to services</div>
+      <div style="font-size:0.75rem;color:#9a9fad;margin-top:1px;">Weekly travel time to services</div>
     </div>
     ${rows}
-    <div style="
-      display:flex; justify-content:space-between; align-items:center;
-      margin-top:10px; padding-top:10px; border-top:1px solid #efefec;
-    ">
-      <span style="font-size:0.8125rem; font-weight:600; color:#18181a;">Total</span>
-      <span style="font-size:0.8125rem; font-weight:700; color:#2563eb;">${Math.round(
-        cityData.total,
+    <div style="display:flex;justify-content:space-between;align-items:center;
+      margin-top:10px;padding-top:10px;border-top:1px solid #efefec;">
+      <span style="font-size:0.8125rem;font-weight:600;color:#18181a;">Total</span>
+      <span style="font-size:0.8125rem;font-weight:700;color:#2563eb;">${Math.round(
+        cityData.total
       )} min
-        <span style="font-weight:400; color:#9a9fad;">&nbsp;(${totalHours} hrs/wk)</span>
+        <span style="font-weight:400;color:#9a9fad;">&nbsp;(${totalHours} hrs/wk)</span>
       </span>
-    </div>
-  `;
+    </div>`;
 
   positionChartTooltip(event);
   chartTooltip.style.opacity = "1";
@@ -1810,8 +1759,8 @@ function hideChartTooltip() {
   chartTooltip.style.opacity = "0";
 }
 
-// Draw chart
-function drawChart() {
+// ── Draw chart (receives data from fetch) ─────────────────────────────
+function drawChart(data) {
   const svg = d3.select("#chart");
   const margin = { top: 20, right: 20, bottom: 60, left: 60 };
   const width =
@@ -1822,14 +1771,13 @@ function drawChart() {
     "viewBox",
     `0 0 ${width + margin.left + margin.right} ${
       height + margin.top + margin.bottom
-    }`,
+    }`
   );
 
   const g = svg
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Scales
   const x = d3
     .scaleBand()
     .domain(data.map((d) => d.city))
@@ -1838,12 +1786,24 @@ function drawChart() {
 
   const y = d3.scaleLinear().domain([0, 800]).range([height, 0]);
 
-  // Stack the data
   const stack = d3.stack().keys(services);
-
   const stackedData = stack(data);
 
-  // Draw bars
+  // Grid lines (drawn first so bars appear on top)
+  g.selectAll(".grid-line")
+    .data(y.ticks(5))
+    .enter()
+    .append("line")
+    .attr("class", "grid-line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", (d) => y(d))
+    .attr("y2", (d) => y(d))
+    .attr("stroke", "#eee")
+    .attr("stroke-dasharray", "4 4")
+    .attr("stroke-width", 1);
+
+  // Stacked bars
   const groups = g
     .selectAll("g.service")
     .data(stackedData)
@@ -1866,9 +1826,7 @@ function drawChart() {
     .style("cursor", "pointer")
     .style("transition", "filter 0.15s, opacity 0.15s")
     .on("mousemove", function (event, d) {
-      const parentDatum = d3.select(this.parentNode).datum();
-      const hoveredService = parentDatum.key;
-      // Dim all bars, highlight the hovered column
+      const hoveredService = d3.select(this.parentNode).datum().key;
       svg
         .selectAll("g.service rect")
         .style("opacity", (rd) => (rd.data.city === d.data.city ? 1 : 0.45))
@@ -1888,7 +1846,7 @@ function drawChart() {
       hideChartTooltip();
     });
 
-  // Invisible full-height hit targets per city (so moving between segments doesn't flicker)
+  // Invisible full-height hit targets per city
   g.selectAll(".city-hit")
     .data(data)
     .enter()
@@ -1901,7 +1859,6 @@ function drawChart() {
     .attr("fill", "transparent")
     .style("cursor", "pointer")
     .on("mousemove", function (event, d) {
-      // find which service segment the mouse y falls on
       const [, my] = d3.pointer(event, g.node());
       const yVal = y.invert(my);
       let cumulative = 0;
@@ -1932,7 +1889,7 @@ function drawChart() {
       hideChartTooltip();
     });
 
-  // Add total labels on top
+  // Total labels on top of bars
   g.selectAll(".total-label")
     .data(data)
     .enter()
@@ -1947,13 +1904,13 @@ function drawChart() {
     .text((d) => Math.round(d.total));
 
   // Y axis
-  const yAxis = d3
-    .axisLeft(y)
-    .ticks(5)
-    .tickFormat((d) => d);
-
   g.append("g")
-    .call(yAxis)
+    .call(
+      d3
+        .axisLeft(y)
+        .ticks(5)
+        .tickFormat((d) => d)
+    )
     .append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0 - margin.left)
@@ -1965,38 +1922,58 @@ function drawChart() {
     .text("minutes per week");
 
   // X axis
-  const xAxis = d3.axisBottom(x);
-
   g.append("g")
     .attr("transform", `translate(0,${height})`)
-    .call(xAxis)
+    .call(d3.axisBottom(x))
     .selectAll("text")
     .style("font-size", "12px")
     .style("fill", "#666");
-
-  // Grid lines
-  g.selectAll(".grid-line")
-    .data(y.ticks(5))
-    .enter()
-    .append("line")
-    .attr("class", "grid-line")
-    .attr("x1", 0)
-    .attr("x2", width)
-    .attr("y1", (d) => y(d))
-    .attr("y2", (d) => y(d))
-    .attr("stroke", "#eee")
-    .attr("stroke-dasharray", "4 4")
-    .attr("stroke-width", 1);
-
-  // Move grid lines to back
-  g.selectAll(".grid-line").lower();
 }
 
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
+// ── Init: aggregate from already-loaded bcData ────────────────────────
+function initTimeIndex(bcData) {
+  const TARGET_CITIES = [
+    "Vancouver",
+    "Victoria",
+    "Burnaby",
+    "Chilliwack",
+    "Prince George",
+    "Fort St. John",
+  ];
+
+  // Map chart service keys → parsed data field names
+  const SERVICE_FIELDS = {
+    grocery: "grocery",
+    transit: "transit",
+    healthcare: "health",
+    parks: "park",
+  };
+
+  const WEEKLY_TRIPS = 10; // 5 trips × 2 (there + back)
+
+  const cityGroups = d3.group(bcData, (d) => d.division);
+
+  const data = TARGET_CITIES.map((city) => {
+    const rows = cityGroups.get(city) || [];
+
+    const serviceMinutes = {};
+    for (const [chartKey, dataField] of Object.entries(SERVICE_FIELDS)) {
+      const values = rows.map((r) => r[dataField]).filter(Number.isFinite);
+      const avg = values.length ? d3.mean(values) : 0;
+      serviceMinutes[chartKey] =
+        avg > 0 ? Math.round(proxToMinutes(avg) * WEEKLY_TRIPS) : 0;
+    }
+
+    return {
+      city,
+      ...serviceMinutes,
+      total: Object.values(serviceMinutes).reduce((a, b) => a + b, 0),
+    };
+  });
+
   renderLegend();
-  drawChart();
-});
+  drawChart(data);
+}
 
 //- MAP VISUALIZATION
 
@@ -2037,7 +2014,7 @@ let map,
 function initMap() {
   map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(
     [49.25, -122.9],
-    10,
+    10
   );
 
   L.tileLayer(
@@ -2045,7 +2022,7 @@ function initMap() {
     {
       attribution: "&copy; OpenStreetMap &copy; CARTO",
       maxZoom: 19,
-    },
+    }
   ).addTo(map);
 
   canvasRenderer = L.canvas({ padding: 0.5 });
@@ -2203,7 +2180,7 @@ function buildTooltip(d) {
     const color =
       v !== null
         ? proximityColor(
-            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes)),
+            (v - minutesToProx(f.minutes)) / (1 - minutesToProx(f.minutes))
           )
         : "#ccc";
 
