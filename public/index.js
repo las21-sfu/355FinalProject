@@ -189,15 +189,16 @@ window.addEventListener("DOMContentLoaded", () => {
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
       initTimeIndex(bcData);
-
-      // hide loading screen
-      document.getElementById("loading-screen").style.display = "none";
     })
     .catch((error) => {
       console.error(error);
       showError(
         "Could not load the dataset. Check the file path and column names in index.js.",
       );
+    })
+    .finally(() => {
+      const loader = document.getElementById("loading-screen");
+      if (loader) loader.style.display = "none";
     });
 });
 
