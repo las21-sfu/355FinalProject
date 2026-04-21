@@ -39,8 +39,8 @@
   --radius-lg: 16px;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  --font:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ── Google Font ──────────────────────────────── */
@@ -57,6 +57,12 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+img {
+  margin-bottom: 2rem;
+  width: 100%;
+  height: auto;
 }
 
 body {
@@ -170,7 +176,9 @@ button {
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-muted);
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   text-decoration: none;
   padding: 5px 10px;
   border-radius: 6px;
@@ -182,159 +190,62 @@ button {
 }
 
 /* ── Loading Screen Styles ────────────────────────── */
-
-.loading-screen {
+/* ── Fullscreen Loading Overlay ── */
+/* Dot container */
+#loading-screen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  inset: 0;
+  width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #f7f7f4 0%, #fffde8 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  opacity: 1;
-  transition: opacity 0.6s ease-out;
-  pointer-events: auto;
-}
-
-.loading-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.loading-container {
+  background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  max-width: 600px;
-  width: 90%;
-}
-
-.loading-illustration {
-  width: 100%;
-  height: auto;
-  max-width: 500px;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.08));
-  animation: loadingFloat 4s ease-in-out infinite;
-}
-
-@keyframes loadingFloat {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-/* Walking paths animation for loading screen */
-.loading-screen .walking-path {
-  stroke-dasharray: 100;
-  animation: walkingPath 3s ease-in-out infinite;
-}
-
-.loading-screen .walking-path-1 {
-  animation-delay: 0s;
-}
-
-.loading-screen .walking-path-2 {
-  animation-delay: 1s;
-}
-
-.loading-screen .walking-path-3 {
-  animation-delay: 2s;
-}
-
-@keyframes walkingPath {
-  0% {
-    stroke-dashoffset: 100;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 0;
-  }
-}
-
-.loading-text {
-  text-align: center;
-}
-
-.loading-text p {
-  font-size: 1.125rem;
-  color: var(--text);
-  margin: 0;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.loading-dots {
-  display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  z-index: 99999;
 }
 
-.loading-dots span {
-  width: 8px;
-  height: 8px;
+.loading-skyline {
+  width: 100%;
+  max-width: 50rem;
+  height: auto;
+  display: block;
+}
+
+.dot-loader {
+  display: flex;
+  gap: 1rem;
+}
+
+.dot-loader span {
+  width: 1rem;
+  height: 1rem;
+  background-color: #241e20;
   border-radius: 50%;
-  background-color: var(--accent);
-  animation: dotBounce 1.4s infinite;
+  opacity: 0.2;
+  animation: dotPulse 1.2s infinite ease-in-out;
 }
 
-.loading-dots span:nth-child(1) {
+.dot-loader span:nth-child(1) {
   animation-delay: 0s;
 }
-
-.loading-dots span:nth-child(2) {
+.dot-loader span:nth-child(2) {
   animation-delay: 0.2s;
 }
-
-.loading-dots span:nth-child(3) {
+.dot-loader span:nth-child(3) {
   animation-delay: 0.4s;
 }
 
-@keyframes dotBounce {
+@keyframes dotPulse {
   0%,
   80%,
   100% {
-    opacity: 0.5;
+    opacity: 0.2;
     transform: translateY(0);
   }
   40% {
     opacity: 1;
-    transform: translateY(-8px);
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .loading-container {
-    gap: 1.5rem;
-  }
-
-  .loading-illustration {
-    max-width: 400px;
-  }
-
-  .loading-text p {
-    font-size: 1rem;
-  }
-
-  .loading-dots span {
-    width: 6px;
-    height: 6px;
+    transform: translateY(-6px);
   }
 }
 
@@ -556,7 +467,10 @@ button {
   font-size: 0.8rem;
   line-height: 1;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
     opacity 0.15s ease;
 }
 
@@ -691,7 +605,9 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7080'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.65rem center;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 select:focus {
@@ -710,12 +626,15 @@ select:focus {
 .archetype-card {
   --card-overlay: rgba(200, 200, 200, 0.3);
   --card-image: none;
-  background: linear-gradient(var(--card-overlay), var(--card-overlay)),
+  background:
+    linear-gradient(var(--card-overlay), var(--card-overlay)),
     var(--card-image) bottom / cover no-repeat;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .archetype-card:hover {
@@ -899,7 +818,9 @@ select:focus {
 
 .bar-segment {
   cursor: pointer;
-  transition: opacity 0.2s, filter 0.2s;
+  transition:
+    opacity 0.2s,
+    filter 0.2s;
 }
 .bar-segment:hover {
   filter: brightness(1.2);
@@ -978,7 +899,9 @@ select:focus {
   background: var(--surface);
   border-radius: var(--radius);
   padding: 14px 18px;
-  box-shadow: var(--shadow), 0 0 0 1px var(--border);
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px var(--border);
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.15s;
@@ -1305,7 +1228,9 @@ select:focus {
   font-size: 0.85rem;
   color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;

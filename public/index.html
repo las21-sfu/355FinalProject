@@ -15,203 +15,14 @@
   </head>
   <body>
 
-<!-- Add this to your HTML body (preferably near the top, right after <body> tag) -->
-
-    <!-- Loading Screen Overlay -->
-    <div id="loading-screen" class="loading-screen">
-      <div class="loading-container">
-        <svg class="loading-illustration" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-          <!-- Background gradient -->
-          <defs>
-            <!-- Modern building gradients with depth -->
-            <linearGradient id="buildingGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#5a9fd4;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#4a8bc4;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#2d5a8c;stop-opacity:1" />
-            </linearGradient>
-            
-            <linearGradient id="buildingGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#8b7ba8;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#6d5a8a;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#4a3a5c;stop-opacity:1" />
-            </linearGradient>
-            
-            <linearGradient id="buildingGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#6b9e7f;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#558b6f;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#3a6b52;stop-opacity:1" />
-            </linearGradient>
-
-            <!-- Window gradients for glass effect -->
-            <linearGradient id="windowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#e8f4ff;stop-opacity:0.8" />
-              <stop offset="100%" style="stop-color:#a8d4ff;stop-opacity:0.5" />
-            </linearGradient>
-
-            <!-- Shadow gradients for depth -->
-            <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:#000;stop-opacity:0" />
-              <stop offset="100%" style="stop-color:#000;stop-opacity:0.15" />
-            </linearGradient>
-
-            <!-- Sky gradient -->
-            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:#f0f4ff;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#e8ecff;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-
-          <!-- Sky background -->
-          <rect width="600" height="400" fill="url(#skyGradient)" />
-
-          <!-- Ground -->
-          <rect y="280" width="600" height="120" fill="#e8e8e8" opacity="0.7" />
-          <rect y="280" width="600" height="8" fill="#d0d0d0" opacity="0.8" />
-
-          <!-- Building 1 - Modern Blue Tower (Left) -->
-          <g>
-            <!-- Main building shape -->
-            <rect x="60" y="160" width="110" height="140" fill="url(#buildingGradient1)" rx="6" />
-            
-            <!-- Building shadow/depth -->
-            <rect x="60" y="160" width="110" height="140" fill="url(#shadowGradient)" rx="6" />
-            
-            <!-- Left side darker for 3D effect -->
-            <rect x="60" y="160" width="8" height="140" fill="#1a3a5c" opacity="0.4" rx="6" />
-            
-            <!-- Detailed window grid - 4 columns x 5 rows -->
-            <!-- Row 1 -->
-            <rect x="75" y="175" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="98" y="175" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="121" y="175" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="144" y="175" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            
-            <!-- Row 2 -->
-            <rect x="75" y="198" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="98" y="198" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="121" y="198" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="144" y="198" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            
-            <!-- Row 3 -->
-            <rect x="75" y="221" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="98" y="221" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="121" y="221" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="144" y="221" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            
-            <!-- Row 4 -->
-            <rect x="75" y="244" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="98" y="244" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="121" y="244" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            <rect x="144" y="244" width="16" height="16" fill="url(#windowGradient)" stroke="#4a8bc4" stroke-width="0.5" />
-            
-            <!-- Roof detail -->
-            <polygon points="60,160 170,160 175,155 55,155" fill="#2d5a8c" opacity="0.6" />
-          </g>
-
-          <!-- Building 2 - Modern Purple Tower (Center) -->
-          <g>
-            <!-- Main building shape -->
-            <rect x="280" y="130" width="100" height="170" fill="url(#buildingGradient2)" rx="6" />
-            
-            <!-- Building shadow/depth -->
-            <rect x="280" y="130" width="100" height="170" fill="url(#shadowGradient)" rx="6" />
-            
-            <!-- Left side darker for 3D effect -->
-            <rect x="280" y="130" width="8" height="170" fill="#2a1a3c" opacity="0.4" rx="6" />
-            
-            <!-- Detailed window grid - 3 columns x 6 rows -->
-            <!-- Row 1 -->
-            <rect x="295" y="145" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="320" y="145" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="345" y="145" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            
-            <!-- Row 2 -->
-            <rect x="295" y="168" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="320" y="168" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="345" y="168" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            
-            <!-- Row 3 -->
-            <rect x="295" y="191" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="320" y="191" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="345" y="191" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            
-            <!-- Row 4 -->
-            <rect x="295" y="214" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="320" y="214" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="345" y="214" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            
-            <!-- Row 5 -->
-            <rect x="295" y="237" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="320" y="237" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            <rect x="345" y="237" width="15" height="15" fill="url(#windowGradient)" stroke="#6d5a8a" stroke-width="0.5" />
-            
-            <!-- Roof detail -->
-            <polygon points="280,130 380,130 385,125 275,125" fill="#4a3a5c" opacity="0.6" />
-          </g>
-
-          <!-- Building 3 - Modern Green Tower (Right) -->
-          <g>
-            <!-- Main building shape -->
-            <rect x="440" y="180" width="95" height="120" fill="url(#buildingGradient3)" rx="6" />
-            
-            <!-- Building shadow/depth -->
-            <rect x="440" y="180" width="95" height="120" fill="url(#shadowGradient)" rx="6" />
-            
-            <!-- Left side darker for 3D effect -->
-            <rect x="440" y="180" width="8" height="120" fill="#1a3a2c" opacity="0.4" rx="6" />
-            
-            <!-- Detailed window grid - 3 columns x 4 rows -->
-            <!-- Row 1 -->
-            <rect x="455" y="195" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="480" y="195" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="505" y="195" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            
-            <!-- Row 2 -->
-            <rect x="455" y="220" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="480" y="220" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="505" y="220" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            
-            <!-- Row 3 -->
-            <rect x="455" y="245" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="480" y="245" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            <rect x="505" y="245" width="16" height="16" fill="url(#windowGradient)" stroke="#558b6f" stroke-width="0.5" />
-            
-            <!-- Roof detail -->
-            <polygon points="440,180 535,180 540,175 435,175" fill="#3a6b52" opacity="0.6" />
-          </g>
-
-          <!-- Streets/paths -->
-          <line x1="50" y1="300" x2="550" y2="300" stroke="#c0c0c0" stroke-width="10" opacity="0.6" />
-          <line x1="200" y1="250" x2="200" y2="350" stroke="#c0c0c0" stroke-width="7" opacity="0.6" />
-          <line x1="400" y1="250" x2="400" y2="350" stroke="#c0c0c0" stroke-width="7" opacity="0.6" />
-
-          <!-- Street markings -->
-          <line x1="50" y1="305" x2="550" y2="305" stroke="#fff" stroke-width="2" opacity="0.4" stroke-dasharray="15,10" />
-
-          <!-- Walking paths with animation -->
-          <path class="walking-path walking-path-1" d="M 150 320 Q 200 280 280 300" stroke="#5a9fd4" stroke-width="3" fill="none" stroke-linecap="round" />
-          <path class="walking-path walking-path-2" d="M 320 320 Q 350 260 420 290" stroke="#8b7ba8" stroke-width="3" fill="none" stroke-linecap="round" />
-          <path class="walking-path walking-path-3" d="M 100 310 Q 250 240 450 310" stroke="#6b9e7f" stroke-width="3" fill="none" stroke-linecap="round" />
-
-          <!-- Compass/direction indicator -->
-          <g opacity="0.4">
-            <circle cx="540" cy="60" r="15" fill="none" stroke="#999" stroke-width="1.5" />
-            <line x1="540" y1="48" x2="540" y2="38" stroke="#999" stroke-width="2" stroke-linecap="round" />
-            <polygon points="540,38 536,45 544,45" fill="#999" />
-          </g>
-        </svg>
-        
-        <div class="loading-text">
-          <p>Loading data...</p>
-          <div class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
+    <div id="loading-screen">
+      <img src="vancouverSkyline.png" alt="Vancouver skyline" class="loading-skyline" />
+      <div class="dot-loader">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
-
 
     <div class="page">
       <nav class="side-nav">
@@ -231,13 +42,13 @@
 
       <main class="main-content">
         <section id="intro-section" class="intro-section">
+          <img src="heroImage.jpg" alt="Image of commercial broadway with a bus and a shopping store" width="1075" height="555">
           <h1>How accessible are essential services throughout BC?</h1>
           <h3>
             Compare transit, housing, healthcare, education, and more across
             British Columbia's regions and Metro Vancouver. Find the perfect
             place that fits your accessibility needs.
           </h3>
-          <div class="hero-bg-grid"></div>
         </section>
 
         <!-- Vis 1 -->
