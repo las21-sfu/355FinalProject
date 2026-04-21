@@ -1867,17 +1867,17 @@ function hideChartTooltip() {
 // ── Draw chart (receives data from fetch) ─────────────────────────────
 function drawChart(data) {
   const svg = d3.select("#chart");
-  const margin = { top: 20, right: 20, bottom: 60, left: 60 };
-  const width =
-    Math.min(900, window.innerWidth - 80) - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
+  const margin = { top: 30, right: 20, bottom: 60, left: 65 };
+  const totalW = 900;
+  const totalH = 420;
+  const width = totalW - margin.left - margin.right;
+  const height = totalH - margin.top - margin.bottom;
 
-  svg.attr(
-    "viewBox",
-    `0 0 ${width + margin.left + margin.right} ${
-      height + margin.top + margin.bottom
-    }`
-  );
+  svg
+    .attr("viewBox", `0 0 ${totalW} ${totalH}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("width", "100%")
+    .style("height", "auto");
 
   const g = svg
     .append("g")
@@ -2084,7 +2084,6 @@ function initTimeIndex(bcData) {
   renderLegend();
   drawChart(data);
 }
-
 //- MAP VISUALIZATION
 
 const METRO_CMA = "Vancouver";
