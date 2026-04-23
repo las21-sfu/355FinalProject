@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,84 +14,103 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-
     <div id="loading-screen">
-      <img src="vancouverSkyline.png" alt="Vancouver skyline illustration" width="5172" height="1440" class="loading-skyline" />
-      <div class="dot-loader">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <img
+        src="vancouverSkyline.png"
+        alt="Vancouver skyline illustration"
+        width="5172"
+        height="1440"
+        class="loading-skyline"
+      />
+      <div class="dot-loader"><span></span><span></span><span></span></div>
     </div>
 
     <div class="page">
-      <nav class="side-nav">
-        <h2>Page navigation</h2>
+      <nav class="side-nav" aria-label="Page sections">
+        <p class="side-nav-heading">Contents</p>
+        <div class="side-nav-track" aria-hidden="true"></div>
         <ul>
-          <li><a href="#intro-section">Introduction</a></li>
           <li>
-            <a href="#understanding-accessibility">Understanding Accessibility</a>
+            <a href="#intro-section" data-section="intro-section"
+              ><span class="nav-step">01</span>Introduction</a
+            >
           </li>
-          <li><a href="#overall-section">Service Priority</a></li>
-          <li><a href="#scatter-section">Population vs Accessibility</a></li>
-          <li><a href="#section-time-index">Time-to-Life Index</a></li>
-          <li><a href="#section-archetypes">Lifestyle Archetypes</a></li>
-          <li><a href="#map-explore">Exploration Map</a></li>
+          <li>
+            <a
+              href="#understanding-accessibility"
+              data-section="understanding-accessibility"
+              ><span class="nav-step">02</span>Understanding Accessibility</a
+            >
+          </li>
+          <li>
+            <a href="#overall-section" data-section="overall-section"
+              ><span class="nav-step">03</span>Service Priority</a
+            >
+          </li>
+          <li>
+            <a href="#scatter-section" data-section="scatter-section"
+              ><span class="nav-step">04</span>Population vs Accessibility</a
+            >
+          </li>
+          <li>
+            <a href="#section-time-index" data-section="section-time-index"
+              ><span class="nav-step">05</span>Time-to-Life Index</a
+            >
+          </li>
+          <li>
+            <a href="#section-archetypes" data-section="section-archetypes"
+              ><span class="nav-step">06</span>Lifestyle Archetypes</a
+            >
+          </li>
+          <li>
+            <a href="#conclusion-section" data-section="conclusion-section"
+              ><span class="nav-step">07</span>Key Takeaways</a
+            >
+          </li>
+          <li>
+            <a href="#map-explore" data-section="map-explore"
+              ><span class="nav-step">08</span>Exploration Map</a
+            >
+          </li>
         </ul>
       </nav>
 
       <main class="main-content">
+        <!-- ── 01 Introduction ── -->
         <section id="intro-section" class="intro-section">
-          <img src="heroImage.jpg" alt="Image of commercial broadway with a bus and a shopping store" width="1075" height="555">
+          <img
+            src="heroImage.jpg"
+            alt="Image of commercial broadway with a bus and a shopping store"
+            width="1075"
+            height="555"
+          />
           <h1>How accessible are essential services throughout BC?</h1>
           <h3>
             Compare transit, housing, healthcare, education, and more across
             British Columbia's regions and Metro Vancouver. Find the perfect
             place that fits your accessibility needs.
           </h3>
+          <div class="scroll-down-cue" aria-hidden="true">
+            <span>Scroll to explore</span>
+            <div class="scroll-down-arrow"></div>
+          </div>
         </section>
 
-        <!-- Vis 1 -->
-        <!-- <section id="hero-vis" class="hero-vis"> -->
-        <!-- <div class="hero-description">
-            <h2>Understanding Accessibility</h2>
-            <p>
-              Not all communities have the same level of access to everyday
-              services. The proximity index measures how close people are to
-              essential amenities, helping us compare accessibility across
-              places. We converted this into estimated walking times to make
-              accessibility easier to understand.
-            </p>
-          </div> -->
-        <!-- <div class="hero-actions">
-            <h3>Compare accessibility to the nearest</h3>
-            <div>
-              <select id="amenity-select" aria-label="Amenity"></select>
-            </div>
-          </div>
-
-          <div id="chart1"></div>
-          <div id="message"></div>
-        </section> -->
-
-        <!-- Understanding Accessibility -->
+        <!-- ── 02 Understanding Accessibility ── -->
         <section
           id="understanding-accessibility"
           class="understanding-accessibility-section"
         >
+          <p class="section-eyebrow">Section 02</p>
           <h2>Understanding Accessibility</h2>
           <p>
             Not all communities have the same level of access to everyday
-            services. The proximity index measures how close people are to
-            essential amenities, helping us compare accessibility across places.
-            We converted this into estimated walking times to make accessibility
-            easier to understand.
+            services. The <strong>proximity index</strong> measures how close
+            people are to essential amenities, helping us compare accessibility
+            across places. We converted this into estimated walking times to
+            make accessibility easier to understand.
           </p>
-          <br />
-          <br />
-          <div>
-            <!-- <select id="amenity-select" aria-label="Amenity"></select> -->
-          </div>
+          <br /><br />
           <div class="ua-city-block">
             <h2>
               For example, the average proximity of all blocks in Vancouver to
@@ -116,36 +135,64 @@
           </div>
         </section>
 
-        <!-- Vis 2 -->
+        <!-- ── 03 Service Priority (Scrolly) ── -->
         <section id="overall-section" class="overall-section">
+          <p class="section-eyebrow">Section 03</p>
           <div id="overall-scrolly">
             <div id="overall-sticky">
-              <h2>Different areas may prioritize easier access to different services.</h2>
+              <h2>
+                Different areas may prioritize easier access to different
+                services.
+              </h2>
               <h3 id="overall-narrative"></h3>
               <div id="overall-vis"></div>
+
+              <!-- Scroll cue shown while user hasn't engaged the scrolly steps -->
+              <div class="scrolly-hint" id="scrolly-hint" aria-live="polite">
+                <span>Scroll down to advance the story</span>
+                <div class="scrolly-hint-arrow" aria-hidden="true"></div>
+              </div>
             </div>
 
-            <div class="overall-step" data-state="most"></div>
-            <div class="overall-step" data-state="most-annotated"></div>
-            <div class="overall-step" data-state="least"></div>
-            <div class="overall-step" data-state="least-annotated"></div>
+            <div class="overall-step" data-state="most" data-step="1"></div>
+            <div
+              class="overall-step"
+              data-state="most-annotated"
+              data-step="2"
+            ></div>
+            <div class="overall-step" data-state="least" data-step="3"></div>
+            <div
+              class="overall-step"
+              data-state="least-annotated"
+              data-step="4"
+            ></div>
+          </div>
+
+          <!-- Step progress dots -->
+          <div class="scrolly-step-dots" aria-hidden="true">
+            <span class="step-dot active" data-dot="1"></span>
+            <span class="step-dot" data-dot="2"></span>
+            <span class="step-dot" data-dot="3"></span>
+            <span class="step-dot" data-dot="4"></span>
           </div>
 
           <p class="overall-footnote">
-            Note: This visualization shows whether at least one service is present in each block,
-            rather than measuring how close or accessible that service is.
+            Note: This visualization shows whether at least one service is
+            present in each block, rather than measuring how close or accessible
+            that service is.
           </p>
         </section>
-        
-        <!-- Vis 3 -->
+
+        <!-- ── 04 Population vs Accessibility ── -->
         <section id="scatter-section" class="scatter-section">
+          <p class="section-eyebrow">Section 04</p>
           <h2>Not everyone prefers to live in busy cities.</h2>
           <p>
             Even though Vancouver stands out for its diverse community and high
-            accessibility ranking across most amenities, some smaller communities
-            may provide just as much (or even more) access.
+            accessibility ranking across most amenities, some smaller
+            communities may provide just as much (or even more) access.
           </p>
-          <br>
+          <br />
 
           <div class="scatter-header-row">
             <div class="scatter-title-wrap">
@@ -156,9 +203,10 @@
                   <span id="scatter-select-sizer" aria-hidden="true"></span>
                 </span>
               </h2>
-              <p>
-                The top 10 cities (divisions) with the best accessibility inside
-                the grey band are labeled and ranked below.
+              <p class="scatter-band-hint">
+                <span class="band-hint-icon" aria-hidden="true">⟺</span>
+                Drag the grey band to filter by population range. The top 10
+                cities inside the band are ranked below.
               </p>
             </div>
 
@@ -172,60 +220,127 @@
           <div id="scatter-selection"></div>
         </section>
 
-        <!-- Section 1: Time-to-Life Index -->
+        <!-- ── 05 Time-to-Life Index ── -->
         <section id="section-time-index" class="section-time-index">
+          <p class="section-eyebrow">Section 05</p>
           <h2>
-            Consider the added time of accessing all your essential services -
-            how much time would your choice of city take from you?
+            How much time does your city actually take from you each week?
           </h2>
           <p>
-            First, we translate the average proximity to services in each city
-            to the estimated walking minutes. If we assume that you’ll want to
-            access transit, a grocery store, employment, and a park 5 times a
-            week (walking there and back) we can estimate how many hours you’ll
-            spend in transit if your chosen mode is your own two feet.
+            We translate the average proximity index for each city into
+            estimated walking minutes, then multiply by 10 weekly trips (5
+            destinations × there and back). We assume 5 round trips per week to
+            each service, a working commuter's schedule, to illustrate a
+            plausible upper bound. The chart below shows total weekly minutes
+            spent on foot to reach transit, groceries, healthcare, and parks.
           </p>
-          <br>
-          <h2>
-            Comparing weekly minutes spent accessing essential services
-          <h2>
+          <br />
+          <h2 class="chart-title">
+            Weekly walking minutes to essential services, by city
+          </h2>
 
           <svg id="chart"></svg>
-
           <div class="legend" id="legend"></div>
-
-          <!-- <div class="methodology">
-            <h3>Index Score → Travel Time Mapping</h3>
-            <p>
-              <strong>0.8–1.0:</strong> 5 min/trip &nbsp;&nbsp;
-              <strong>0.5–0.8:</strong> 15 min/trip &nbsp;&nbsp;
-              <strong>0.2–0.5:</strong> 30 min/trip &nbsp;&nbsp;
-              <strong>0.0–0.2:</strong> 55 min/trip
-            </p>
-            <p class="source-note">
-              Data source: Statistics Canada Proximity Measures Database
-              (PMD-en.csv). Services shown: Grocery, Transit, Healthcare, Parks.
-            </p>
-          </div> -->
+          <p class="chart-note">
+            Hover a bar to see a breakdown by service type. Note: The proximity
+            index is drawn from Statistics Canada's Proximity Measures Database.
+            Each block receives a gravity-model score (0–1) based on the number
+            and size of nearby services weighted by real road-network distance,
+            normalized nationally. We convert the index to walking minutes using
+            each service's defined threshold (e.g. 1 km for groceries, 1.5 km
+            for schools)
+          </p>
         </section>
 
-        <!-- Section 2: Lifestyle Archetypes -->
+        <!-- ── 06 Lifestyle Archetypes ── -->
         <section id="section-archetypes" class="section-archetypes">
-          <h2>
-            You can also choose a suitable location based on the four proximity
-            archetypes; what matters to you most?
-          </h2>
-          <br>
+          <p class="section-eyebrow">Section 06</p>
+          <h2>Find the community type that fits your lifestyle.</h2>
+          <p>
+            Four accessibility archetypes describe how BC communities differ in
+            what they prioritize. Which one matches what matters to you most?
+          </p>
+          <br />
 
           <div class="archetypes-grid" id="archetypesGrid">
             <div class="loading">Loading data...</div>
           </div>
         </section>
+
+        <!-- ── 07 Key Takeaways ── -->
+        <section id="conclusion-section" class="conclusion-section">
+          <p class="section-eyebrow">Section 07 · Key Takeaways</p>
+          <h2>What did we learn?</h2>
+          <p>
+            The data shows disparities in access to essential services across
+            British Columbia. These differences are influenced by geographic
+            location, and population density, indicating that service
+            distribution is not uniform across the province.
+          </p>
+
+          <div class="conclusion-grid">
+            <div class="conclusion-card">
+              <div class="conclusion-icon" aria-hidden="true">🏙️</div>
+              <h3>
+                Urban areas perform consistently well, but smaller cities can
+                also be accessible
+              </h3>
+              <p>
+                While Vancouver ranks highest overall in service accessibility,
+                the data also reveals that smaller cities such as Victoria and
+                North Vancouver also achieve relatively high scores. This
+                suggests that high accessibility is not exclusive to urban
+                centres, but can also be achieved at smaller scales.
+              </p>
+            </div>
+            <div class="conclusion-card">
+              <div class="conclusion-icon" aria-hidden="true">🚗</div>
+              <h3>Suburban areas show lower proximity to services</h3>
+              <p>
+                The data indicates that car-dependent suburban communities tend
+                to have lower proximity scores across service categories. This
+                pattern suggests that residents in these areas are likely to
+                spend more time traveling to access services.
+              </p>
+            </div>
+            <div class="conclusion-card">
+              <div class="conclusion-icon" aria-hidden="true">⚖️</div>
+              <h3>Service distribution reflects local priorities</h3>
+              <p>
+                Different regions prioritize different services. For example,
+                Maple Ridge has higher concentrations of employment and
+                educational services, while Whistler has more access to parks
+                and health-related amenities.
+              </p>
+            </div>
+            <div class="conclusion-card">
+              <div class="conclusion-icon" aria-hidden="true">🗺️</div>
+              <h3>Explore your own neighbourhood</h3>
+              <p>
+                The interactive map below lets you set your own walking-time
+                thresholds and discover which Metro Vancouver blocks meet your
+                personal needs.
+              </p>
+            </div>
+          </div>
+
+          <div class="conclusion-cta">
+            <a href="#map-explore" class="cta-button"
+              >Explore the interactive map →</a
+            >
+          </div>
+        </section>
       </main>
     </div>
 
+    <!-- ── 08 Exploration Map (full-width, outside .page grid) ── -->
     <section id="map-explore" class="map-explore-section">
+      <p class="section-eyebrow centered">Section 08</p>
       <h2>Explore the Metro Vancouver Interactive Proximity Map</h2>
+      <p class="map-subtitle">
+        Set your walking-time thresholds for each service and see which blocks
+        meet your criteria.
+      </p>
       <div class="app">
         <aside class="left-panel">
           <div class="panel-body">
@@ -237,7 +352,12 @@
             </div>
 
             <div>
-              <div class="section-label">Services</div>
+              <div class="section-label">
+                Services
+                <span class="section-label-hint"
+                  >— set max walking time per service</span
+                >
+              </div>
               <div class="service-list" id="service-list"></div>
 
               <div
@@ -266,7 +386,8 @@
                   font-style: italic;
                 "
               >
-                Walking time is approximate.
+                Walking time is approximate. Colors show relative access across
+                visible blocks.
               </p>
             </div>
           </div>
@@ -285,6 +406,20 @@
         </div>
       </div>
     </section>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer">
+      <p>
+        Data source:
+        <a
+          href="https://www150.statcan.gc.ca/n1/pub/17-26-0002/172600022020001-eng.htm"
+          target="_blank"
+          rel="noopener"
+          >Statistics Canada Proximity Measures Database</a
+        >
+      </p>
+      <p>Built with D3.js · Leaflet · PapaParse</p>
+    </footer>
 
     <script src="index.js"></script>
   </body>

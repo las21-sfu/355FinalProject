@@ -117,6 +117,88 @@ const AMENITY_INFO = {
   },
 };
 
+/* ── Scroll-spy: sidebar active states ─────────────────────────── */
+function initScrollSpy() {
+  const sectionIds = [
+    "intro-section",
+    "understanding-accessibility",
+    "overall-section",
+    "scatter-section",
+    "section-time-index",
+    "section-archetypes",
+    "conclusion-section",
+    "map-explore",
+  ];
+
+  const navLinks = document.querySelectorAll(".side-nav a[data-section]");
+  const visited = new Set();
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const id = entry.target.id;
+        const link = document.querySelector(
+          `.side-nav a[data-section="${id}"]`
+        );
+        if (!link) return;
+
+        if (entry.isIntersecting) {
+          // Mark everything before this as visited
+          navLinks.forEach((l) => {
+            const lId = l.getAttribute("data-section");
+            if (lId !== id) visited.add(lId);
+          });
+          navLinks.forEach((l) => {
+            const lId = l.getAttribute("data-section");
+            l.classList.remove("is-active", "is-visited");
+            if (lId === id) l.classList.add("is-active");
+            else if (visited.has(lId)) l.classList.add("is-visited");
+          });
+        }
+      });
+    },
+    { rootMargin: "-15% 0px -60% 0px", threshold: 0 }
+  );
+
+  sectionIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+}
+
+/* ── Scrolly: step dots + scroll hint ──────────────────────────── */
+function initScrollyStepDots() {
+  const steps = document.querySelectorAll(".overall-step");
+  const dots = document.querySelectorAll(".step-dot");
+  const hint = document.getElementById("scrolly-hint");
+
+  if (!steps.length) return;
+
+  const stepObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const stepNum = parseInt(entry.target.dataset.step, 10);
+        if (isNaN(stepNum)) return;
+
+        // Update progress dots
+        dots.forEach((dot) => {
+          dot.classList.toggle(
+            "active",
+            parseInt(dot.dataset.dot, 10) === stepNum
+          );
+        });
+
+        // Hide the scroll hint once the user reaches the first step
+        if (hint && stepNum >= 1) hint.classList.add("is-hidden");
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  steps.forEach((step) => stepObserver.observe(step));
+}
+
 function cleanProvinceName(name) {
   if (!name) return "Unknown Province";
   return String(name).split("/")[0].trim();
@@ -189,6 +271,10 @@ window.addEventListener("DOMContentLoaded", () => {
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
       initTimeIndex(bcData);
+
+      // UX improvements: sidebar scroll-spy + scrolly step dots
+      initScrollSpy();
+      initScrollyStepDots();
     })
     .catch((error) => {
       console.error(error);
@@ -1433,13 +1519,23 @@ function renderScatter(data) {
 
     labelsLayer.selectAll("*").remove();
 
+    // Deduplicate labels that would overlap (skip any within 18px vertically of a prior label)
+    const labelData = top10.reduce((acc, d) => {
+      const cy = y(d.proximity);
+      const tooClose = acc.some(
+        (prev) => Math.abs(y(prev.proximity) - cy) < 18
+      );
+      if (!tooClose) acc.push(d);
+      return acc;
+    }, []);
+
     labelsLayer
       .selectAll("text")
-      .data(top10, (d) => d.division)
+      .data(labelData, (d) => d.division)
       .join("text")
       .attr("class", "scatter-label")
-      .attr("x", (d) => x(d.population) + 8)
-      .attr("y", (d) => y(d.proximity) - 8)
+      .attr("x", (d) => x(d.population) + 10)
+      .attr("y", (d) => y(d.proximity) - 6)
       .text((d) => d.division);
 
     renderScatterRanking(top10, scatterLabel, y);
