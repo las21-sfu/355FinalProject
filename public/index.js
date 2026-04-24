@@ -44,78 +44,78 @@ const SERVICE_TYPE_INFO = [
   { label: "Transit", field: "in_db_transit", color: PALETTE.transit },
 ];
 
-const AMENITY_INFO = {
-  Employment: {
-    field: "employment",
-    icon: "💼",
-    mode: "driving",
-    km: 10,
-    label: "10 km driving threshold",
-  },
-  Pharmacy: {
-    field: "pharmacy",
-    icon: "💊",
-    mode: "walking",
-    km: 1,
-    label: "1 km walking threshold",
-  },
-  Childcare: {
-    field: "childcare",
-    icon: "🧸",
-    mode: "walking",
-    km: 1.5,
-    label: "1.5 km walking threshold",
-  },
-  Health: {
-    field: "health",
-    icon: "🏥",
-    mode: "driving",
-    km: 3,
-    label: "3 km driving threshold",
-  },
-  Grocery: {
-    field: "grocery",
-    icon: "🛒",
-    mode: "walking",
-    km: 1,
-    label: "1 km walking threshold",
-  },
-  "Primary School": {
-    field: "primary_school",
-    icon: "🏫",
-    mode: "walking",
-    km: 1.5,
-    label: "1.5 km walking threshold",
-  },
-  "Secondary School": {
-    field: "secondary_school",
-    icon: "🎓",
-    mode: "walking",
-    km: 1.5,
-    label: "1.5 km walking threshold",
-  },
-  Library: {
-    field: "library",
-    icon: "📚",
-    mode: "walking",
-    km: 1.5,
-    label: "1.5 km walking threshold",
-  },
-  Park: {
-    field: "park",
-    icon: "🌳",
-    mode: "walking",
-    km: 1,
-    label: "1 km walking threshold",
-  },
-  Transit: {
-    field: "transit",
-    icon: "🚌",
-    mode: "walking",
-    km: 1,
-    label: "1 km walking threshold",
-  },
-};
+// const AMENITY_INFO = {
+//   Employment: {
+//     field: "employment",
+//     icon: "💼",
+//     mode: "driving",
+//     km: 10,
+//     label: "10 km driving threshold",
+//   },
+//   Pharmacy: {
+//     field: "pharmacy",
+//     icon: "💊",
+//     mode: "walking",
+//     km: 1,
+//     label: "1 km walking threshold",
+//   },
+//   Childcare: {
+//     field: "childcare",
+//     icon: "🧸",
+//     mode: "walking",
+//     km: 1.5,
+//     label: "1.5 km walking threshold",
+//   },
+//   Health: {
+//     field: "health",
+//     icon: "🏥",
+//     mode: "driving",
+//     km: 3,
+//     label: "3 km driving threshold",
+//   },
+//   Grocery: {
+//     field: "grocery",
+//     icon: "🛒",
+//     mode: "walking",
+//     km: 1,
+//     label: "1 km walking threshold",
+//   },
+//   "Primary School": {
+//     field: "primary_school",
+//     icon: "🏫",
+//     mode: "walking",
+//     km: 1.5,
+//     label: "1.5 km walking threshold",
+//   },
+//   "Secondary School": {
+//     field: "secondary_school",
+//     icon: "🎓",
+//     mode: "walking",
+//     km: 1.5,
+//     label: "1.5 km walking threshold",
+//   },
+//   Library: {
+//     field: "library",
+//     icon: "📚",
+//     mode: "walking",
+//     km: 1.5,
+//     label: "1.5 km walking threshold",
+//   },
+//   Park: {
+//     field: "park",
+//     icon: "🌳",
+//     mode: "walking",
+//     km: 1,
+//     label: "1 km walking threshold",
+//   },
+//   Transit: {
+//     field: "transit",
+//     icon: "🚌",
+//     mode: "walking",
+//     km: 1,
+//     label: "1 km walking threshold",
+//   },
+// };
 
 /* ── Scroll-spy: sidebar active states ─────────────────────────── */
 function initScrollSpy() {
@@ -166,38 +166,6 @@ function initScrollSpy() {
   });
 }
 
-/* ── Scrolly: step dots + scroll hint ──────────────────────────── */
-function initScrollyStepDots() {
-  const steps = document.querySelectorAll(".overall-step");
-  const dots = document.querySelectorAll(".step-dot");
-  const hint = document.getElementById("scrolly-hint");
-
-  if (!steps.length) return;
-
-  const stepObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const stepNum = parseInt(entry.target.dataset.step, 10);
-        if (isNaN(stepNum)) return;
-
-        // Update progress dots
-        dots.forEach((dot) => {
-          dot.classList.toggle(
-            "active",
-            parseInt(dot.dataset.dot, 10) === stepNum
-          );
-        });
-
-        // Hide the scroll hint once the user reaches the first step
-        if (hint && stepNum >= 1) hint.classList.add("is-hidden");
-      });
-    },
-    { threshold: 0.5 }
-  );
-
-  steps.forEach((step) => stepObserver.observe(step));
-}
 
 function cleanProvinceName(name) {
   if (!name) return "Unknown Province";
@@ -266,21 +234,15 @@ window.addEventListener("DOMContentLoaded", () => {
       });
 
       initScatterDropdown(bcData);
-      render(bcData);
       initUnderstandingAccessibility(bcData);
       initOverallAccessibilityScrolly(bcData);
       renderScatter(bcData);
       initTimeIndex(bcData);
 
-      // UX improvements: sidebar scroll-spy + scrolly step dots
       initScrollSpy();
-      initScrollyStepDots();
     })
     .catch((error) => {
-      console.error(error);
-      showError(
-        "Could not load the dataset. Check the file path and column names in index.js."
-      );
+      console.error("Could not load the dataset. Check the file path and column names in index.js.", error);
     })
     .finally(() => {
       const loader = document.getElementById("loading-screen");
@@ -465,420 +427,6 @@ function drawProximityBar(selector, minutes) {
     .ease(d3.easeCubicOut)
     .attr("width", xScale(clamped))
     .attr("fill", barColor(clamped));
-}
-
-function render(data) {
-  d3.select("#chart1").html("");
-  d3.select("#message").html("");
-
-  const selectedAmenity = d3.select("#ua-amenity-select").property("value");
-  const amenityInfo = AMENITY_INFO[selectedAmenity];
-  const field = amenityInfo?.field;
-
-  if (!field) {
-    showError("No amenity field found for the selected dropdown value.");
-    return;
-  }
-
-  const validRows = data.filter((d) => Number.isFinite(d[field]));
-
-  if (!validRows.length) {
-    showError(
-      `No valid rows found for ${selectedAmenity} in British Columbia.`
-    );
-    return;
-  }
-
-  const divisionRows = d3
-    .rollups(
-      validRows,
-      (group) => {
-        const avgIndex = d3.mean(group, (d) => d[field]);
-
-        const avgMinutes =
-          amenityInfo.mode === "walking"
-            ? estimateWalkingMinutes(avgIndex, amenityInfo.km)
-            : null;
-
-        return {
-          division: group[0]?.division || "Unknown Division",
-          province: group[0]?.province || "Unknown Province",
-          indexValue: avgIndex,
-          estimatedMinutes: avgMinutes,
-          blockCount: group.length,
-        };
-      },
-      (d) => d.division
-    )
-    .map(([, value]) => value)
-    .filter((d) => Number.isFinite(d.indexValue));
-
-  if (!divisionRows.length) {
-    showError(
-      `No division-level values could be calculated for ${selectedAmenity}.`
-    );
-    return;
-  }
-
-  const width = 1720;
-  const height = amenityInfo.mode === "walking" ? 860 : 720;
-
-  const svg = d3
-    .select("#chart1")
-    .append("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .style("width", "100%")
-    .style("height", "auto");
-
-  const defs = svg.append("defs");
-
-  const timeGradient = defs
-    .append("linearGradient")
-    .attr("id", "time-gradient")
-    .attr("x1", "0%")
-    .attr("x2", "100%")
-    .attr("y1", "0%")
-    .attr("y2", "0%");
-
-  timeGradient
-    .append("stop")
-    .attr("offset", "0%")
-    .attr("stop-color", "#0aa11a");
-  timeGradient
-    .append("stop")
-    .attr("offset", "35%")
-    .attr("stop-color", "#97bf00");
-  timeGradient
-    .append("stop")
-    .attr("offset", "70%")
-    .attr("stop-color", "#ff8c00");
-  timeGradient
-    .append("stop")
-    .attr("offset", "100%")
-    .attr("stop-color", "#ff1028");
-
-  // If amenity is not based on walking proximity, don't display vis
-  if (amenityInfo.mode !== "walking") {
-    showError("This visualization only supports walking-based services.");
-    return;
-  }
-
-  const walkRows = divisionRows.filter((d) =>
-    Number.isFinite(d.estimatedMinutes)
-  );
-
-  if (!walkRows.length) {
-    showError(
-      `No estimated walking times could be calculated for ${selectedAmenity}.`
-    );
-    return;
-  }
-
-  const newWestminsterRow = walkRows.find(
-    (d) => d.division === "New Westminster"
-  );
-  const centralSaanichRow = walkRows.find(
-    (d) => d.division === "Central Saanich"
-  );
-
-  if (!newWestminsterRow || !centralSaanichRow) {
-    showError("Could not find data for New Westminster or Central Saanich.");
-    return;
-  }
-
-  const maxMinutes = Math.max(
-    12,
-    d3.max(walkRows, (d) => d.estimatedMinutes) || 12
-  );
-
-  const xScale = d3.scaleLinear().domain([0, 20]).range([0, 620]);
-
-  const timeColor = d3
-    .scaleLinear()
-    .domain([10, 13.333, 16.667, 20])
-    .range(["#0aa11a", "#97bf00", "#ff8c00", "#ff1028"])
-    .clamp(true);
-
-  drawLegend(svg, {
-    x: 54,
-    y: 80,
-    width: 430,
-  });
-
-  drawWalkingRow(svg, {
-    y: 260,
-    datum: newWestminsterRow,
-    amenity: selectedAmenity,
-    xScale,
-    colorScale: timeColor,
-    maxMinutes,
-    icon: amenityInfo.icon,
-    thresholdLabel: amenityInfo.label,
-  });
-
-  drawWalkingRow(svg, {
-    y: 545,
-    datum: centralSaanichRow,
-    amenity: selectedAmenity,
-    xScale,
-    colorScale: timeColor,
-    maxMinutes,
-    icon: amenityInfo.icon,
-    thresholdLabel: amenityInfo.label,
-  });
-}
-
-function drawLegend(svg, { x, y, width }) {
-  svg
-    .append("text")
-    .attr("x", x)
-    .attr("y", y - 18)
-    .attr("font-size", 18)
-    .attr("font-weight", 700)
-    .text("Estimated walking time color legend");
-
-  svg
-    .append("rect")
-    .attr("x", x)
-    .attr("y", y)
-    .attr("width", width)
-    .attr("height", 22)
-    .attr("rx", 11)
-    .attr("ry", 11)
-    .attr("fill", "url(#time-gradient)");
-
-  const tickValues = [10, 13.333, 16.667, 20];
-  const tickLabels = ["Short", "Moderate", "Long", "Very long"];
-
-  const legendScale = d3.scaleLinear().domain([10, 20]).range([0, width]);
-
-  tickValues.forEach((val, i) => {
-    const xPos = x + legendScale(val);
-
-    svg
-      .append("line")
-      .attr("x1", xPos)
-      .attr("x2", xPos)
-      .attr("y1", y + 28)
-      .attr("y2", y + 40)
-      .attr("stroke", PALETTE.textMuted)
-      .attr("stroke-width", 1.5);
-
-    svg
-      .append("text")
-      .attr("x", xPos)
-      .attr("y", y + 64)
-      .attr("font-size", 13)
-      .attr(
-        "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
-      )
-      .attr("fill", PALETTE.textMuted)
-      .text(`${Math.round(val)} min`);
-
-    svg
-      .append("text")
-      .attr("x", xPos)
-      .attr("y", y + 84)
-      .attr("font-size", 12)
-      .attr(
-        "text-anchor",
-        i === 0 ? "start" : i === tickValues.length - 1 ? "end" : "middle"
-      )
-      .attr("fill", PALETTE.textMuted)
-      .text(tickLabels[i]);
-  });
-}
-
-function drawBarWithTrack(
-  svg,
-  { barX, barY, barHeight, trackWidth, visibleBarWidth, fill, icon }
-) {
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", trackWidth)
-    .attr("height", barHeight)
-    .attr("rx", 23)
-    .attr("ry", 23)
-    .attr("fill", PALETTE.border);
-
-  const dynamicRadius = Math.min(23, visibleBarWidth / 2, barHeight / 2);
-
-  svg
-    .append("rect")
-    .attr("x", barX)
-    .attr("y", barY)
-    .attr("width", visibleBarWidth)
-    .attr("height", barHeight)
-    .attr("rx", dynamicRadius)
-    .attr("ry", dynamicRadius)
-    .attr("fill", fill);
-
-  const iconX = barX + trackWidth + 24;
-  svg
-    .append("text")
-    .attr("x", iconX)
-    .attr("y", barY + 36)
-    .attr("font-size", 36)
-    .text(icon);
-}
-
-function drawWalkingRow(svg, config) {
-  const { y, datum, xScale, colorScale, maxMinutes, icon, thresholdLabel } =
-    config;
-
-  const leftX = 54;
-  const barX = 940;
-  const barY = y + 36;
-  const barHeight = 46;
-  const trackWidth = 620;
-  const rawBarWidth = xScale(datum.estimatedMinutes);
-  const visibleBarWidth = Math.max(barHeight, rawBarWidth);
-  const barColor = colorScale(datum.estimatedMinutes);
-
-  const division = datum.division || "Unknown Division";
-  const province = cleanProvinceName(datum.province) || "Unknown Province";
-  const minutesText = Number.isFinite(datum.estimatedMinutes)
-    ? `~${datum.estimatedMinutes} min walk on average`
-    : "N/A";
-  const proximityText = Number.isFinite(datum.indexValue)
-    ? d3.format(".3f")(datum.indexValue)
-    : "N/A";
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 8)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`If you lived in ${division}, ${province}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 66)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`Estimated walking time: ${minutesText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 150)
-    .attr("font-size", 22)
-    .attr("fill", PALETTE.textMuted)
-    .text(`Average proximity index: ${proximityText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 186)
-    .attr("font-size", 17)
-    .attr("fill", PALETTE.textMuted)
-    .text(
-      `Approximation based on the ${thresholdLabel}, averaged across blocks in this division.`
-    );
-
-  drawBarWithTrack(svg, {
-    barX,
-    barY,
-    barHeight,
-    trackWidth,
-    visibleBarWidth,
-    fill: barColor,
-    icon,
-  });
-
-  const axisScale = d3.scaleLinear().domain([0, 20]).range([0, trackWidth]);
-
-  const tickValues = d3.range(0, 21, 2); // ticks from 0 to 20, every 2 min
-
-  tickValues.forEach((tick) => {
-    const xPos = barX + axisScale(tick);
-
-    svg
-      .append("line")
-      .attr("x1", xPos)
-      .attr("x2", xPos)
-      .attr("y1", barY + barHeight + 10)
-      .attr("y2", barY + barHeight + 24)
-      .attr("stroke", PALETTE.textMuted)
-      .attr("stroke-width", 1.5);
-
-    svg
-      .append("text")
-      .attr("x", xPos)
-      .attr("y", barY + barHeight + 48)
-      .attr("font-size", 14)
-      .attr("font-weight", 500)
-      .attr("text-anchor", "middle")
-      .attr("fill", PALETTE.textMuted)
-      .text(`${tick} min`);
-  });
-}
-
-function drawDrivingRow(svg, config) {
-  const { y, datum, value, xScale, fill, label, icon } = config;
-
-  const leftX = 54;
-  const barX = 940;
-  const barY = y + 6;
-  const barHeight = 46;
-  const trackWidth = 620;
-  const rawBarWidth = xScale(value);
-  const visibleBarWidth = Math.max(barHeight, rawBarWidth);
-
-  const division = datum.division || "Unknown Division";
-  const province = cleanProvinceName(datum.province) || "Unknown Province";
-  const proximityText = Number.isFinite(value)
-    ? d3.format(".3f")(value)
-    : "N/A";
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 8)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`If you lived in ${division}, ${province}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 66)
-    .attr("font-size", 34)
-    .attr("font-weight", 900)
-    .attr("letter-spacing", "-0.02em")
-    .text(`Average proximity index: ${proximityText}`);
-
-  svg
-    .append("text")
-    .attr("x", leftX)
-    .attr("y", y + 150)
-    .attr("font-size", 17)
-    .attr("fill", PALETTE.textMuted)
-    .text(
-      `Measured using ${label}, averaged across blocks in this division. Walking-time estimate not shown.`
-    );
-
-  drawBarWithTrack(svg, {
-    barX,
-    barY,
-    barHeight,
-    trackWidth,
-    visibleBarWidth,
-    fill,
-    icon,
-  });
-}
-
-function showError(message) {
-  d3.select("#message").append("div").attr("class", "error").text(message);
 }
 
 // Vis 2
@@ -1819,16 +1367,6 @@ function renderArchetypes(filter = "") {
   }
 }
 
-function hexToRgb(hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-        result[3],
-        16
-      )}`
-    : "255, 255, 255";
-}
-
 loadData();
 
 // ── BC TIME-TO-LIFE INDEX CHART ───────────────────────────────────────
@@ -2225,10 +1763,19 @@ let map,
   markersLayer = null;
 
 function initMap() {
-  map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(
-    [49.25, -122.9],
-    10
+  const metroBounds = L.latLngBounds(
+    [48.9, -123.4],  // SW corner (with margin)
+    [49.6, -122.1]   // NE corner (with margin)
   );
+
+  map = L.map("map", {
+    zoomControl: true,
+    preferCanvas: true,
+    maxBounds: metroBounds,
+    maxBoundsViscosity: 1.0,
+    minZoom: 9,
+    maxZoom: 19,
+  }).setView([49.25, -122.9], 10);
 
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
